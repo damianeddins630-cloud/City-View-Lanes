@@ -45,9 +45,14 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  await updateStore((s) => {
-    s.chatMessages.push(message);
-  });
-
-  return NextResponse.json({ message });
+  try {
+    await updateStore((s) => {
+      s.chatMessages.push(message);
+    });
+    return NextResponse.json({ message });
+  } catch (error) {
+    const messageText =
+      error instanceof Error ? error.message : "Could not send message.";
+    return NextResponse.json({ error: messageText }, { status: 503 });
+  }
 }

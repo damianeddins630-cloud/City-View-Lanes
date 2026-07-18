@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const passwordHash = await hashPassword(password);
 
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       if (s.users.some((u) => u.username === username || u.email === email)) {
         throw new Error("Username or email already in use.");
       }
@@ -62,6 +62,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Registration failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    const status = message.includes("durable storage") ? 503 : 400;
+    return NextResponse.json({ error: message }, { status });
   }
 }

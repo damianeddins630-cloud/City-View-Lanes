@@ -71,7 +71,7 @@ export async function PATCH(request: Request) {
     const userId = String(body.userId || "");
     const roleId = String(body.roleId || "");
 
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       const target = s.users.find((u) => u.id === userId);
       if (!target) throw new Error("User not found");
       const role = s.roles.find((r) => r.id === roleId);

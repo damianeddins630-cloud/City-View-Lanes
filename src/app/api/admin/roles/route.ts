@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       locked: false,
     };
 
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       if (s.roles.some((r) => r.name.toLowerCase() === name.toLowerCase())) {
         throw new Error("A role with that name already exists.");
       }
@@ -62,7 +62,7 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
     const id = String(body.id || "");
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       const role = s.roles.find((r) => r.id === id);
       if (!role) throw new Error("Role not found");
       if (role.locked && role.name === "Master Admin") {
@@ -101,7 +101,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       const role = s.roles.find((r) => r.id === id);
       if (!role) throw new Error("Role not found");
       if (role.locked) throw new Error("This role cannot be deleted.");

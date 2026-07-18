@@ -96,6 +96,10 @@ export default function AdminClient() {
   const [tab, setTab] = useState<Tab>("users");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [storage, setStorage] = useState<{
+    durable: boolean;
+    persistence: string;
+  }>({ durable: true, persistence: "checking" });
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -148,7 +152,19 @@ export default function AdminClient() {
     }
     setUser(me.user);
 
-    const tasks: Promise<void>[] = [];
+    const tasks: Promise<void>[] = [
+      fetch("/api/storage")
+        .then((r) => r.json())
+        .then((d) =>
+          setStorage({
+            durable: Boolean(d.durable),
+            persistence: String(d.persistence || "unknown"),
+          }),
+        )
+        .catch(() =>
+          setStorage({ durable: false, persistence: "unknown" }),
+        ),
+    ];
 
     if (me.user.permissions.includes("manage_users") || me.user.permissions.includes("view_admins")) {
       tasks.push(
@@ -366,6 +382,8 @@ export default function AdminClient() {
 
   async function saveHours(e: FormEvent) {
     e.preventDefault();
+    setError("");
+    setNotice("");
     const res = await fetch("/api/hours", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -373,17 +391,21 @@ export default function AdminClient() {
     });
     const data = await res.json();
     if (!res.ok) {
-      setError(data.error || "Could not save hours");
+      setError(data.error || data.help || "Could not save hours");
+      setStorage((s) => ({ ...s, durable: false, persistence: data.persistence || s.persistence }));
       return;
     }
     setHours(data.hours);
+    setStorage({
+      durable: Boolean(data.durable),
+      persistence: data.persistence || "unknown",
+    });
     if (data.durable) {
-      setNotice("Hours saved permanently. Open /hours to confirm.");
+      setNotice("Hours saved. Open /hours to confirm — they will stay.");
     } else {
       setError(
-        "Hours did NOT save permanently. In Vercel go to Storage → Blob → Connect to this project, then Redeploy. Without BLOB_READ_WRITE_TOKEN, changes disappear.",
+        "Hours did NOT save permanently. In Vercel go to Storage → Blob → Connect to this project, then Redeploy.",
       );
-      setNotice("");
     }
   }
 
@@ -404,11 +426,27 @@ export default function AdminClient() {
 
   return (
     <div className="mt-8">
-      <div className="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-        <strong>Important for saves:</strong> In Vercel → your project →{" "}
-        <strong>Storage → Blob → Create/Connect</strong> so env var{" "}
-        <code>BLOB_READ_WRITE_TOKEN</code> exists, then <strong>Redeploy</strong>.
-        Without that, hours/profile changes will not stick.
+      <div
+        className={`mb-4 border px-4 py-3 text-sm ${
+          storage.durable
+            ? "border-emerald-300 bg-emerald-50 text-emerald-950"
+            : "border-amber-300 bg-amber-50 text-amber-950"
+        }`}
+      >
+        {storage.durable ? (
+          <>
+            <strong>Saves are on.</strong> Storage mode:{" "}
+            <code>{storage.persistence}</code>. Hours, profiles, bookings, and
+            leagues will stick after you save.
+          </>
+        ) : (
+          <>
+            <strong>Saves are NOT permanent yet.</strong> In Vercel → your
+            project → <strong>Storage → Blob → Create/Connect</strong> (adds{" "}
+            <code>BLOB_READ_WRITE_TOKEN</code>), then <strong>Redeploy</strong>.
+            Current mode: <code>{storage.persistence}</code>.
+          </>
+        )}
       </div>
 
       <div className="panel overflow-hidden">

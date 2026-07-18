@@ -57,13 +57,14 @@ Outbound emails are recorded in the data store and logged to the server console 
 
 ### Make saves stick on Vercel (REQUIRED)
 
-If hours/profile keep resetting, Blob is missing.
+Hours, profiles, bookings, and leagues **will not stay** on Vercel until Blob is connected. The admin panel shows a green “Saves are on” banner when storage is ready.
 
 1. Vercel → your project → **Storage**
 2. Create **Blob**
 3. **Connect** it to this project (adds `BLOB_READ_WRITE_TOKEN`)
 4. Click **Redeploy**
-5. Edit hours again — they should stay on `/hours`
+5. Open **Admin** — banner should say saves are on
+6. Edit hours again — they should stay on `/hours`
 
 ### How to update / fix the live site later
 

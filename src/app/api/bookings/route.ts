@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { updateStore, readStore } from "@/lib/db";
+import { PersistenceError, updateStore, readStore } from "@/lib/db";
 import { bookingReceivedEmail, sendEmail } from "@/lib/email";
 import { makeId } from "@/lib/ids";
 
@@ -78,7 +78,10 @@ export async function POST(request: Request) {
       booking,
       message: "We will be with you shortly.",
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof PersistenceError) {
+      return NextResponse.json({ error: error.message, durable: false }, { status: 503 });
+    }
     return NextResponse.json({ error: "Could not create booking." }, { status: 500 });
   }
 }

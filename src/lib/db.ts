@@ -1,4 +1,4 @@
-import { list, put } from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
 import type { Store } from "./types";
@@ -6,6 +6,22 @@ import type { Store } from "./types";
 const seedPath = path.join(process.cwd(), "data", "store.json");
 const tmpPath = path.join("/tmp", "cityview-store.json");
 const BLOB_NAME = "cityview/store.json";
+
+export class PersistenceError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "PersistenceError";
+  }
+}
+
+export type WriteResult = {
+  blob: boolean;
+  github: boolean;
+  tmp: boolean;
+  file: boolean;
+  durable: boolean;
+  mode: ReturnType<typeof persistenceMode>;
+};
 
 type GlobalDb = {
   __cityviewStore?: Store;
@@ -24,6 +40,10 @@ function hasGithub() {
   return Boolean(process.env.GITHUB_TOKEN && process.env.GITHUB_REPO);
 }
 
+function isVercel() {
+  return Boolean(process.env.VERCEL);
+}
+
 async function readSeed(): Promise<Store> {
   const raw = await fs.readFile(seedPath, "utf8");
   return JSON.parse(raw) as Store;
@@ -40,6 +60,7 @@ async function readJsonFile(filePath: string): Promise<Store | null> {
 
 async function writeJsonFile(filePath: string, store: Store): Promise<boolean> {
   try {
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, JSON.stringify(store, null, 2), "utf8");
     return true;
   } catch {
@@ -50,12 +71,13 @@ async function writeJsonFile(filePath: string, store: Store): Promise<boolean> {
 async function readFromBlob(): Promise<Store | null> {
   if (!hasBlobToken()) return null;
   try {
-    const result = await list({ prefix: "cityview/", limit: 20 });
-    const blob = result.blobs.find((b) => b.pathname === BLOB_NAME) || result.blobs[0];
-    if (!blob?.url) return null;
-    const res = await fetch(blob.url, { cache: "no-store" });
-    if (!res.ok) return null;
-    return (await res.json()) as Store;
+    const result = await get(BLOB_NAME, {
+      access: "public",
+      useCache: false,
+    });
+    if (!result || result.statusCode !== 200 || !result.stream) return null;
+    const text = await new Response(result.stream).text();
+    return JSON.parse(text) as Store;
   } catch (error) {
     console.error("[CityView DB] Blob read failed", error);
     return null;
@@ -70,6 +92,7 @@ async function writeToBlob(store: Store): Promise<boolean> {
       contentType: "application/json",
       addRandomSuffix: false,
       allowOverwrite: true,
+      cacheControlMaxAge: 60,
     });
     return true;
   } catch (error) {
@@ -158,15 +181,25 @@ async function writeToGithub(store: Store): Promise<boolean> {
   }
 }
 
+export function persistenceMode() {
+  if (hasBlobToken()) return "blob";
+  if (hasGithub()) return "github";
+  if (!isVercel()) return "file";
+  return "memory";
+}
+
+export function storageSetupHelp() {
+  return "Saves need durable storage. In Vercel → Storage → Blob → Create/Connect (adds BLOB_READ_WRITE_TOKEN), then Redeploy. Or set GITHUB_TOKEN + GITHUB_REPO.";
+}
+
 export async function readStore(): Promise<Store> {
   const cache = g();
   const now = Date.now();
-  // Keep a very short memory cache so rapid reads in one request stay fast,
-  // but always re-load from durable storage across requests on Vercel.
+  // Short in-request cache only — always reload from durable storage across requests.
   if (
     cache.__cityviewStore &&
     cache.__cityviewStoreLoadedAt &&
-    now - cache.__cityviewStoreLoadedAt < 1500
+    now - cache.__cityviewStoreLoadedAt < 800
   ) {
     return structuredClone(cache.__cityviewStore);
   }
@@ -185,6 +218,15 @@ export async function readStore(): Promise<Store> {
     return structuredClone(fromGithub);
   }
 
+  // Prefer project file locally; on Vercel prefer /tmp over seed so mid-session edits survive
+  // within the same warm instance when Blob is not configured yet.
+  if (!isVercel()) {
+    const fromSeed = (await readJsonFile(seedPath)) || (await readSeed());
+    cache.__cityviewStore = fromSeed;
+    cache.__cityviewStoreLoadedAt = now;
+    return structuredClone(fromSeed);
+  }
+
   const fromTmp = await readJsonFile(tmpPath);
   if (fromTmp) {
     cache.__cityviewStore = fromTmp;
@@ -198,12 +240,7 @@ export async function readStore(): Promise<Store> {
   return structuredClone(fromSeed);
 }
 
-export async function writeStore(store: Store): Promise<{
-  blob: boolean;
-  github: boolean;
-  tmp: boolean;
-  file: boolean;
-}> {
+export async function writeStore(store: Store): Promise<WriteResult> {
   const cache = g();
   cache.__cityviewStore = structuredClone(store);
   cache.__cityviewStoreLoadedAt = Date.now();
@@ -212,30 +249,31 @@ export async function writeStore(store: Store): Promise<{
     writeToBlob(store),
     writeToGithub(store),
     writeJsonFile(tmpPath, store),
-    process.env.VERCEL ? Promise.resolve(false) : writeJsonFile(seedPath, store),
+    isVercel() ? Promise.resolve(false) : writeJsonFile(seedPath, store),
   ]);
 
-  if (!blob && !github && process.env.VERCEL) {
-    console.warn(
-      "[CityView DB] No durable storage configured. Add BLOB_READ_WRITE_TOKEN (Vercel Blob) so hours/profile stick.",
-    );
+  const durable = blob || github || file;
+  const mode = persistenceMode();
+
+  if (!durable && isVercel()) {
+    console.warn("[CityView DB]", storageSetupHelp());
   }
 
-  return { blob, github, tmp, file };
+  return { blob, github, tmp, file, durable, mode };
 }
 
 export async function updateStore(
   mutator: (store: Store) => void | Promise<void>,
-): Promise<Store> {
+  options?: { requireDurable?: boolean },
+): Promise<{ store: Store; write: WriteResult }> {
   const store = await readStore();
   await mutator(store);
-  await writeStore(store);
-  return structuredClone(store);
-}
+  const write = await writeStore(store);
 
-export function persistenceMode() {
-  if (hasBlobToken()) return "blob";
-  if (hasGithub()) return "github";
-  if (!process.env.VERCEL) return "file";
-  return "memory";
+  const requireDurable = options?.requireDurable ?? isVercel();
+  if (requireDurable && !write.durable) {
+    throw new PersistenceError(storageSetupHelp());
+  }
+
+  return { store: structuredClone(store), write };
 }

@@ -38,14 +38,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const store = await updateStore((s) => {
+    const { store } = await updateStore((s) => {
       s.leagues.push(league);
     });
 
     revalidatePath("/leagues");
     return NextResponse.json({ leagues: store.leagues, league });
-  } catch {
-    return NextResponse.json({ error: "Could not add league." }, { status: 500 });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Could not add league.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -61,20 +63,25 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "League id required." }, { status: 400 });
   }
 
-  const store = await updateStore((s) => {
-    const league = s.leagues.find((l) => l.id === id);
-    if (!league) throw new Error("League not found");
-    if (body.day !== undefined) league.day = String(body.day);
-    if (body.time !== undefined) league.time = String(body.time);
-    if (body.name !== undefined) league.name = String(body.name);
-    if (body.type !== undefined) league.type = String(body.type);
-    if (body.teamSize !== undefined) league.teamSize = String(body.teamSize);
-    if (body.startDate !== undefined) league.startDate = String(body.startDate);
-    if (body.meetingInfo !== undefined) league.meetingInfo = String(body.meetingInfo);
-  });
+  try {
+    const { store } = await updateStore((s) => {
+      const league = s.leagues.find((l) => l.id === id);
+      if (!league) throw new Error("League not found");
+      if (body.day !== undefined) league.day = String(body.day);
+      if (body.time !== undefined) league.time = String(body.time);
+      if (body.name !== undefined) league.name = String(body.name);
+      if (body.type !== undefined) league.type = String(body.type);
+      if (body.teamSize !== undefined) league.teamSize = String(body.teamSize);
+      if (body.startDate !== undefined) league.startDate = String(body.startDate);
+      if (body.meetingInfo !== undefined) league.meetingInfo = String(body.meetingInfo);
+    });
 
-  revalidatePath("/leagues");
-  return NextResponse.json({ leagues: store.leagues });
+    revalidatePath("/leagues");
+    return NextResponse.json({ leagues: store.leagues });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not update league.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
 }
 
 export async function DELETE(request: Request) {
@@ -89,10 +96,15 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "League id required." }, { status: 400 });
   }
 
-  const store = await updateStore((s) => {
-    s.leagues = s.leagues.filter((l) => l.id !== id);
-  });
+  try {
+    const { store } = await updateStore((s) => {
+      s.leagues = s.leagues.filter((l) => l.id !== id);
+    });
 
-  revalidatePath("/leagues");
-  return NextResponse.json({ leagues: store.leagues });
+    revalidatePath("/leagues");
+    return NextResponse.json({ leagues: store.leagues });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not remove league.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
 }

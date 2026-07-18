@@ -85,9 +85,9 @@ export default function ProfileClient() {
       newPassword: "",
     });
     setMessage(
-      data.persistence === "memory"
-        ? "Profile updated in your login session. Add Vercel Blob (BLOB_READ_WRITE_TOKEN) so it also sticks for everyone after redeploy."
-        : "Profile updated and saved.",
+      data.durable
+        ? "Profile updated and saved."
+        : "Profile could not be saved permanently. Connect Vercel Blob, then redeploy.",
     );
   }
 

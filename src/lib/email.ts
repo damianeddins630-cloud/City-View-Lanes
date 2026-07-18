@@ -25,7 +25,7 @@ export async function sendEmail(input: {
 
   await updateStore((store) => {
     store.notifications.unshift(notification);
-  });
+  }, { requireDurable: false });
 
   console.log("[CityView Email]", {
     to: notification.email,

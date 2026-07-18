@@ -7,7 +7,12 @@ import {
   toPublicUser,
   verifyPassword,
 } from "@/lib/auth";
-import { persistenceMode, updateStore } from "@/lib/db";
+import {
+  PersistenceError,
+  persistenceMode,
+  storageSetupHelp,
+  updateStore,
+} from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +24,7 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const store = await updateStore(async (s) => {
+    const { store, write } = await updateStore(async (s) => {
       const user = s.users.find((u) => u.id === current.id);
       if (!user) throw new Error("User not found");
 
@@ -68,10 +73,22 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({
       user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
-      persistence: persistenceMode(),
+      persistence: write.mode,
+      durable: write.durable,
       ok: true,
     });
   } catch (error) {
+    if (error instanceof PersistenceError) {
+      return NextResponse.json(
+        {
+          error: error.message,
+          persistence: persistenceMode(),
+          durable: false,
+          help: storageSetupHelp(),
+        },
+        { status: 503 },
+      );
+    }
     const message = error instanceof Error ? error.message : "Update failed";
     return NextResponse.json({ error: message }, { status: 400 });
   }
