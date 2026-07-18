@@ -19,7 +19,7 @@ export default async function LeaguesPage() {
       <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
         Leagues
       </p>
-      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-[var(--navy)] sm:text-5xl">
+      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-white sm:text-5xl">
         Fall 2026 registration is open — adult, senior, youth, and IGBO leagues
         run weekly at CityView Lanes.
       </h1>

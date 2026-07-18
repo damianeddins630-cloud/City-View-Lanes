@@ -126,7 +126,7 @@ export default function LeaguesClient({
 
       {showInterest ? (
         <form onSubmit={submitInterest} className="panel mt-6 grid max-w-xl gap-3 p-5">
-          <h2 className="font-display text-2xl text-[var(--navy)]">
+          <h2 className="font-display text-2xl text-white">
             League interest signup
           </h2>
           <p className="text-sm text-[var(--muted)]">
@@ -190,7 +190,7 @@ export default function LeaguesClient({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search leagues, days, or types…"
-            className="min-h-11 w-full border border-[var(--line)] bg-white px-3 sm:max-w-md"
+            className="min-h-11 w-full border border-[var(--line)] bg-black/40 px-3 sm:max-w-md"
           />
           <p className="text-sm font-semibold text-[var(--muted)]">
             {leagues.length} league{leagues.length === 1 ? "" : "s"}
@@ -224,12 +224,12 @@ export default function LeaguesClient({
                   <tr
                     key={league.id}
                     className={`border-t border-[var(--line)] ${
-                      index % 2 === 0 ? "bg-white" : "bg-[var(--blue-soft)]/40"
+                      index % 2 === 0 ? "bg-black/20" : "bg-[var(--blue)]/10"
                     }`}
                   >
                     <td className="px-4 py-3">{league.day}</td>
                     <td className="px-4 py-3">{league.time}</td>
-                    <td className="px-4 py-3 font-semibold text-[var(--navy)]">
+                    <td className="px-4 py-3 font-semibold text-white">
                       {league.name}
                     </td>
                     <td className="px-4 py-3">{league.type}</td>

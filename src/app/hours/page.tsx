@@ -18,7 +18,7 @@ export default async function HoursPage() {
       <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
         CityView Lanes
       </p>
-      <h1 className="font-display mt-2 text-5xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+      <h1 className="font-display mt-2 text-5xl tracking-[0.05em] text-white sm:text-6xl">
         Fall Hours of Operation
       </h1>
       <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">

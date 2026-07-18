@@ -114,7 +114,7 @@ export default function ProfileClient() {
             <span className="text-sm text-[var(--muted)]">No photo</span>
           )}
         </div>
-        <p className="mt-4 text-center font-semibold text-[var(--navy)]">
+        <p className="mt-4 text-center font-semibold text-white">
           {user.firstName} {user.lastName}
         </p>
         <p className="text-center text-xs tracking-wide text-[var(--muted)] uppercase">

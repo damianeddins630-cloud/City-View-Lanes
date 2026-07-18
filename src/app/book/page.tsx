@@ -12,7 +12,7 @@ export default function BookPage() {
       <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
         Book a Party
       </p>
-      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-[var(--navy)] sm:text-5xl">
+      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-white sm:text-5xl">
         Birthdays, corporate nights, fundraisers — we handle the lanes, the
         food, and the fun.
       </h1>

@@ -56,16 +56,16 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-[min(480px,calc(100%-1.5rem))] flex-col justify-center py-16">
-      <h1 className="font-display text-center text-5xl tracking-[0.06em] text-[var(--navy)]">
+      <h1 className="font-display text-center text-5xl tracking-[0.06em] text-white">
         CityView Lanes
       </h1>
 
-      <div className="mt-8 flex border border-[var(--line)] bg-white">
+      <div className="mt-8 flex border border-[var(--line)] bg-black/40">
         <button
           type="button"
           className={`flex-1 py-3 text-sm font-bold tracking-wide uppercase ${
             mode === "signin"
-              ? "bg-[var(--navy)] text-white"
+              ? "bg-[var(--blue)] text-white"
               : "text-[var(--muted)]"
           }`}
           onClick={() => setMode("signin")}
@@ -76,7 +76,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
           type="button"
           className={`flex-1 py-3 text-sm font-bold tracking-wide uppercase ${
             mode === "create"
-              ? "bg-[var(--navy)] text-white"
+              ? "bg-[var(--blue)] text-white"
               : "text-[var(--muted)]"
           }`}
           onClick={() => setMode("create")}
@@ -86,7 +86,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
       </div>
 
       {mode === "signin" ? (
-        <form onSubmit={submitSignIn} className="mt-6 grid gap-4 border border-[var(--line)] bg-white p-6">
+        <form onSubmit={submitSignIn} className="mt-6 grid gap-4 border border-[var(--line)] bg-black/40 p-6">
           <div className="field">
             <label htmlFor="identifier">Username or email *</label>
             <input
@@ -117,7 +117,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
           </button>
         </form>
       ) : (
-        <form onSubmit={submitCreate} className="mt-6 grid gap-4 border border-[var(--line)] bg-white p-6">
+        <form onSubmit={submitCreate} className="mt-6 grid gap-4 border border-[var(--line)] bg-black/40 p-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="field">
               <label htmlFor="firstName">First name</label>

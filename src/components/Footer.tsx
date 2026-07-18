@@ -4,7 +4,7 @@ import { NAV, SITE } from "@/lib/site";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-[var(--line)] bg-[var(--navy)] text-white">
+    <footer className="mt-auto border-t border-white/10 bg-black text-white">
       <div className="mx-auto grid w-[min(1140px,calc(100%-1.5rem))] gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">

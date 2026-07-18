@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function ProfilePage() {
   return (
     <div className="section pt-16">
-      <h1 className="font-display text-5xl tracking-[0.05em] text-[var(--navy)]">
+      <h1 className="font-display text-5xl tracking-[0.05em] text-white">
         Your profile
       </h1>
       <p className="mt-3 text-sm text-[var(--muted)]">

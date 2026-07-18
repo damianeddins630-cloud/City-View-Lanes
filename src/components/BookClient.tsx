@@ -71,7 +71,7 @@ export default function BookClient() {
 
   if (!user) {
     return (
-      <div className="mt-8 border border-[var(--line)] bg-white p-6">
+      <div className="mt-8 border border-[var(--line)] bg-black/40 p-6">
         <p className="text-[var(--ink)]">
           Please sign in or create an account to book a party or join a league.
         </p>

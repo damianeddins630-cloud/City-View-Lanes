@@ -74,7 +74,7 @@ export default function HomePage() {
         <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           Why CityView Lanes
         </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
           Built for every kind of bowler.
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
@@ -90,7 +90,7 @@ export default function HomePage() {
             <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
               Hall of Fame Coaching
             </p>
-            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
               Ballard&apos;s Bowling Academy
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[var(--muted)]">
@@ -132,7 +132,7 @@ export default function HomePage() {
         <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           Inside the Center
         </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
           The lanes in real life
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
@@ -203,24 +203,24 @@ export default function HomePage() {
             sizes="100vw"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(242,246,251,0.96)_0%,rgba(232,241,251,0.9)_55%,rgba(255,255,255,0.78)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,7,12,0.94)_0%,rgba(10,18,32,0.9)_55%,rgba(5,7,12,0.86)_100%)]" />
         <div className="section relative z-10">
-          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
             Come visit
           </p>
           <div className="mt-4 grid gap-8 md:grid-cols-[1.25fr_1fr] md:items-end">
             <div>
-              <h2 className="font-display text-5xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+              <h2 className="font-display text-5xl tracking-[0.05em] text-white sm:text-6xl">
                 {SITE.addressLine1}
               </h2>
               <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
               <a
                 href={`tel:${SITE.phoneTel}`}
-                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue)]"
+                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue-bright)]"
               >
                 {SITE.phoneDisplay}
               </a>
-              <p className="mt-4 text-sm text-[var(--ink)]">
+              <p className="mt-4 text-sm text-white">
                 Open daily 12:00 PM – 12:00 AM
               </p>
               <p className="mt-1 text-sm text-[var(--muted)]">Free parking on-site</p>

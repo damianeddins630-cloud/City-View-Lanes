@@ -38,7 +38,7 @@ export default function HoursClient({
               key={row.day}
               className="interactive-row grid gap-2 px-5 py-5 sm:grid-cols-[1fr_auto_auto_auto] sm:items-center sm:gap-8"
             >
-              <p className="font-display text-2xl tracking-[0.04em] text-[var(--navy)]">
+              <p className="font-display text-2xl tracking-[0.04em] text-white">
                 {row.day}
               </p>
               <p className="text-xs font-bold tracking-[0.14em] text-[var(--silver-deep)] uppercase">
@@ -55,7 +55,7 @@ export default function HoursClient({
       </div>
 
       <div className="panel mt-10 bg-[var(--blue-soft)] p-6">
-        <h2 className="font-display text-2xl text-[var(--navy)]">
+        <h2 className="font-display text-2xl text-white">
           Holiday or special hours?
         </h2>
         <p className="mt-2 text-sm text-[var(--muted)]">
