@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
-      <body className="site-shell min-h-full antialiased">
+      <body className="site-shell flex min-h-full flex-col antialiased">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
