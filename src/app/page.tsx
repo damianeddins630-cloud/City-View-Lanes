@@ -27,14 +27,17 @@ export default function HomePage() {
           />
         </div>
         <div className="hero-veil absolute inset-0" />
-        <div className="hero-grid pointer-events-none absolute inset-0" />
+        <div className="hero-dots pointer-events-none absolute inset-0" />
+        <div className="hero-swoosh pointer-events-none absolute inset-0" />
         <div className="hero-shine pointer-events-none absolute inset-0" />
         <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-44" />
-        <div className="pin-streak pointer-events-none absolute inset-y-0 right-0 w-1/2" />
 
         <div className="relative z-10 mx-auto flex min-h-[94svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
-          <div className="fade-up silver-bar mb-6 max-w-[180px]" />
-          <h1 className="font-display brand-title fade-up text-[clamp(4.6rem,13vw,9rem)] leading-[0.84] tracking-[0.04em] text-white">
+          <div className="fade-up mb-5 flex items-center gap-3">
+            <span className="brand-star" aria-hidden />
+            <div className="silver-bar max-w-[140px]" />
+          </div>
+          <h1 className="font-display brand-title fade-up text-[clamp(4.8rem,14vw,9.5rem)] leading-[0.82] tracking-[0.04em] text-white">
             CityView
             <span className="brand-title-accent block">Lanes</span>
           </h1>
@@ -224,7 +227,7 @@ export default function HomePage() {
             </div>
             <div className="flex flex-wrap content-start gap-3">
               <Link href="/leagues" className="btn btn-hero-primary">
-                Fall league menu
+                Join a league
               </Link>
               <Link href="/book" className="btn btn-primary">
                 Book a party

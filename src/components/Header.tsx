@@ -22,7 +22,7 @@ export default function Header() {
   const isAdmin = Boolean(user?.permissions?.includes("view_admin"));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/75 shadow-[0_8px_30px_rgba(7,31,56,0.06)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(242,246,251,0.88))] shadow-[0_10px_34px_rgba(7,31,56,0.08)] backdrop-blur-2xl">
       <div className="silver-bar" />
       <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
         <Link href="/" className="group flex items-center gap-3">
@@ -34,8 +34,8 @@ export default function Header() {
             className="h-11 w-11 object-contain transition-transform duration-300 group-hover:scale-105"
             priority
           />
-          <span className="font-display text-xl tracking-[0.08em] text-[var(--navy)] uppercase sm:text-2xl">
-            CityView Lanes
+          <span className="font-display text-xl tracking-[0.1em] text-[var(--navy)] uppercase sm:text-2xl">
+            CityView <span className="text-[var(--blue)]">Lanes</span>
           </span>
         </Link>
 

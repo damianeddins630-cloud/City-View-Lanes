@@ -187,17 +187,43 @@ a {
 
 .hero-veil {
   background:
-    linear-gradient(180deg, rgba(7, 31, 56, 0.15) 0%, rgba(7, 31, 56, 0.05) 28%, rgba(7, 31, 56, 0.78) 100%),
-    linear-gradient(115deg, rgba(7, 31, 56, 0.55) 0%, rgba(7, 31, 56, 0.18) 52%, rgba(26, 95, 173, 0.22) 100%);
+    linear-gradient(180deg, rgba(7, 31, 56, 0.2) 0%, rgba(7, 31, 56, 0.08) 30%, rgba(7, 31, 56, 0.82) 100%),
+    linear-gradient(115deg, rgba(7, 31, 56, 0.62) 0%, rgba(7, 31, 56, 0.22) 50%, rgba(26, 95, 173, 0.3) 100%);
 }
 
-.hero-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55) 40%, transparent);
-  opacity: 0.55;
+.hero-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(120deg, rgba(0, 0, 0, 0.55), transparent 70%);
+  opacity: 0.45;
+}
+
+.hero-swoosh {
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(215, 222, 232, 0.22), transparent 45%),
+    linear-gradient(155deg, transparent 40%, rgba(61, 143, 212, 0.28) 58%, transparent 72%);
+}
+
+.brand-star {
+  display: inline-block;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: var(--silver-shine);
+  background-size: 200% 100%;
+  animation: silver-sweep 4.5s linear infinite;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 
 .hero-shine {
@@ -609,185 +635,6 @@ a {
   }
 }
 
-/* Fall Season league menu (matches printed CityView flyer) */
-.league-menu-page {
-  background:
-    radial-gradient(900px 420px at 10% 0%, rgba(61, 143, 212, 0.28), transparent 55%),
-    radial-gradient(700px 360px at 90% 10%, rgba(215, 222, 232, 0.12), transparent 50%),
-    linear-gradient(180deg, #071f38 0%, #0a2a4d 45%, #071f38 100%);
-  min-height: 100%;
-  color: white;
-}
-
-.league-menu-hero {
-  border-bottom: 1px solid rgba(215, 222, 232, 0.25);
-  background:
-    linear-gradient(120deg, rgba(7, 31, 56, 0.2), rgba(26, 95, 173, 0.25)),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 10px,
-      rgba(255, 255, 255, 0.02) 11px,
-      transparent 12px
-    );
-}
-
-.league-menu-hero-inner {
-  width: min(1140px, calc(100% - 2rem));
-  margin-inline: auto;
-  padding: 3.5rem 0 2.5rem;
-  position: relative;
-}
-
-.league-star {
-  width: 72px;
-  height: 72px;
-  margin-bottom: 1rem;
-  background: var(--silver-shine);
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
-}
-
-.league-kicker {
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--silver);
-}
-
-.league-title {
-  margin-top: 0.55rem;
-  font-size: clamp(2.8rem, 8vw, 5.2rem);
-  line-height: 0.92;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: linear-gradient(180deg, #ffffff 0%, #c9d4e3 55%, #8ea0b8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: none;
-}
-
-.league-subtitle {
-  margin-top: 1rem;
-  max-width: 40rem;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 1rem;
-  line-height: 1.55;
-}
-
-.league-menu-shell {
-  width: min(1140px, calc(100% - 1rem));
-  margin: 1.25rem auto 3rem;
-  border: 1px solid rgba(215, 222, 232, 0.28);
-  background: linear-gradient(180deg, rgba(10, 39, 68, 0.92), rgba(7, 31, 56, 0.96));
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-}
-
-.league-menu-table {
-  width: 100%;
-  min-width: 860px;
-  border-collapse: collapse;
-  font-size: 0.86rem;
-}
-
-.league-menu-table thead th {
-  background: linear-gradient(180deg, #1a5fad, #0a2744);
-  color: white;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.68rem;
-  font-weight: 800;
-  padding: 0.85rem 0.7rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.25);
-  white-space: nowrap;
-}
-
-.league-menu-table tbody td {
-  padding: 0.7rem;
-  border-bottom: 1px solid rgba(215, 222, 232, 0.12);
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.league-menu-table tbody tr:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.league-menu-table tbody tr:nth-child(even) {
-  background: rgba(61, 143, 212, 0.08);
-}
-
-.league-menu-table tbody tr:hover {
-  background: rgba(61, 143, 212, 0.18);
-}
-
-.league-name-cell {
-  font-weight: 800;
-  color: #ffffff !important;
-}
-
-.league-menu-table .empty-cell {
-  text-align: center;
-  padding: 2.5rem 1rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.league-callout {
-  margin-top: 0.5rem;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(90deg, #0a2744, #1a5fad 55%, #0a2744);
-  border-block: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: center;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.league-callout-phone {
-  display: inline-block;
-  margin-left: 0.35rem;
-  font-size: 1.35rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  color: #ffffff;
-}
-
-.league-reg-form {
-  padding: 1.5rem 1.25rem 2rem;
-  background:
-    radial-gradient(500px 220px at 90% 100%, rgba(61, 143, 212, 0.2), transparent 60%),
-    rgba(0, 0, 0, 0.18);
-}
-
-.league-reg-head {
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.85rem;
-  border-bottom: 1px solid rgba(215, 222, 232, 0.2);
-}
-
-.league-field label {
-  color: var(--silver) !important;
-}
-
-.league-field input,
-.league-field select,
-.league-field textarea {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(215, 222, 232, 0.65) !important;
-}
-
 .hof-theme {
   --hof-bg: #0d0d0d;
   color: #f5f5f5;
@@ -820,6 +667,7 @@ a {
   .btn-pulse,
   .marquee-track,
   .brand-title-accent,
+  .brand-star,
   .feature-card,
   .gallery-tile,
   .quote-block {
