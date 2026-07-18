@@ -1,46 +1,65 @@
+import Image from "next/image";
 import Link from "next/link";
+import { NAV, SITE } from "@/lib/site";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--line)] bg-[rgba(7,16,20,0.7)]">
-      <div className="section grid gap-8 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="mt-auto border-t border-[var(--line)] bg-[var(--navy)] text-white">
+      <div className="mx-auto grid w-[min(1140px,calc(100%-1.5rem))] gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <p className="display text-2xl text-cream">Cityview Lanes</p>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed text-mist/80">
-            Fort Worth bowling, leagues, parties, and arcade fun at 6601 Oakmont
-            Blvd.
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/cityview-logo.webp"
+              alt="CityView Lanes logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain brightness-110"
+            />
+            <p className="font-display text-2xl tracking-[0.08em] uppercase">
+              {SITE.name}
+            </p>
+          </div>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/75">
+            {SITE.tagline}
           </p>
         </div>
 
         <div>
-          <p className="display text-sm text-wood">Visit</p>
-          <p className="mt-3 text-sm leading-relaxed text-mist/85">
-            6601 Oakmont Blvd
+          <p className="text-xs font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
+            Visit
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-white/80">
+            {SITE.addressLine1}
             <br />
-            Fort Worth, TX 76132
+            {SITE.addressLine2}
           </p>
           <a
-            href="tel:8173460444"
-            className="mt-3 inline-block text-sm font-semibold text-signal"
+            href={`tel:${SITE.phoneTel}`}
+            className="mt-3 inline-block text-sm font-semibold text-[var(--silver)]"
           >
-            (817) 346-0444
+            {SITE.phoneDisplay}
           </a>
         </div>
 
         <div>
-          <p className="display text-sm text-wood">Explore</p>
-          <div className="mt-3 flex flex-col gap-2 text-sm text-mist/85">
-            <Link href="/rates">Rates &amp; hours</Link>
-            <Link href="/leagues">League bowling</Link>
-            <Link href="/parties">Parties &amp; events</Link>
-            <a href="mailto:sales@cityviewlanesfortworth.com">
-              sales@cityviewlanesfortworth.com
-            </a>
+          <p className="text-xs font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
+            Explore
+          </p>
+          <div className="mt-3 flex flex-col gap-2 text-sm text-white/80">
+            {NAV.filter((n) => n.href !== "/").map((link) => (
+              <Link key={link.href} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+            <Link href="/login">Member Login</Link>
           </div>
+          <p className="mt-6 text-xs font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
+            Follow
+          </p>
         </div>
       </div>
-      <div className="border-t border-[var(--line)] py-4 text-center text-xs tracking-[0.12em] text-mist/55 uppercase">
-        © {new Date().getFullYear()} Cityview Lanes · Fort Worth, TX
+      <div className="border-t border-white/10 py-4 text-center text-xs tracking-[0.08em] text-white/55">
+        © {new Date().getFullYear()} CityView Lanes. All rights reserved.
       </div>
     </footer>
   );

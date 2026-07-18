@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Manrope } from "next/font/google";
+import { Bebas_Neue, Source_Sans_3 } from "next/font/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { SITE } from "@/lib/site";
 import "./globals.css";
 
 const display = Bebas_Neue({
@@ -10,26 +11,17 @@ const display = Bebas_Neue({
   variable: "--font-display",
 });
 
-const body = Manrope({
+const body = Source_Sans_3({
   subsets: ["latin"],
   variable: "--font-body",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Cityview Lanes | Fort Worth Bowling",
-    template: "%s | Cityview Lanes",
+    default: `${SITE.name} | Fort Worth Bowling`,
+    template: `%s | ${SITE.name}`,
   },
-  description:
-    "Bowl at Cityview Lanes in Fort Worth — open bowling, leagues, birthday parties, arcade fun, and group events.",
-  metadataBase: new URL("https://city-view-lanes.vercel.app"),
-  openGraph: {
-    title: "Cityview Lanes | Fort Worth Bowling",
-    description:
-      "Open bowling, leagues, parties, and arcade fun at 6601 Oakmont Blvd, Fort Worth, TX.",
-    type: "website",
-    locale: "en_US",
-  },
+  description: SITE.tagline,
 };
 
 export default function RootLayout({
@@ -39,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
-      <body className="site-shell flex min-h-full flex-col antialiased">
+      <body className="flex min-h-full flex-col antialiased">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

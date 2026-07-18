@@ -1,62 +1,42 @@
 import type { Metadata } from "next";
+import LeaguesClient from "@/components/LeaguesClient";
+import { readStore } from "@/lib/db";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Leagues",
-  description:
-    "Traditional, no-tap, prize, and custom bowling leagues at Cityview Lanes in Fort Worth.",
+  description: "Fall 2026 league registration at CityView Lanes.",
 };
 
-export default function LeaguesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function LeaguesPage() {
+  const store = await readStore();
+
   return (
     <div className="section pt-16">
-      <p className="display fade-up text-sm text-wood">Leagues</p>
-      <h1 className="display fade-up mt-2 text-5xl text-cream sm:text-6xl">
-        Put some fun in your week
-      </h1>
-      <p className="fade-up-delay mt-4 max-w-2xl text-base leading-relaxed text-mist/80">
-        Cityview Lanes runs traditional leagues, 9-pin no-tap formats, cash-prize
-        nights, and leagues with bowling ball or licensed merchandise awards.
-        Handicap scoring keeps competition fair for every skill level.
+      <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+        Leagues
       </p>
-
-      <div className="fade-up-delay-2 mt-10 grid gap-8 md:grid-cols-2">
-        <div>
-          <h2 className="display text-3xl text-cream">How leagues work</h2>
-          <p className="mt-4 text-sm leading-relaxed text-mist/75">
-            Teams of men, women, or mixed bowlers meet on a set schedule —
-            usually once a week — to compete for prize money, trophies, or
-            simply the social night out. Less experienced bowlers can still win
-            under the handicap system.
-          </p>
-        </div>
-        <div>
-          <h2 className="display text-3xl text-cream">Start your own</h2>
-          <p className="mt-4 text-sm leading-relaxed text-mist/75">
-            Form a league with friends, family, or coworkers. You pick the day,
-            time, session count, and how often you want to bowl — weekly,
-            bi-weekly, or monthly. We provide the lanes.
-          </p>
-        </div>
+      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-[var(--navy)] sm:text-5xl">
+        Summer leagues are wrapping up. Fall 2026 registration is officially
+        open — adult, senior, youth, and IGBO leagues run weekly at CityView
+        Lanes.
+      </h1>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <a href={`tel:${SITE.phoneTel}`} className="btn btn-primary">
+          Join a League
+        </a>
+        <a href={`tel:${SITE.phoneTel}`} className="btn btn-ghost">
+          Call {SITE.phoneDisplay}
+        </a>
       </div>
 
-      <div className="mt-12 border border-[var(--line)] bg-[rgba(7,16,20,0.35)] p-6 sm:p-8">
-        <h2 className="display text-2xl text-cream">Ready to sign up?</h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-mist/75">
-          Call the desk or email sales to find an open league or lock in a
-          custom schedule for your group.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a href="tel:8173460444" className="btn btn-primary text-xs">
-            Call (817) 346-0444
-          </a>
-          <a
-            href="mailto:sales@cityviewlanesfortworth.com"
-            className="btn btn-ghost text-xs"
-          >
-            Email sales
-          </a>
-        </div>
-      </div>
+      <LeaguesClient initialLeagues={store.leagues} />
+
+      <p className="mt-8 text-sm text-[var(--muted)]">
+        Questions about Fall leagues? Call the center.
+      </p>
     </div>
   );
 }

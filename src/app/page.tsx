@@ -1,124 +1,217 @@
 import Image from "next/image";
 import Link from "next/link";
+import { REVIEWS, SITE, WHY_CARDS } from "@/lib/site";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
-      <section className="relative isolate min-h-[100svh] overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1546443046-ed1ce6ffd1ab?auto=format&fit=crop&w=2200&q=80"
-          alt="Bowling lanes lit for an evening session"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,28,34,0.55)_0%,rgba(11,28,34,0.42)_40%,rgba(11,28,34,0.88)_100%)]" />
-        <div className="lane-sweep pointer-events-none absolute inset-x-0 top-1/3 h-24 bg-[linear-gradient(90deg,transparent,rgba(255,106,61,0.22),transparent)] blur-2xl" />
+      <section className="relative isolate overflow-hidden border-b border-[var(--line)] bg-[var(--navy)] text-white">
+        <div className="absolute inset-0 opacity-30">
+          <Image
+            src="/images/cityview-lanes.webp"
+            alt="Bowling lanes at CityView Lanes"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(11,42,74,0.92)_0%,rgba(11,42,74,0.72)_55%,rgba(31,94,168,0.55)_100%)]" />
 
-        <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(1120px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
-          <p className="display fade-up text-5xl leading-none text-cream sm:text-7xl md:text-8xl">
-            Cityview Lanes
+        <div className="relative z-10 mx-auto flex min-h-[88svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28">
+          <p className="fade-up text-sm font-bold tracking-[0.22em] text-[var(--silver)] uppercase">
+            Bowling lanes at dusk · Fort Worth, Texas
           </p>
-          <h1 className="fade-up-delay mt-4 max-w-xl text-xl font-medium text-mist sm:text-2xl">
-            Fort Worth bowling with lanes, leagues, and celebrations that fill
-            the night.
+          <h1 className="font-display fade-up mt-3 text-6xl leading-none tracking-[0.06em] sm:text-8xl">
+            CityView Lanes
           </h1>
-          <p className="fade-up-delay-2 mt-4 max-w-lg text-base leading-relaxed text-mist/80">
-            Open bowling, birthday parties, and weekly league play at 6601
-            Oakmont Blvd.
+          <p className="fade-up-delay mt-5 max-w-2xl text-lg text-white/85 sm:text-xl">
+            Fort Worth&apos;s Home for Bowling, Leagues &amp; Hall of Fame
+            Coaching.
           </p>
           <div className="fade-up-delay-2 mt-8 flex flex-wrap gap-3">
-            <a href="tel:8173460444" className="btn btn-primary">
-              Call (817) 346-0444
-            </a>
-            <Link href="/parties" className="btn btn-ghost">
-              Book a party
+            <Link href="/hours" className="btn btn-primary">
+              See Hours
+            </Link>
+            <Link href="/pro-shop" className="btn btn-ghost !border-white/30 !bg-white/10 !text-white">
+              Visit the Pro Shop
+            </Link>
+            <Link href="/book" className="btn btn-ghost !border-white/30 !bg-white/10 !text-white">
+              Book a Party
             </Link>
           </div>
         </div>
       </section>
 
       <section className="section">
-        <p className="display text-sm text-wood">The house</p>
-        <h2 className="display mt-2 text-4xl text-cream sm:text-5xl">
-          Sixty-four lanes. One Fort Worth hangout.
+        <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+          Why CityView Lanes
+        </p>
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-5xl">
+          A modern bowling experience.
         </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-mist/80">
-          Cityview Lanes is a family fun center with open bowling, an arcade,
-          cafe bites, and room to host your next group night — from kids’
-          birthdays to office outings.
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
+          From competitive leagues to family birthdays, every visit is designed
+          to feel polished, welcoming, and unmistakably Fort Worth.
         </p>
 
-        <div className="mt-10 grid gap-8 md:grid-cols-3">
-          {[
-            {
-              title: "Open bowling",
-              copy: "Show up, lace up, and roll. Shoes required for every bowler.",
-              href: "/rates",
-            },
-            {
-              title: "League nights",
-              copy: "Traditional, no-tap, prize, and custom leagues for friends or coworkers.",
-              href: "/leagues",
-            },
-            {
-              title: "Parties & events",
-              copy: "Neon Nights birthdays and group packages with bowling, shoes, and food.",
-              href: "/parties",
-            },
-          ].map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="group border-t border-[var(--line)] pt-5 transition-colors hover:border-signal"
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {WHY_CARDS.map((card) => (
+            <article
+              key={card.title}
+              className="border border-[var(--line)] bg-white p-5 transition-colors hover:border-[var(--blue)]"
             >
-              <h3 className="display text-2xl text-cream group-hover:text-signal">
-                {item.title}
+              <h3 className="font-display text-2xl tracking-[0.04em] text-[var(--navy)]">
+                {card.title}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-mist/75">
-                {item.copy}
+              <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+                {card.copy}
               </p>
-            </Link>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-[var(--line)] bg-[rgba(7,16,20,0.45)]">
+      <section className="border-y border-[var(--line)] bg-white">
         <div className="section grid items-center gap-10 md:grid-cols-2">
           <div>
-            <p className="display text-sm text-wood">Hours</p>
-            <h2 className="display mt-2 text-4xl text-cream sm:text-5xl">
-              When the pins are up
+            <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+              Hall of Fame Coaching
+            </p>
+            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-5xl">
+              Ballard&apos;s Bowling Academy
             </h2>
-            <ul className="mt-6 space-y-2 text-sm text-mist/85">
-              <li className="flex justify-between gap-6 border-b border-[var(--line)] py-2">
-                <span>Monday – Thursday</span>
-                <span>1PM – 10PM</span>
-              </li>
-              <li className="flex justify-between gap-6 border-b border-[var(--line)] py-2">
-                <span>Friday</span>
-                <span>1PM – 11PM</span>
-              </li>
-              <li className="flex justify-between gap-6 border-b border-[var(--line)] py-2">
-                <span>Saturday</span>
-                <span>12PM – 11PM</span>
-              </li>
-              <li className="flex justify-between gap-6 py-2">
-                <span>Sunday</span>
-                <span>1PM – 10PM</span>
-              </li>
-            </ul>
-            <p className="mt-4 text-xs text-mist/55">Times are subject to change.</p>
+            <p className="mt-4 text-base leading-relaxed text-[var(--muted)]">
+              Owned by Del Ballard Jr. and Carolyn Dorin-Ballard — 33 combined
+              PBA &amp; PWBA titles, four Hall of Fame inductions, and one pro
+              shop right inside CityView Lanes.
+            </p>
+            <Link href="/pro-shop" className="btn btn-primary mt-6">
+              Meet the coaches
+            </Link>
+            <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="border border-[var(--line)] p-4">
+                <p className="font-display text-4xl text-[var(--blue)]">33</p>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  Combined PBA + PWBA titles
+                </p>
+              </div>
+              <div className="border border-[var(--line)] p-4">
+                <p className="font-display text-4xl text-[var(--blue)]">4</p>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  Hall of Fame inductions
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-[var(--ink)]">
+              Custom ball drilling · Private coaching · Elite equipment
+            </p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              One-on-one lessons available by appointment.
+            </p>
           </div>
-          <div className="relative min-h-[280px] overflow-hidden rounded-sm">
+          <div className="relative min-h-[320px] overflow-hidden border border-[var(--line)]">
             <Image
-              src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1400&q=80"
-              alt="Bowling ball ready on the approach"
+              src="/images/cityview-interior.webp"
+              alt="Inside CityView Lanes"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+          Inside the Center
+        </p>
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)]">
+          Photo gallery
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
+          Official CityView Lanes photography coming soon — owner: upload
+          authentic photos in the admin panel.
+        </p>
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          {[
+            "/images/yelp-lanes-kids.jpg",
+            "/images/yelp-interior-1.jpg",
+            "/images/yelp-interior-2.jpg",
+          ].map((src) => (
+            <div
+              key={src}
+              className="relative aspect-[4/3] overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]"
+            >
+              <Image
+                src={src}
+                alt="Real CityView Lanes guest photo"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-[var(--line)] bg-[var(--blue-soft)]">
+        <div className="section">
+          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+            Loved locally
+          </p>
+          <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)]">
+            What bowlers say
+          </h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {REVIEWS.map((review) => (
+              <blockquote
+                key={review.name}
+                className="border border-[var(--line)] bg-white p-5"
+              >
+                <p className="text-sm leading-relaxed text-[var(--ink)]">
+                  &ldquo;{review.quote}&rdquo;
+                </p>
+                <footer className="mt-4">
+                  <p className="font-bold text-[var(--navy)]">{review.name}</p>
+                  <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
+                    {review.role}
+                  </p>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+          Come visit
+        </p>
+        <div className="mt-4 grid gap-8 md:grid-cols-[1.2fr_1fr]">
+          <div>
+            <h2 className="font-display text-4xl tracking-[0.05em] text-[var(--navy)]">
+              {SITE.addressLine1}
+            </h2>
+            <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
+            <a
+              href={`tel:${SITE.phoneTel}`}
+              className="mt-4 inline-flex items-center gap-2 text-xl font-bold text-[var(--blue)]"
+            >
+              <span aria-hidden>📞</span> {SITE.phoneDisplay}
+            </a>
+            <p className="mt-4 text-sm text-[var(--ink)]">
+              Open daily 12:00 PM – 12:00 AM
+            </p>
+            <p className="mt-1 text-sm text-[var(--muted)]">Free parking on-site</p>
+          </div>
+          <div className="flex flex-wrap content-start gap-3">
+            <Link href="/leagues" className="btn btn-primary">
+              Join a league
+            </Link>
+            <Link href="/book" className="btn btn-ghost">
+              Book a party
+            </Link>
           </div>
         </div>
       </section>

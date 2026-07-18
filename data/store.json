@@ -1,0 +1,74 @@
+{
+  "users": [
+    {
+      "id": "usr_master_admin",
+      "username": "masteradmin",
+      "email": "admin@cityviewlanes.com",
+      "passwordHash": "$2b$10$K5QilOMcz7COTacZX.80IeKHPPwAL3nR2hMQs6B92M9D8objUiPmO",
+      "firstName": "Master",
+      "lastName": "Admin",
+      "phone": "(817) 346-0333",
+      "birthDate": "",
+      "avatarUrl": "",
+      "roleId": "role_master_admin",
+      "createdAt": "2026-07-18T00:00:00.000Z",
+      "updatedAt": "2026-07-18T00:00:00.000Z"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role_master_admin",
+      "name": "Master Admin",
+      "description": "Full system access — cannot be deleted",
+      "permissions": [
+        "view_admin",
+        "manage_users",
+        "manage_roles",
+        "admin_chat",
+        "manage_bookings",
+        "manage_league_signups",
+        "manage_leagues",
+        "manage_hours",
+        "view_admins"
+      ],
+      "locked": true
+    },
+    {
+      "id": "role_admin",
+      "name": "Admin",
+      "description": "Staff admin with operational access",
+      "permissions": [
+        "view_admin",
+        "manage_users",
+        "admin_chat",
+        "manage_bookings",
+        "manage_league_signups",
+        "manage_leagues",
+        "manage_hours",
+        "view_admins"
+      ],
+      "locked": false
+    },
+    {
+      "id": "role_member",
+      "name": "Member",
+      "description": "Default member account",
+      "permissions": [],
+      "locked": true
+    }
+  ],
+  "leagues": [],
+  "leagueSignups": [],
+  "bookings": [],
+  "hours": [
+    { "day": "Monday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Tuesday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Wednesday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Thursday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Friday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Saturday", "open": "12:00 PM", "close": "12:00 AM" },
+    { "day": "Sunday", "open": "12:00 PM", "close": "12:00 AM" }
+  ],
+  "chatMessages": [],
+  "notifications": []
+}
