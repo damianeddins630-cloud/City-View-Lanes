@@ -99,7 +99,22 @@ export default function AdminClient() {
   const [storage, setStorage] = useState<{
     durable: boolean;
     persistence: string;
-  }>({ durable: true, persistence: "checking" });
+    hasBlobToken: boolean | null;
+    hasBlobStoreId: boolean | null;
+    blobAuthMethod: string | null;
+    blobCanAttempt: boolean | null;
+  }>({
+    durable: true,
+    persistence: "checking",
+    hasBlobToken: null,
+    hasBlobStoreId: null,
+    blobAuthMethod: null,
+    blobCanAttempt: null,
+  });
+  const [storageTest, setStorageTest] = useState<{
+    running: boolean;
+    message: string;
+  }>({ running: false, message: "" });
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -159,10 +174,25 @@ export default function AdminClient() {
           setStorage({
             durable: Boolean(d.durable),
             persistence: String(d.persistence || "unknown"),
+            hasBlobToken:
+              typeof d.hasBlobToken === "boolean" ? d.hasBlobToken : null,
+            hasBlobStoreId:
+              typeof d.hasBlobStoreId === "boolean" ? d.hasBlobStoreId : null,
+            blobAuthMethod:
+              typeof d.blobAuthMethod === "string" ? d.blobAuthMethod : null,
+            blobCanAttempt:
+              typeof d.blobCanAttempt === "boolean" ? d.blobCanAttempt : null,
           }),
         )
         .catch(() =>
-          setStorage({ durable: false, persistence: "unknown" }),
+          setStorage({
+            durable: false,
+            persistence: "unknown",
+            hasBlobToken: false,
+            hasBlobStoreId: false,
+            blobAuthMethod: "none",
+            blobCanAttempt: false,
+          }),
         ),
     ];
 
@@ -396,16 +426,66 @@ export default function AdminClient() {
       return;
     }
     setHours(data.hours);
-    setStorage({
+    setStorage((s) => ({
+      ...s,
       durable: Boolean(data.durable),
       persistence: data.persistence || "unknown",
-    });
+    }));
     if (data.durable) {
       setNotice("Hours saved. Open /hours to confirm — they will stay.");
     } else {
       setError(
         "Hours did NOT save permanently. In Vercel go to Storage → Blob → Connect to this project, then Redeploy.",
       );
+    }
+  }
+
+  async function runStorageTest() {
+    setStorageTest({ running: true, message: "Testing Blob save…" });
+    setError("");
+    try {
+      const res = await fetch("/api/storage", { method: "POST" });
+      const data = await res.json();
+      setStorage((s) => ({
+        ...s,
+        durable: Boolean(data.durable),
+        persistence: String(data.persistence || s.persistence),
+        hasBlobToken:
+          typeof data.auth?.hasReadWriteToken === "boolean"
+            ? data.auth.hasReadWriteToken
+            : s.hasBlobToken,
+        hasBlobStoreId:
+          typeof data.auth?.hasStoreId === "boolean"
+            ? data.auth.hasStoreId
+            : s.hasBlobStoreId,
+        blobAuthMethod:
+          typeof data.auth?.method === "string"
+            ? data.auth.method
+            : s.blobAuthMethod,
+        blobCanAttempt:
+          typeof data.auth?.canAttempt === "boolean"
+            ? data.auth.canAttempt
+            : s.blobCanAttempt,
+      }));
+      if (data.ok) {
+        setStorageTest({
+          running: false,
+          message: "PASS — Blob write + read worked. Saves will stick.",
+        });
+        setNotice("Storage test passed. Saves are durable.");
+      } else {
+        setStorageTest({
+          running: false,
+          message: `FAIL — ${data.error || data.help || "Blob not working on this deploy."}`,
+        });
+        setError(data.error || data.help || "Storage test failed.");
+      }
+    } catch {
+      setStorageTest({
+        running: false,
+        message: "FAIL — could not reach /api/storage.",
+      });
+      setError("Storage test failed to run.");
     }
   }
 
@@ -436,17 +516,56 @@ export default function AdminClient() {
         {storage.durable ? (
           <>
             <strong>Saves are on.</strong> Storage mode:{" "}
-            <code>{storage.persistence}</code>. Hours, profiles, bookings, and
-            leagues will stick after you save.
+            <code>{storage.persistence}</code>
+            {storage.blobAuthMethod ? (
+              <>
+                {" "}
+                (auth: <code>{storage.blobAuthMethod}</code>)
+              </>
+            ) : null}
+            . Hours, profiles, bookings, and leagues will stick after you save.
           </>
         ) : (
           <>
-            <strong>Saves are NOT permanent yet.</strong> In Vercel → your
-            project → <strong>Storage → Blob → Create/Connect</strong> (adds{" "}
-            <code>BLOB_READ_WRITE_TOKEN</code>), then <strong>Redeploy</strong>.
-            Current mode: <code>{storage.persistence}</code>.
+            <strong>Saves are NOT permanent yet.</strong> This deployment has no
+            working Blob credentials.
+            <br />
+            Looking for <code>BLOB_STORE_ID</code>
+            {storage.hasBlobStoreId === false ? " (missing)" : ""}
+            {" "}and/or <code>BLOB_READ_WRITE_TOKEN</code>
+            {storage.hasBlobToken === false ? " (missing)" : ""}.
+            <br />
+            Fix (do all three):
+            <ol className="mt-2 list-decimal space-y-1 pl-5">
+              <li>
+                Open the <strong>same</strong> Vercel project as this live URL
+              </li>
+              <li>
+                <strong>Storage → Blob → Create</strong> (or Connect existing) to
+                this project
+              </li>
+              <li>
+                <strong>Deployments → … → Redeploy</strong> (required after
+                connect)
+              </li>
+            </ol>
+            Current mode: <code>{storage.persistence}</code>. After a good
+            redeploy it should say <code>blob</code>, not <code>memory</code>.
           </>
         )}
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={storageTest.running}
+            onClick={() => void runStorageTest()}
+          >
+            {storageTest.running ? "Testing…" : "Test save now"}
+          </button>
+          {storageTest.message ? (
+            <span className="text-xs opacity-90">{storageTest.message}</span>
+          ) : null}
+        </div>
       </div>
 
       <div className="panel overflow-hidden">

@@ -24,6 +24,15 @@ export type WriteResult = {
   mode: ReturnType<typeof persistenceMode>;
 };
 
+export type BlobAuthInfo = {
+  hasReadWriteToken: boolean;
+  hasStoreId: boolean;
+  hasOidcToken: boolean;
+  /** True when the Blob SDK has enough env to attempt auth. */
+  canAttempt: boolean;
+  method: "token" | "oidc" | "none";
+};
+
 type GlobalDb = {
   __cityviewStore?: Store;
   __cityviewStoreLoadedAt?: number;
@@ -33,8 +42,37 @@ function g(): GlobalDb {
   return globalThis as unknown as GlobalDb;
 }
 
-function hasBlobToken() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+/**
+ * Vercel Blob auth (2026+):
+ * - Preferred on Vercel: OIDC via BLOB_STORE_ID + VERCEL_OIDC_TOKEN
+ * - Fallback / legacy: BLOB_READ_WRITE_TOKEN
+ * New Blob connects often only inject BLOB_STORE_ID — not the old RW token.
+ */
+export function getBlobAuthInfo(): BlobAuthInfo {
+  const hasReadWriteToken = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  const hasStoreId = Boolean(process.env.BLOB_STORE_ID?.trim());
+  const hasOidcToken = Boolean(process.env.VERCEL_OIDC_TOKEN?.trim());
+  const method: BlobAuthInfo["method"] = hasReadWriteToken
+    ? "token"
+    : hasStoreId
+      ? "oidc"
+      : "none";
+  // On Vercel, OIDC token is injected at runtime when store is connected.
+  // Locally, store id alone is not enough without vercel env pull.
+  const canAttempt =
+    hasReadWriteToken || (hasStoreId && (hasOidcToken || isVercel()));
+
+  return {
+    hasReadWriteToken,
+    hasStoreId,
+    hasOidcToken,
+    canAttempt,
+    method,
+  };
+}
+
+function hasBlobCredentials() {
+  return getBlobAuthInfo().canAttempt;
 }
 
 function hasGithub() {
@@ -70,7 +108,7 @@ async function writeJsonFile(filePath: string, store: Store): Promise<boolean> {
 }
 
 async function readFromBlob(): Promise<Store | null> {
-  if (!hasBlobToken()) return null;
+  if (!hasBlobCredentials()) return null;
   try {
     const result = await get(BLOB_NAME, {
       access: "public",
@@ -86,7 +124,7 @@ async function readFromBlob(): Promise<Store | null> {
 }
 
 async function writeToBlob(store: Store): Promise<boolean> {
-  if (!hasBlobToken()) return false;
+  if (!hasBlobCredentials()) return false;
   try {
     await put(BLOB_NAME, JSON.stringify(store), {
       access: "public",
@@ -183,14 +221,96 @@ async function writeToGithub(store: Store): Promise<boolean> {
 }
 
 export function persistenceMode() {
-  if (hasBlobToken()) return "blob";
+  const blob = getBlobAuthInfo();
+  if (blob.canAttempt) return "blob";
   if (hasGithub()) return "github";
   if (!isVercel()) return "file";
   return "memory";
 }
 
 export function storageSetupHelp() {
-  return "Saves need durable storage. In Vercel → Storage → Blob → Create/Connect (adds BLOB_READ_WRITE_TOKEN), then Redeploy. Or set GITHUB_TOKEN + GITHUB_REPO.";
+  return "Saves need Vercel Blob. In Vercel → Storage → Blob → Create/Connect to THIS project (adds BLOB_STORE_ID and/or BLOB_READ_WRITE_TOKEN), then Deployments → Redeploy. After deploy, mode should be blob — not memory.";
+}
+
+/** Probe write/read against Blob so admins can verify saves without guessing. */
+export async function testBlobRoundTrip(): Promise<{
+  ok: boolean;
+  auth: BlobAuthInfo;
+  wrote: boolean;
+  readBack: boolean;
+  error?: string;
+}> {
+  const auth = getBlobAuthInfo();
+  if (!auth.canAttempt) {
+    return {
+      ok: false,
+      auth,
+      wrote: false,
+      readBack: false,
+      error:
+        "No Blob credentials on this deployment. Connect Blob storage to this Vercel project, then Redeploy.",
+    };
+  }
+
+  const probePath = "cityview/_save-probe.json";
+  const marker = `cityview-probe-${Date.now()}`;
+  const payload = JSON.stringify({ marker, at: new Date().toISOString() });
+
+  try {
+    await put(probePath, payload, {
+      access: "public",
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 60,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      auth,
+      wrote: false,
+      readBack: false,
+      error: `Blob write failed: ${message}`,
+    };
+  }
+
+  try {
+    const result = await get(probePath, {
+      access: "public",
+      useCache: false,
+    });
+    if (!result?.stream) {
+      return {
+        ok: false,
+        auth,
+        wrote: true,
+        readBack: false,
+        error: "Wrote probe but could not read it back (empty response).",
+      };
+    }
+    const text = await new Response(result.stream).text();
+    const parsed = JSON.parse(text) as { marker?: string };
+    const readBack = parsed.marker === marker;
+    return {
+      ok: readBack,
+      auth,
+      wrote: true,
+      readBack,
+      error: readBack
+        ? undefined
+        : "Wrote probe but read-back marker did not match.",
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      auth,
+      wrote: true,
+      readBack: false,
+      error: `Blob read-back failed: ${message}`,
+    };
+  }
 }
 
 export async function readStore(): Promise<Store> {
