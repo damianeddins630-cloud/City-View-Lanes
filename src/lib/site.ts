@@ -6,7 +6,11 @@ export const SITE = {
   addressLine2: "Fort Worth, TX 76132",
   phoneDisplay: "(817) 346-0333",
   phoneTel: "8173460333",
+  /** League desk line from the Fall Season printed menu */
+  leaguePhoneDisplay: "(817) 346-0444",
+  leaguePhoneTel: "8173460444",
   email: "sales@cityviewlanesfortworth.com",
+  fallSeasonLabel: "Fall Season 2026-2027",
 };
 
 export const NAV = [

@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { SITE } from "@/lib/site";
 import type { League, PublicUser } from "@/lib/types";
 
 export default function LeaguesClient({
@@ -12,6 +13,7 @@ export default function LeaguesClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const listRef = useRef<HTMLDivElement | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const [user, setUser] = useState<PublicUser | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -19,17 +21,31 @@ export default function LeaguesClient({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [showInterest, setShowInterest] = useState(false);
-  const [interest, setInterest] = useState({
-    preferredDay: "Monday",
-    preferredType: "Adult",
+  const [reg, setReg] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+    leagueName: "",
+    fullTeam: "yes",
+    peopleCount: "",
     note: "",
   });
 
   useEffect(() => {
     fetch("/api/auth/me")
       .then((r) => r.json())
-      .then((d) => setUser(d.user || null))
+      .then((d) => {
+        setUser(d.user || null);
+        if (d.user) {
+          setReg((r) => ({
+            ...r,
+            name: `${d.user.firstName || ""} ${d.user.lastName || ""}`.trim(),
+            phone: d.user.phone || "",
+            email: d.user.email || "",
+          }));
+        }
+      })
       .finally(() => setAuthChecked(true));
   }, []);
 
@@ -45,7 +61,7 @@ export default function LeaguesClient({
     const q = query.trim().toLowerCase();
     if (!q) return initialLeagues;
     return initialLeagues.filter((l) =>
-      [l.name, l.day, l.type, l.time, l.teamSize]
+      [l.name, l.day, l.type, l.time, l.teamSize, l.startDate, l.meetingInfo]
         .join(" ")
         .toLowerCase()
         .includes(q),
@@ -64,13 +80,12 @@ export default function LeaguesClient({
     }
 
     if (initialLeagues.length === 0) {
-      setShowInterest(true);
-      setMessage("No leagues are posted yet — send your interest and we’ll place you.");
+      setMessage("Pick your league details in the form below and submit.");
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
-    setShowInterest(false);
-    setMessage("Pick a league below and hit Join.");
+    setMessage("Pick a league in the menu, or fill out the registration form.");
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -97,164 +112,235 @@ export default function LeaguesClient({
     }
 
     setMessage(data.message || "Signup submitted — we will be with you shortly.");
-    setShowInterest(false);
   }
 
-  async function submitInterest(e: FormEvent) {
+  async function submitRegistration(e: FormEvent) {
     e.preventDefault();
-    await joinLeague("waitlist", interest);
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent("/leagues?join=1")}`);
+      return;
+    }
+
+    const matched = initialLeagues.find(
+      (l) => l.name.toLowerCase() === reg.leagueName.trim().toLowerCase(),
+    );
+
+    const note = [
+      `Name: ${reg.name}`,
+      `Address: ${reg.address}`,
+      `Phone: ${reg.phone}`,
+      `Email: ${reg.email}`,
+      `League: ${reg.leagueName}`,
+      `Full team: ${reg.fullTeam}`,
+      reg.fullTeam === "no" && reg.peopleCount
+        ? `People on team: ${reg.peopleCount}`
+        : "",
+      reg.note ? `Notes: ${reg.note}` : "",
+    ]
+      .filter(Boolean)
+      .join(" · ");
+
+    await joinLeague(matched?.id || "waitlist", {
+      note,
+      preferredDay: matched?.day || "",
+      preferredType: matched?.type || "",
+    });
   }
 
   return (
-    <div className="mt-8">
-      <div className="flex flex-wrap gap-3">
-        <button type="button" className="btn btn-primary" onClick={() => void startJoin()}>
+    <div className="league-menu-body">
+      <div className="flex flex-wrap gap-3 px-4 pt-6 sm:px-6">
+        <button type="button" className="btn btn-hero-primary" onClick={() => void startJoin()}>
           Join a League
         </button>
-        <a href="tel:8173460333" className="btn btn-ghost">
-          Call (817) 346-0333
+        <a href={`tel:${SITE.leaguePhoneTel}`} className="btn btn-hero-light">
+          Call {SITE.leaguePhoneDisplay}
         </a>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search day, league, type…"
+          className="min-h-11 min-w-[200px] flex-1 border border-white/20 bg-white/10 px-3 text-white placeholder:text-white/50 sm:max-w-xs"
+        />
       </div>
 
       {message ? (
-        <p className="mt-4 text-sm font-semibold text-[var(--blue)]">{message}</p>
+        <p className="mt-4 px-4 text-sm font-semibold text-[var(--accent-warm)] sm:px-6">
+          {message}
+        </p>
       ) : null}
       {error ? (
-        <p className="mt-4 text-sm font-semibold text-red-700">{error}</p>
+        <p className="mt-4 px-4 text-sm font-semibold text-red-300 sm:px-6">{error}</p>
       ) : null}
 
-      {showInterest ? (
-        <form onSubmit={submitInterest} className="panel mt-6 grid max-w-xl gap-3 p-5">
-          <h2 className="font-display text-2xl text-[var(--navy)]">
-            League interest signup
-          </h2>
-          <p className="text-sm text-[var(--muted)]">
-            Signed in as <strong>{user?.email}</strong>. Tell us what you’re looking
-            for and we’ll follow up.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="field">
-              <label htmlFor="preferredDay">Preferred day</label>
-              <select
-                id="preferredDay"
-                value={interest.preferredDay}
-                onChange={(e) =>
-                  setInterest({ ...interest, preferredDay: e.target.value })
-                }
-              >
-                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
-                  (d) => (
-                    <option key={d}>{d}</option>
-                  ),
-                )}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="preferredType">League type</label>
-              <select
-                id="preferredType"
-                value={interest.preferredType}
-                onChange={(e) =>
-                  setInterest({ ...interest, preferredType: e.target.value })
-                }
-              >
-                {["Adult", "Senior", "Youth", "IGBO", "Mixed", "Other"].map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="field">
-            <label htmlFor="note">Notes</label>
-            <textarea
-              id="note"
-              value={interest.note}
-              onChange={(e) => setInterest({ ...interest, note: e.target.value })}
-              placeholder="Team size, experience level, friends joining, etc."
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary w-fit"
-            disabled={busyId === "waitlist"}
-          >
-            {busyId === "waitlist" ? "Submitting…" : "Submit join request"}
-          </button>
-        </form>
-      ) : null}
-
-      <div ref={listRef} className="mt-10">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search leagues, days, or types…"
-            className="min-h-11 w-full border border-[var(--line)] bg-white px-3 sm:max-w-md"
-          />
-          <p className="text-sm font-semibold text-[var(--muted)]">
-            {leagues.length} league{leagues.length === 1 ? "" : "s"}
-          </p>
-        </div>
-
-        <div className="panel mt-5 overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-[var(--blue-soft)] text-xs tracking-[0.08em] text-[var(--navy)] uppercase">
+      <div ref={listRef} className="mt-6 overflow-x-auto px-2 sm:px-4">
+        <table className="league-menu-table">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Time</th>
+              <th>League Name</th>
+              <th>Type</th>
+              <th># / Team</th>
+              <th>Start Date</th>
+              <th>Meeting</th>
+              <th>Join</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leagues.length === 0 ? (
               <tr>
-                <th className="px-4 py-3">Day</th>
-                <th className="px-4 py-3">Time</th>
-                <th className="px-4 py-3">League</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Team</th>
-                <th className="px-4 py-3">Start</th>
-                <th className="px-4 py-3">Meeting</th>
-                <th className="px-4 py-3">Join</th>
+                <td colSpan={8} className="empty-cell">
+                  League rows will show here. Admin can paste the full Fall menu
+                  in <strong>Admin → League Manager</strong>.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {leagues.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-[var(--muted)]">
-                    No leagues listed yet. Use <strong>Join a League</strong> above
-                    to send an interest request (login required).
+            ) : (
+              leagues.map((league) => (
+                <tr key={league.id}>
+                  <td>{league.day}</td>
+                  <td>{league.time}</td>
+                  <td className="league-name-cell">{league.name}</td>
+                  <td>{league.type}</td>
+                  <td>{league.teamSize}</td>
+                  <td>{league.startDate}</td>
+                  <td>{league.meetingInfo}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-hero-primary !min-h-8 !px-3 !text-[10px]"
+                      disabled={busyId === league.id}
+                      onClick={() => {
+                        if (!user) {
+                          router.push(
+                            `/login?next=${encodeURIComponent("/leagues?join=1")}`,
+                          );
+                          return;
+                        }
+                        setReg((r) => ({ ...r, leagueName: league.name }));
+                        void joinLeague(league.id);
+                      }}
+                    >
+                      {busyId === league.id ? "…" : "Join"}
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                leagues.map((league) => (
-                  <tr key={league.id} className="border-t border-[var(--line)]">
-                    <td className="px-4 py-3">{league.day}</td>
-                    <td className="px-4 py-3">{league.time}</td>
-                    <td className="px-4 py-3 font-semibold text-[var(--navy)]">
-                      {league.name}
-                    </td>
-                    <td className="px-4 py-3">{league.type}</td>
-                    <td className="px-4 py-3">{league.teamSize}</td>
-                    <td className="px-4 py-3">{league.startDate}</td>
-                    <td className="px-4 py-3">{league.meetingInfo}</td>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        className="btn btn-primary text-[10px]"
-                        disabled={busyId === league.id}
-                        onClick={() => {
-                          if (!user) {
-                            router.push(
-                              `/login?next=${encodeURIComponent("/leagues?join=1")}`,
-                            );
-                            return;
-                          }
-                          void joinLeague(league.id);
-                        }}
-                      >
-                        {busyId === league.id ? "…" : "Join"}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+
+      <div className="league-callout">
+        *** If you have questions regarding the Fall Leagues please call the
+        center ★{" "}
+        <a href={`tel:${SITE.leaguePhoneTel}`} className="league-callout-phone">
+          CALL {SITE.leaguePhoneDisplay}
+        </a>
+      </div>
+
+      <form ref={formRef} onSubmit={submitRegistration} className="league-reg-form">
+        <div className="league-reg-head">
+          <h2 className="font-display text-3xl tracking-[0.06em] text-white">
+            League registration
+          </h2>
+          <p className="mt-1 text-sm text-white/75">
+            Same info as the paper menu — login required to submit.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="field league-field">
+            <label htmlFor="reg-name">Name</label>
+            <input
+              id="reg-name"
+              required
+              value={reg.name}
+              onChange={(e) => setReg({ ...reg, name: e.target.value })}
+            />
+          </div>
+          <div className="field league-field">
+            <label htmlFor="reg-league">Lg. Name</label>
+            <input
+              id="reg-league"
+              required
+              list="league-names"
+              value={reg.leagueName}
+              onChange={(e) => setReg({ ...reg, leagueName: e.target.value })}
+              placeholder="Type or pick a league"
+            />
+            <datalist id="league-names">
+              {initialLeagues.map((l) => (
+                <option key={l.id} value={l.name} />
+              ))}
+            </datalist>
+          </div>
+          <div className="field league-field md:col-span-2">
+            <label htmlFor="reg-address">Address</label>
+            <input
+              id="reg-address"
+              value={reg.address}
+              onChange={(e) => setReg({ ...reg, address: e.target.value })}
+            />
+          </div>
+          <div className="field league-field">
+            <label htmlFor="reg-phone">Phone #</label>
+            <input
+              id="reg-phone"
+              required
+              value={reg.phone}
+              onChange={(e) => setReg({ ...reg, phone: e.target.value })}
+            />
+          </div>
+          <div className="field league-field">
+            <label htmlFor="reg-email">E-mail</label>
+            <input
+              id="reg-email"
+              type="email"
+              required
+              value={reg.email}
+              onChange={(e) => setReg({ ...reg, email: e.target.value })}
+            />
+          </div>
+          <div className="field league-field">
+            <label htmlFor="reg-full">Do you have a full team?</label>
+            <select
+              id="reg-full"
+              value={reg.fullTeam}
+              onChange={(e) => setReg({ ...reg, fullTeam: e.target.value })}
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="field league-field">
+            <label htmlFor="reg-count">If not, how many people?</label>
+            <input
+              id="reg-count"
+              value={reg.peopleCount}
+              onChange={(e) => setReg({ ...reg, peopleCount: e.target.value })}
+              disabled={reg.fullTeam === "yes"}
+            />
+          </div>
+          <div className="field league-field md:col-span-2">
+            <label htmlFor="reg-note">Notes</label>
+            <textarea
+              id="reg-note"
+              value={reg.note}
+              onChange={(e) => setReg({ ...reg, note: e.target.value })}
+              placeholder="Friends joining, experience level, etc."
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-hero-primary mt-5"
+          disabled={busyId === "waitlist" || Boolean(busyId && busyId !== "waitlist")}
+        >
+          {busyId ? "Submitting…" : "Submit registration"}
+        </button>
+      </form>
     </div>
   );
 }

@@ -19,7 +19,7 @@
     {
       "id": "role_master_admin",
       "name": "Master Admin",
-      "description": "Full system access — cannot be deleted",
+      "description": "Full system access \u2014 cannot be deleted",
       "permissions": [
         "view_admin",
         "manage_users",
@@ -57,7 +57,52 @@
       "locked": true
     }
   ],
-  "leagues": [],
+  "leagues": [
+    {
+      "id": "lg_fall_young_at_heart",
+      "day": "Mon",
+      "time": "1:00 PM",
+      "name": "Young At Heart",
+      "type": "Senior",
+      "teamSize": "4",
+      "startDate": "09/14/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_monday_nite_mixers",
+      "day": "Mon",
+      "time": "6:30 PM",
+      "name": "Monday Nite Mixers",
+      "type": "Adult",
+      "teamSize": "4",
+      "startDate": "09/14/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_cecil_baker",
+      "day": "Tues",
+      "time": "6:30 PM",
+      "name": "Cecil Baker",
+      "type": "Adult",
+      "teamSize": "4",
+      "startDate": "09/15/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_happy_rollers",
+      "day": "Tues",
+      "time": "1:00 PM",
+      "name": "Happy Rollers",
+      "type": "Senior",
+      "teamSize": "3",
+      "startDate": "09/15/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    }
+  ],
   "leagueSignups": [],
   "bookings": [],
   "hours": [
@@ -103,8 +148,8 @@
       "id": "ntf_1784394646555_edy0hy",
       "userId": "usr_master_admin",
       "email": "admin@cityviewlanes.com",
-      "subject": "CityView Lanes — league signup received",
-      "body": "Hi Master,\n\nWe received your request for: Fall league interest / waitlist.\n\nWe will be with you shortly to confirm details.\n\n— CityView Lanes\n(817) 346-0333",
+      "subject": "CityView Lanes \u2014 league signup received",
+      "body": "Hi Master,\n\nWe received your request for: Fall league interest / waitlist.\n\nWe will be with you shortly to confirm details.\n\n\u2014 CityView Lanes\n(817) 346-0333",
       "kind": "league_signup_received",
       "createdAt": "2026-07-18T17:10:46.555Z"
     }

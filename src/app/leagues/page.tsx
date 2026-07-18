@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import LeaguesClient from "@/components/LeaguesClient";
 import { readStore } from "@/lib/db";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Leagues",
-  description: "Fall 2026 league registration at CityView Lanes.",
+  title: "Fall Season Leagues",
+  description: `${SITE.fallSeasonLabel} league menu and registration at CityView Lanes.`,
 };
 
 export const dynamic = "force-dynamic";
@@ -14,28 +15,30 @@ export default async function LeaguesPage() {
   const store = await readStore();
 
   return (
-    <div className="section pt-16">
-      <div className="silver-bar mb-5 max-w-[140px]" />
-      <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
-        Leagues
-      </p>
-      <h1 className="font-display mt-2 max-w-3xl text-4xl tracking-[0.04em] text-[var(--navy)] sm:text-5xl">
-        Summer leagues are wrapping up. Fall 2026 registration is officially
-        open — adult, senior, youth, and IGBO leagues run weekly at CityView
-        Lanes.
-      </h1>
-      <p className="mt-4 max-w-2xl text-sm text-[var(--muted)]">
-        You must sign in to join a league. If no leagues are posted yet, you can
-        still send an interest request.
-      </p>
+    <div className="league-menu-page">
+      <section className="league-menu-hero">
+        <div className="league-menu-hero-inner">
+          <div className="league-star" aria-hidden />
+          <p className="league-kicker">CityView Lanes · Fort Worth</p>
+          <h1 className="font-display league-title">
+            {SITE.fallSeasonLabel}
+          </h1>
+          <p className="league-subtitle">
+            Official league menu — adult, senior, youth &amp; IGBO. Sign in to
+            join a team or send your registration below.
+          </p>
+        </div>
+      </section>
 
-      <Suspense fallback={<p className="mt-8 text-sm text-[var(--muted)]">Loading leagues…</p>}>
-        <LeaguesClient initialLeagues={store.leagues} />
-      </Suspense>
-
-      <p className="mt-8 text-sm text-[var(--muted)]">
-        Questions about Fall leagues? Call the center at (817) 346-0333.
-      </p>
+      <div className="league-menu-shell">
+        <Suspense
+          fallback={
+            <p className="p-8 text-sm text-white/70">Loading league menu…</p>
+          }
+        >
+          <LeaguesClient initialLeagues={store.leagues} />
+        </Suspense>
+      </div>
     </div>
   );
 }

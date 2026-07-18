@@ -1,6 +1,7 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
 import type { Store } from "./types";
 
 const seedPath = path.join(process.cwd(), "data", "store.json");
@@ -218,10 +219,19 @@ export async function readStore(): Promise<Store> {
     return structuredClone(fromGithub);
   }
 
+  function withLeagueSeed(store: Store): Store {
+    if (!store.leagues?.length) {
+      store.leagues = structuredClone(FALL_LEAGUES_SEED);
+    }
+    return store;
+  }
+
   // Prefer project file locally; on Vercel prefer /tmp over seed so mid-session edits survive
   // within the same warm instance when Blob is not configured yet.
   if (!isVercel()) {
-    const fromSeed = (await readJsonFile(seedPath)) || (await readSeed());
+    const fromSeed = withLeagueSeed(
+      (await readJsonFile(seedPath)) || (await readSeed()),
+    );
     cache.__cityviewStore = fromSeed;
     cache.__cityviewStoreLoadedAt = now;
     return structuredClone(fromSeed);
@@ -229,12 +239,14 @@ export async function readStore(): Promise<Store> {
 
   const fromTmp = await readJsonFile(tmpPath);
   if (fromTmp) {
-    cache.__cityviewStore = fromTmp;
+    cache.__cityviewStore = withLeagueSeed(fromTmp);
     cache.__cityviewStoreLoadedAt = now;
-    return structuredClone(fromTmp);
+    return structuredClone(cache.__cityviewStore);
   }
 
-  const fromSeed = (await readJsonFile(seedPath)) || (await readSeed());
+  const fromSeed = withLeagueSeed(
+    (await readJsonFile(seedPath)) || (await readSeed()),
+  );
   cache.__cityviewStore = fromSeed;
   cache.__cityviewStoreLoadedAt = now;
   return structuredClone(fromSeed);

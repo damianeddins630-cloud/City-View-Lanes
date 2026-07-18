@@ -224,7 +224,7 @@ export default function HomePage() {
             </div>
             <div className="flex flex-wrap content-start gap-3">
               <Link href="/leagues" className="btn btn-hero-primary">
-                Join a league
+                Fall league menu
               </Link>
               <Link href="/book" className="btn btn-primary">
                 Book a party
