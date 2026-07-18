@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import {
-  createSessionToken,
   hashPassword,
-  setSessionCookie,
+  refreshSessionForUser,
   toPublicUser,
 } from "@/lib/auth";
 import { updateStore } from "@/lib/db";
@@ -55,12 +54,7 @@ export async function POST(request: Request) {
 
     const user = store.users.find((u) => u.username === username)!;
     const role = store.roles.find((r) => r.id === user.roleId);
-    const token = await createSessionToken({
-      userId: user.id,
-      username: user.username,
-      roleId: user.roleId,
-    });
-    await setSessionCookie(token);
+    await refreshSessionForUser(user);
 
     return NextResponse.json({
       user: toPublicUser(user, role?.name || "Member", role?.permissions || []),

@@ -55,13 +55,15 @@ Outbound emails are recorded in the data store and logged to the server console 
    - `BLOB_READ_WRITE_TOKEN` = from Vercel **Storage → Blob** (needed so profile/hours/admin changes save)
 4. Deploy
 
-### Make saves stick on Vercel (important)
+### Make saves stick on Vercel (REQUIRED)
 
-Without Blob storage, profile/hours changes can disappear after a redeploy.
+If hours/profile keep resetting, Blob is missing.
 
-1. Vercel project → **Storage** → **Blob** → create/connect to this project  
-2. Vercel adds `BLOB_READ_WRITE_TOKEN`  
-3. **Redeploy**
+1. Vercel → your project → **Storage**
+2. Create **Blob**
+3. **Connect** it to this project (adds `BLOB_READ_WRITE_TOKEN`)
+4. Click **Redeploy**
+5. Edit hours again — they should stay on `/hours`
 
 ### How to update / fix the live site later
 

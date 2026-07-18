@@ -19,8 +19,25 @@ export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash);
 }
 
+export function sessionFromUser(user: User): SessionPayload {
+  // Keep cookie small — never put large base64 avatars into the JWT.
+  const avatarUrl =
+    user.avatarUrl && user.avatarUrl.length < 300 ? user.avatarUrl : "";
+  return {
+    userId: user.id,
+    username: user.username,
+    roleId: user.roleId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: user.phone,
+    birthDate: user.birthDate,
+    avatarUrl,
+  };
+}
+
 export async function createSessionToken(payload: SessionPayload) {
-  return new SignJWT(payload)
+  return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("14d")
@@ -61,7 +78,16 @@ export async function clearSessionCookie() {
   });
 }
 
-export function toPublicUser(user: User, roleName: string, permissions: Permission[]): PublicUser {
+export async function refreshSessionForUser(user: User) {
+  const token = await createSessionToken(sessionFromUser(user));
+  await setSessionCookie(token);
+}
+
+export function toPublicUser(
+  user: User,
+  roleName: string,
+  permissions: Permission[],
+): PublicUser {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, ...rest } = user;
   return { ...rest, roleName, permissions };
@@ -70,11 +96,26 @@ export function toPublicUser(user: User, roleName: string, permissions: Permissi
 export async function getCurrentUser(): Promise<PublicUser | null> {
   const session = await readSession();
   if (!session) return null;
+
   const store = await readStore();
   const user = store.users.find((u) => u.id === session.userId);
   if (!user) return null;
-  const role = store.roles.find((r) => r.id === user.roleId);
-  return toPublicUser(user, role?.name || "Member", role?.permissions || []);
+
+  // Session overlay keeps text profile edits visible if durable DB lags.
+  const merged: User = {
+    ...user,
+    username: session.username || user.username,
+    firstName: session.firstName ?? user.firstName,
+    lastName: session.lastName ?? user.lastName,
+    email: session.email ?? user.email,
+    phone: session.phone ?? user.phone,
+    birthDate: session.birthDate ?? user.birthDate,
+    avatarUrl: user.avatarUrl || session.avatarUrl || "",
+    roleId: session.roleId || user.roleId,
+  };
+
+  const role = store.roles.find((r) => r.id === merged.roleId);
+  return toPublicUser(merged, role?.name || "Member", role?.permissions || []);
 }
 
 export function hasPermission(user: PublicUser | null, permission: Permission) {

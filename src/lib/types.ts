@@ -116,4 +116,10 @@ export type SessionPayload = {
   userId: string;
   username: string;
   roleId: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  birthDate?: string;
+  avatarUrl?: string;
 };

@@ -377,11 +377,14 @@ export default function AdminClient() {
       return;
     }
     setHours(data.hours);
-    setNotice(
-      data.persistence === "memory"
-        ? "Hours saved in memory only — add BLOB_READ_WRITE_TOKEN in Vercel so they stick."
-        : "Hours updated. Open /hours to confirm.",
-    );
+    if (data.durable) {
+      setNotice("Hours saved permanently. Open /hours to confirm.");
+    } else {
+      setError(
+        "Hours did NOT save permanently. In Vercel go to Storage → Blob → Connect to this project, then Redeploy. Without BLOB_READ_WRITE_TOKEN, changes disappear.",
+      );
+      setNotice("");
+    }
   }
 
   const admins = useMemo(() => {
@@ -401,6 +404,13 @@ export default function AdminClient() {
 
   return (
     <div className="mt-8">
+      <div className="mb-4 border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+        <strong>Important for saves:</strong> In Vercel → your project →{" "}
+        <strong>Storage → Blob → Create/Connect</strong> so env var{" "}
+        <code>BLOB_READ_WRITE_TOKEN</code> exists, then <strong>Redeploy</strong>.
+        Without that, hours/profile changes will not stick.
+      </div>
+
       <div className="panel overflow-hidden">
         <div className="silver-bar" />
         <div className="grid gap-6 p-5 md:grid-cols-[120px_1fr_auto] md:items-center">

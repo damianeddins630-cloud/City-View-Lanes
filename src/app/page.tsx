@@ -1,22 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
-import { REVIEWS, SITE, WHY_CARDS } from "@/lib/site";
+import InteractiveCards from "@/components/InteractiveCards";
+import { REVIEWS, SITE } from "@/lib/site";
 
 export default function HomePage() {
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-[var(--line)] bg-[var(--navy)] text-white">
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-40">
           <Image
             src="/images/cityview-lanes.webp"
             alt="Bowling lanes at CityView Lanes"
             fill
             priority
-            className="object-cover"
+            className="object-cover scale-105 hero-pan"
             sizes="100vw"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(11,42,74,0.92)_0%,rgba(11,42,74,0.72)_55%,rgba(31,94,168,0.55)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(10,39,68,0.94)_0%,rgba(10,39,68,0.78)_48%,rgba(31,94,168,0.62)_100%)]" />
+        <div className="hero-shine pointer-events-none absolute inset-0" />
 
         <div className="relative z-10 mx-auto flex min-h-[88svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28">
           <div className="fade-up silver-bar mb-5 max-w-[140px]" />
@@ -26,18 +28,18 @@ export default function HomePage() {
           <h1 className="font-display fade-up mt-3 text-6xl leading-none tracking-[0.06em] sm:text-8xl">
             CityView Lanes
           </h1>
-          <p className="fade-up-delay mt-5 max-w-2xl text-lg text-white/85 sm:text-xl">
+          <p className="fade-up-delay mt-5 max-w-2xl text-lg text-white/90 sm:text-xl">
             Fort Worth&apos;s Home for Bowling, Leagues &amp; Hall of Fame
             Coaching.
           </p>
           <div className="fade-up-delay-2 mt-8 flex flex-wrap gap-3">
-            <Link href="/hours" className="btn btn-primary">
+            <Link href="/hours" className="btn btn-hero-primary">
               See Hours
             </Link>
-            <Link href="/pro-shop" className="btn btn-ghost !border-white/30 !bg-white/10 !text-white">
+            <Link href="/pro-shop" className="btn btn-hero-light">
               Visit the Pro Shop
             </Link>
-            <Link href="/book" className="btn btn-ghost !border-white/30 !bg-white/10 !text-white">
+            <Link href="/book" className="btn btn-hero-outline">
               Book a Party
             </Link>
           </div>
@@ -55,22 +57,7 @@ export default function HomePage() {
           From competitive leagues to family birthdays, every visit is designed
           to feel polished, welcoming, and unmistakably Fort Worth.
         </p>
-
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {WHY_CARDS.map((card) => (
-            <article
-              key={card.title}
-              className="panel p-5 transition-transform hover:-translate-y-1"
-            >
-              <h3 className="font-display text-2xl tracking-[0.04em] text-[var(--navy)]">
-                {card.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
-                {card.copy}
-              </p>
-            </article>
-          ))}
-        </div>
+        <InteractiveCards />
       </section>
 
       <section className="border-y border-[var(--line)] bg-white">
@@ -91,13 +78,13 @@ export default function HomePage() {
               Meet the coaches
             </Link>
             <div className="mt-8 grid grid-cols-2 gap-4">
-              <div className="border border-[var(--line)] p-4">
+              <div className="stat-chip interactive-row">
                 <p className="font-display text-4xl text-[var(--blue)]">33</p>
                 <p className="mt-1 text-sm text-[var(--muted)]">
                   Combined PBA + PWBA titles
                 </p>
               </div>
-              <div className="border border-[var(--line)] p-4">
+              <div className="stat-chip interactive-row">
                 <p className="font-display text-4xl text-[var(--blue)]">4</p>
                 <p className="mt-1 text-sm text-[var(--muted)]">
                   Hall of Fame inductions
@@ -111,12 +98,12 @@ export default function HomePage() {
               One-on-one lessons available by appointment.
             </p>
           </div>
-          <div className="relative min-h-[320px] overflow-hidden border border-[var(--line)]">
+          <div className="relative min-h-[320px] overflow-hidden border border-[var(--line)] shadow-[var(--shadow-soft)]">
             <Image
               src="/images/cityview-interior.webp"
               alt="Inside CityView Lanes"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 hover:scale-105"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
@@ -142,7 +129,7 @@ export default function HomePage() {
           ].map((src) => (
             <div
               key={src}
-              className="relative aspect-[4/3] overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]"
+              className="gallery-tile relative aspect-[4/3] overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]"
             >
               <Image
                 src={src}
@@ -166,14 +153,12 @@ export default function HomePage() {
           </h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {REVIEWS.map((review) => (
-              <blockquote
-                key={review.name}
-                className="border border-[var(--line)] bg-white p-5"
-              >
-                <p className="text-sm leading-relaxed text-[var(--ink)]">
+              <blockquote key={review.name} className="feature-card panel p-5">
+                <div className="feature-glow" />
+                <p className="relative z-10 text-sm leading-relaxed text-[var(--ink)]">
                   &ldquo;{review.quote}&rdquo;
                 </p>
-                <footer className="mt-4">
+                <footer className="relative z-10 mt-4">
                   <p className="font-bold text-[var(--navy)]">{review.name}</p>
                   <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
                     {review.role}
@@ -207,10 +192,10 @@ export default function HomePage() {
             <p className="mt-1 text-sm text-[var(--muted)]">Free parking on-site</p>
           </div>
           <div className="flex flex-wrap content-start gap-3">
-            <Link href="/leagues" className="btn btn-primary">
+            <Link href="/leagues" className="btn btn-hero-primary !text-[var(--navy)]">
               Join a league
             </Link>
-            <Link href="/book" className="btn btn-ghost">
+            <Link href="/book" className="btn btn-primary">
               Book a party
             </Link>
           </div>

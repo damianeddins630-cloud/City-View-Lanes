@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { persistenceMode, readStore, updateStore } from "@/lib/db";
+import { persistenceMode, readStore, updateStore, writeStore } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +10,7 @@ export async function GET() {
   return NextResponse.json({
     hours: store.hours,
     persistence: persistenceMode(),
+    updatedAt: new Date().toISOString(),
   });
 }
 
@@ -35,12 +36,19 @@ export async function PUT(request: Request) {
     );
   });
 
+  // Force a second durable write attempt and verify we can read it back.
+  const writeResult = await writeStore(store);
+  const verified = await readStore();
+
   revalidatePath("/hours");
   revalidatePath("/");
+  revalidatePath("/admin");
 
   return NextResponse.json({
-    hours: store.hours,
+    hours: verified.hours,
     persistence: persistenceMode(),
+    writeResult,
     ok: true,
+    durable: writeResult.blob || writeResult.github || writeResult.file,
   });
 }

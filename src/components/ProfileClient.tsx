@@ -86,7 +86,7 @@ export default function ProfileClient() {
     });
     setMessage(
       data.persistence === "memory"
-        ? "Saved for now — add BLOB_READ_WRITE_TOKEN in Vercel so it stays after redeploy."
+        ? "Profile updated in your login session. Add Vercel Blob (BLOB_READ_WRITE_TOKEN) so it also sticks for everyone after redeploy."
         : "Profile updated and saved.",
     );
   }

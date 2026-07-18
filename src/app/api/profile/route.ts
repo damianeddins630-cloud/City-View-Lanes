@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import {
   getCurrentUser,
   hashPassword,
+  refreshSessionForUser,
   toPublicUser,
   verifyPassword,
 } from "@/lib/auth";
@@ -30,9 +31,7 @@ export async function PATCH(request: Request) {
 
       if (body.email !== undefined) {
         const email = String(body.email).trim().toLowerCase();
-        if (
-          s.users.some((u) => u.id !== user.id && u.email === email)
-        ) {
+        if (s.users.some((u) => u.id !== user.id && u.email === email)) {
           throw new Error("Email already in use.");
         }
         user.email = email;
@@ -40,9 +39,7 @@ export async function PATCH(request: Request) {
 
       if (body.username !== undefined) {
         const username = String(body.username).trim().toLowerCase();
-        if (
-          s.users.some((u) => u.id !== user.id && u.username === username)
-        ) {
+        if (s.users.some((u) => u.id !== user.id && u.username === username)) {
           throw new Error("Username already in use.");
         }
         user.username = username;
@@ -64,7 +61,11 @@ export async function PATCH(request: Request) {
 
     const user = store.users.find((u) => u.id === current.id)!;
     const role = store.roles.find((r) => r.id === user.roleId);
+    await refreshSessionForUser(user);
+
     revalidatePath("/profile");
+    revalidatePath("/admin");
+
     return NextResponse.json({
       user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
       persistence: persistenceMode(),
