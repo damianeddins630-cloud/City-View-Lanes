@@ -103,6 +103,7 @@ export default function AdminClient() {
     hasBlobStoreId: boolean | null;
     blobAuthMethod: string | null;
     blobCanAttempt: boolean | null;
+    blobLastError: string | null;
   }>({
     durable: true,
     persistence: "checking",
@@ -110,6 +111,7 @@ export default function AdminClient() {
     hasBlobStoreId: null,
     blobAuthMethod: null,
     blobCanAttempt: null,
+    blobLastError: null,
   });
   const [storageTest, setStorageTest] = useState<{
     running: boolean;
@@ -182,6 +184,8 @@ export default function AdminClient() {
               typeof d.blobAuthMethod === "string" ? d.blobAuthMethod : null,
             blobCanAttempt:
               typeof d.blobCanAttempt === "boolean" ? d.blobCanAttempt : null,
+            blobLastError:
+              typeof d.blobLastError === "string" ? d.blobLastError : null,
           }),
         )
         .catch(() =>
@@ -192,6 +196,7 @@ export default function AdminClient() {
             hasBlobStoreId: false,
             blobAuthMethod: "none",
             blobCanAttempt: false,
+            blobLastError: null,
           }),
         ),
     ];
@@ -422,7 +427,13 @@ export default function AdminClient() {
     const data = await res.json();
     if (!res.ok) {
       setError(data.error || data.help || "Could not save hours");
-      setStorage((s) => ({ ...s, durable: false, persistence: data.persistence || s.persistence }));
+      setStorage((s) => ({
+        ...s,
+        durable: false,
+        persistence: data.persistence || s.persistence,
+        blobLastError:
+          typeof data.blobError === "string" ? data.blobError : s.blobLastError,
+      }));
       return;
     }
     setHours(data.hours);
@@ -474,11 +485,16 @@ export default function AdminClient() {
         });
         setNotice("Storage test passed. Saves are durable.");
       } else {
+        const failDetail = data.error || data.help || "Blob not working on this deploy.";
         setStorageTest({
           running: false,
-          message: `FAIL — ${data.error || data.help || "Blob not working on this deploy."}`,
+          message: `FAIL — ${failDetail}`,
         });
-        setError(data.error || data.help || "Storage test failed.");
+        setStorage((s) => ({
+          ...s,
+          blobLastError: typeof data.error === "string" ? data.error : s.blobLastError,
+        }));
+        setError(failDetail);
       }
     } catch {
       setStorageTest({
@@ -527,30 +543,51 @@ export default function AdminClient() {
           </>
         ) : (
           <>
-            <strong>Saves are NOT permanent yet.</strong> This deployment has no
-            working Blob credentials.
+            <strong>Saves are NOT permanent yet.</strong>{" "}
+            {storage.blobCanAttempt || storage.persistence === "blob"
+              ? "Blob is connected, but writing data failed."
+              : "This deployment has no working Blob credentials."}
             <br />
             Looking for <code>BLOB_STORE_ID</code>
-            {storage.hasBlobStoreId === false ? " (missing)" : ""}
+            {storage.hasBlobStoreId === false
+              ? " (missing)"
+              : storage.hasBlobStoreId
+                ? " (found)"
+                : ""}
             {" "}and/or <code>BLOB_READ_WRITE_TOKEN</code>
-            {storage.hasBlobToken === false ? " (missing)" : ""}.
+            {storage.hasBlobToken === false
+              ? " (missing)"
+              : storage.hasBlobToken
+                ? " (found)"
+                : ""}
+            .
             <br />
-            Fix (do all three):
+            Fix:
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>
                 Open the <strong>same</strong> Vercel project as this live URL
               </li>
               <li>
-                <strong>Storage → Blob → Create</strong> (or Connect existing) to
-                this project
+                <strong>Storage → Blob → Create/Connect</strong> (Private is fine)
               </li>
               <li>
-                <strong>Deployments → … → Redeploy</strong> (required after
-                connect)
+                Settings → Environment Variables → confirm Production has{" "}
+                <code>BLOB_STORE_ID</code> or <code>BLOB_READ_WRITE_TOKEN</code>
+              </li>
+              <li>
+                <strong>Deployments → … → Redeploy</strong>
+              </li>
+              <li>
+                Click <strong>Test save now</strong> below
               </li>
             </ol>
-            Current mode: <code>{storage.persistence}</code>. After a good
-            redeploy it should say <code>blob</code>, not <code>memory</code>.
+            Current mode: <code>{storage.persistence}</code>
+            {storage.blobLastError ? (
+              <>
+                <br />
+                Blob error: <code className="break-all">{storage.blobLastError}</code>
+              </>
+            ) : null}
           </>
         )}
         <div className="mt-3 flex flex-wrap items-center gap-3">

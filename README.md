@@ -8,8 +8,8 @@ Built with **Next.js** for easy deploy on **Vercel**.
 
 | Field | Value |
 | --- | --- |
-| Username | `masteradmin` |
-| Password | `CityView#Master2026!` |
+| Username | `cityview_damian` |
+| Password | `Archer6!9_20` |
 | Role | Master Admin |
 
 Change this password after first login (Profile → New password).

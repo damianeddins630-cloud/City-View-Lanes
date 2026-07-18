@@ -2,6 +2,7 @@ import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
 import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
+import { ensureMasterAdmin } from "./masterAdmin";
 import type { Store } from "./types";
 
 const seedPath = path.join(process.cwd(), "data", "store.json");
@@ -129,56 +130,100 @@ async function writeJsonFile(filePath: string, store: Store): Promise<boolean> {
   }
 }
 
+type BlobAuthAttempt = {
+  label: string;
+  token?: string;
+  storeId?: string;
+};
+
+function blobAuthAttempts(): BlobAuthAttempt[] {
+  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim() || undefined;
+  const storeId = process.env.BLOB_STORE_ID?.trim() || undefined;
+  const attempts: BlobAuthAttempt[] = [{ label: "sdk-default" }];
+  if (token) attempts.push({ label: "rw-token", token });
+  if (storeId) attempts.push({ label: "store-id", storeId });
+  if (token && storeId) {
+    attempts.push({ label: "token+store", token, storeId });
+  }
+  return attempts;
+}
+
+/** Oversized base64 avatars can break Blob uploads — strip them for persistence. */
+function sanitizeStoreForBlob(store: Store): Store {
+  const copy = structuredClone(store);
+  for (const user of copy.users) {
+    if (
+      user.avatarUrl?.startsWith("data:") &&
+      user.avatarUrl.length > 80_000
+    ) {
+      user.avatarUrl = "";
+    }
+  }
+  return copy;
+}
+
 async function readFromBlob(): Promise<Store | null> {
   if (!hasBlobCredentials()) return null;
   const errors: string[] = [];
 
-  for (const access of blobAccessCandidates()) {
-    try {
-      const result = await get(BLOB_NAME, {
-        access,
-        useCache: false,
-      });
-      if (!result || result.statusCode !== 200 || !result.stream) continue;
-      const text = await new Response(result.stream).text();
-      rememberBlobAccess(access);
-      return JSON.parse(text) as Store;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      errors.push(`${access}: ${message}`);
+  for (const auth of blobAuthAttempts()) {
+    for (const access of blobAccessCandidates()) {
+      try {
+        const result = await get(BLOB_NAME, {
+          access,
+          useCache: false,
+          ...(auth.token ? { token: auth.token } : {}),
+          ...(auth.storeId ? { storeId: auth.storeId } : {}),
+        });
+        if (!result || result.statusCode !== 200 || !result.stream) continue;
+        const text = await new Response(result.stream).text();
+        rememberBlobAccess(access);
+        return JSON.parse(text) as Store;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        errors.push(`${auth.label}/${access}: ${message}`);
+      }
     }
   }
 
   if (errors.length) {
-    g().__cityviewBlobAccessError = errors.join(" | ");
+    g().__cityviewBlobAccessError = errors.slice(0, 6).join(" | ");
     console.error("[CityView DB] Blob read failed", errors.join(" | "));
   }
   return null;
 }
 
 async function writeToBlob(store: Store): Promise<boolean> {
-  if (!hasBlobCredentials()) return false;
-  const body = JSON.stringify(store);
+  if (!hasBlobCredentials()) {
+    g().__cityviewBlobAccessError =
+      "No BLOB_STORE_ID or BLOB_READ_WRITE_TOKEN on this deployment.";
+    return false;
+  }
+  const body = JSON.stringify(sanitizeStoreForBlob(store));
   const errors: string[] = [];
 
-  for (const access of blobAccessCandidates()) {
-    try {
-      await put(BLOB_NAME, body, {
-        access,
-        contentType: "application/json",
-        addRandomSuffix: false,
-        allowOverwrite: true,
-        cacheControlMaxAge: 60,
-      });
-      rememberBlobAccess(access);
-      return true;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      errors.push(`${access}: ${message}`);
+  for (const auth of blobAuthAttempts()) {
+    for (const access of blobAccessCandidates()) {
+      try {
+        await put(BLOB_NAME, body, {
+          access,
+          contentType: "application/json",
+          addRandomSuffix: false,
+          allowOverwrite: true,
+          cacheControlMaxAge: 60,
+          ...(auth.token ? { token: auth.token } : {}),
+          ...(auth.storeId ? { storeId: auth.storeId } : {}),
+        });
+        rememberBlobAccess(access);
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        errors.push(`${auth.label}/${access}: ${message}`);
+      }
     }
   }
 
-  g().__cityviewBlobAccessError = errors.join(" | ");
+  g().__cityviewBlobAccessError = errors.slice(0, 8).join(" | ");
   console.error("[CityView DB] Blob write failed", errors.join(" | "));
   return false;
 }
@@ -310,31 +355,38 @@ export async function testBlobRoundTrip(): Promise<{
   const writeErrors: string[] = [];
 
   let usedAccess: BlobAccess | null = null;
-  for (const access of blobAccessCandidates()) {
-    try {
-      await put(probePath, payload, {
-        access,
-        contentType: "application/json",
-        addRandomSuffix: false,
-        allowOverwrite: true,
-        cacheControlMaxAge: 60,
-      });
-      usedAccess = access;
-      rememberBlobAccess(access);
-      break;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      writeErrors.push(`${access}: ${message}`);
+  let usedAuth: BlobAuthAttempt | null = null;
+  for (const authAttempt of blobAuthAttempts()) {
+    for (const access of blobAccessCandidates()) {
+      try {
+        await put(probePath, payload, {
+          access,
+          contentType: "application/json",
+          addRandomSuffix: false,
+          allowOverwrite: true,
+          cacheControlMaxAge: 60,
+          ...(authAttempt.token ? { token: authAttempt.token } : {}),
+          ...(authAttempt.storeId ? { storeId: authAttempt.storeId } : {}),
+        });
+        usedAccess = access;
+        usedAuth = authAttempt;
+        rememberBlobAccess(access);
+        break;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        writeErrors.push(`${authAttempt.label}/${access}: ${message}`);
+      }
     }
+    if (usedAccess) break;
   }
 
-  if (!usedAccess) {
+  if (!usedAccess || !usedAuth) {
     return {
       ok: false,
       auth,
       wrote: false,
       readBack: false,
-      error: `Blob write failed for private and public access. ${writeErrors.join(" | ")}`,
+      error: `Blob write failed. ${writeErrors.slice(0, 6).join(" | ")}`,
     };
   }
 
@@ -342,6 +394,8 @@ export async function testBlobRoundTrip(): Promise<{
     const result = await get(probePath, {
       access: usedAccess,
       useCache: false,
+      ...(usedAuth.token ? { token: usedAuth.token } : {}),
+      ...(usedAuth.storeId ? { storeId: usedAuth.storeId } : {}),
     });
     if (!result?.stream) {
       return {
@@ -379,6 +433,14 @@ export async function testBlobRoundTrip(): Promise<{
   }
 }
 
+function finalizeStore(store: Store): Store {
+  if (!store.leagues?.length) {
+    store.leagues = structuredClone(FALL_LEAGUES_SEED);
+  }
+  ensureMasterAdmin(store);
+  return store;
+}
+
 export async function readStore(): Promise<Store> {
   const cache = g();
   const now = Date.now();
@@ -388,34 +450,27 @@ export async function readStore(): Promise<Store> {
     cache.__cityviewStoreLoadedAt &&
     now - cache.__cityviewStoreLoadedAt < 800
   ) {
-    return structuredClone(cache.__cityviewStore);
+    return structuredClone(finalizeStore(cache.__cityviewStore));
   }
 
   const fromBlob = await readFromBlob();
   if (fromBlob) {
-    cache.__cityviewStore = fromBlob;
+    cache.__cityviewStore = finalizeStore(fromBlob);
     cache.__cityviewStoreLoadedAt = now;
-    return structuredClone(fromBlob);
+    return structuredClone(cache.__cityviewStore);
   }
 
   const fromGithub = await readFromGithub();
   if (fromGithub) {
-    cache.__cityviewStore = fromGithub;
+    cache.__cityviewStore = finalizeStore(fromGithub);
     cache.__cityviewStoreLoadedAt = now;
-    return structuredClone(fromGithub);
-  }
-
-  function withLeagueSeed(store: Store): Store {
-    if (!store.leagues?.length) {
-      store.leagues = structuredClone(FALL_LEAGUES_SEED);
-    }
-    return store;
+    return structuredClone(cache.__cityviewStore);
   }
 
   // Prefer project file locally; on Vercel prefer /tmp over seed so mid-session edits survive
   // within the same warm instance when Blob is not configured yet.
   if (!isVercel()) {
-    const fromSeed = withLeagueSeed(
+    const fromSeed = finalizeStore(
       (await readJsonFile(seedPath)) || (await readSeed()),
     );
     cache.__cityviewStore = fromSeed;
@@ -425,12 +480,12 @@ export async function readStore(): Promise<Store> {
 
   const fromTmp = await readJsonFile(tmpPath);
   if (fromTmp) {
-    cache.__cityviewStore = withLeagueSeed(fromTmp);
+    cache.__cityviewStore = finalizeStore(fromTmp);
     cache.__cityviewStoreLoadedAt = now;
     return structuredClone(cache.__cityviewStore);
   }
 
-  const fromSeed = withLeagueSeed(
+  const fromSeed = finalizeStore(
     (await readJsonFile(seedPath)) || (await readSeed()),
   );
   cache.__cityviewStore = fromSeed;
@@ -470,7 +525,10 @@ export async function updateStore(
 
   const requireDurable = options?.requireDurable ?? isVercel();
   if (requireDurable && !write.durable) {
-    throw new PersistenceError(storageSetupHelp());
+    const detail = getLastBlobError();
+    throw new PersistenceError(
+      detail ? `${storageSetupHelp()} Detail: ${detail}` : storageSetupHelp(),
+    );
   }
 
   return { store: structuredClone(store), write };

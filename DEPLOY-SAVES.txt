@@ -42,5 +42,5 @@ or you have not Redeployed after connecting Blob.
 
 Master admin
 ------------
-Username: masteradmin
-Password: CityView#Master2026!
+Username: cityview_damian
+Password: Archer6!9_20

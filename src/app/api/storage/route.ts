@@ -14,9 +14,8 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const user = await getCurrentUser();
   const mode = persistenceMode();
-  const durable = mode === "blob" || mode === "github" || mode === "file";
   const blobAuth = getBlobAuthInfo();
-
+  const durable = mode === "blob" || mode === "github" || mode === "file";
   const payload = {
     persistence: mode,
     durable,

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import {
   PersistenceError,
+  getLastBlobError,
   persistenceMode,
   readStore,
   storageSetupHelp,
@@ -62,6 +63,7 @@ export async function PUT(request: Request) {
           persistence: persistenceMode(),
           durable: false,
           help: storageSetupHelp(),
+          blobError: getLastBlobError(),
         },
         { status: 503 },
       );
