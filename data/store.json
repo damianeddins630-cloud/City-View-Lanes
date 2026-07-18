@@ -61,14 +61,52 @@
   "leagueSignups": [],
   "bookings": [],
   "hours": [
-    { "day": "Monday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Tuesday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Wednesday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Thursday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Friday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Saturday", "open": "12:00 PM", "close": "12:00 AM" },
-    { "day": "Sunday", "open": "12:00 PM", "close": "12:00 AM" }
+    {
+      "day": "Monday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Tuesday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Wednesday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Thursday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Friday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Saturday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Sunday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    }
   ],
   "chatMessages": [],
-  "notifications": []
+  "notifications": [
+    {
+      "id": "ntf_1784394646555_edy0hy",
+      "userId": "usr_master_admin",
+      "email": "admin@cityviewlanes.com",
+      "subject": "CityView Lanes — league signup received",
+      "body": "Hi Master,\n\nWe received your request for: Fall league interest / waitlist.\n\nWe will be with you shortly to confirm details.\n\n— CityView Lanes\n(817) 346-0333",
+      "kind": "league_signup_received",
+      "createdAt": "2026-07-18T17:10:46.555Z"
+    }
+  ]
 }

@@ -12,6 +12,7 @@ export async function GET() {
   const signups = store.leagueSignups.map((s) => {
     const member = store.users.find((u) => u.id === s.userId);
     const league = store.leagues.find((l) => l.id === s.leagueId);
+    const isWaitlist = s.leagueId === "waitlist";
     return {
       ...s,
       username: member?.username || "",
@@ -19,9 +20,11 @@ export async function GET() {
         ? `${member.firstName} ${member.lastName}`.trim()
         : "",
       memberEmail: member?.email || "",
-      leagueName: league?.name || "Unknown league",
-      leagueDay: league?.day || "",
-      leagueTime: league?.time || "",
+      leagueName: isWaitlist
+        ? "General interest / waitlist"
+        : league?.name || "Unknown league",
+      leagueDay: isWaitlist ? "TBD" : league?.day || "",
+      leagueTime: isWaitlist ? "TBD" : league?.time || "",
     };
   });
   return NextResponse.json({ signups });
@@ -60,7 +63,10 @@ export async function PATCH(request: Request) {
       email = member?.email || "";
       name = member?.firstName || member?.username || "Bowler";
       userId = signup.userId;
-      leagueName = league?.name || "your league";
+      leagueName =
+        signup.leagueId === "waitlist"
+          ? "General interest / waitlist"
+          : league?.name || "your league";
     });
 
     if (email) {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import LeaguesClient from "@/components/LeaguesClient";
 import { readStore } from "@/lib/db";
-import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Leagues",
@@ -15,6 +15,7 @@ export default async function LeaguesPage() {
 
   return (
     <div className="section pt-16">
+      <div className="silver-bar mb-5 max-w-[140px]" />
       <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
         Leagues
       </p>
@@ -23,19 +24,17 @@ export default async function LeaguesPage() {
         open — adult, senior, youth, and IGBO leagues run weekly at CityView
         Lanes.
       </h1>
-      <div className="mt-6 flex flex-wrap gap-3">
-        <a href={`tel:${SITE.phoneTel}`} className="btn btn-primary">
-          Join a League
-        </a>
-        <a href={`tel:${SITE.phoneTel}`} className="btn btn-ghost">
-          Call {SITE.phoneDisplay}
-        </a>
-      </div>
+      <p className="mt-4 max-w-2xl text-sm text-[var(--muted)]">
+        You must sign in to join a league. If no leagues are posted yet, you can
+        still send an interest request.
+      </p>
 
-      <LeaguesClient initialLeagues={store.leagues} />
+      <Suspense fallback={<p className="mt-8 text-sm text-[var(--muted)]">Loading leagues…</p>}>
+        <LeaguesClient initialLeagues={store.leagues} />
+      </Suspense>
 
       <p className="mt-8 text-sm text-[var(--muted)]">
-        Questions about Fall leagues? Call the center.
+        Questions about Fall leagues? Call the center at (817) 346-0333.
       </p>
     </div>
   );
