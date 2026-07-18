@@ -85,4 +85,4 @@ Push to the connected branch → Vercel redeploys automatically.
 
 - **Address:** 6601 Oakmont Blvd, Fort Worth, TX 76132
 - **Phone:** (817) 346-0333
-- **Pro Shop Manager:** Tim Watson — (817) 768-8748 — Tim.ballardsbowlingacademy@gmail.com
+- **Pro Shop Manager:** Tim Watson

@@ -71,35 +71,11 @@ export default function ProShopPage() {
             drilling appointments, and on-site questions at the Fort Worth
             location.
           </p>
-          <div className="mt-5 grid gap-3 text-sm sm:grid-cols-3">
-            <div className="border border-[rgba(201,162,39,0.3)] p-3">
-              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
-                Role
-              </p>
-              <p className="mt-1 font-semibold text-white">Pro Shop Manager</p>
-            </div>
-            <div className="border border-[rgba(201,162,39,0.3)] p-3">
-              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
-                Phone
-              </p>
-              <a
-                href="tel:8177688748"
-                className="mt-1 inline-block font-semibold text-white hover:text-[var(--hof-gold)]"
-              >
-                (817) 768-8748
-              </a>
-            </div>
-            <div className="border border-[rgba(201,162,39,0.3)] p-3">
-              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
-                Email
-              </p>
-              <a
-                href="mailto:Tim.ballardsbowlingacademy@gmail.com"
-                className="mt-1 inline-block break-all font-semibold text-white hover:text-[var(--hof-gold)]"
-              >
-                Tim.ballardsbowlingacademy@gmail.com
-              </a>
-            </div>
+          <div className="mt-5 max-w-xs border border-[rgba(201,162,39,0.3)] p-3 text-sm">
+            <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
+              Role
+            </p>
+            <p className="mt-1 font-semibold text-white">Pro Shop Manager</p>
           </div>
           <p className="mt-4 text-sm text-white/60">
             Ballard&apos;s Bowling Academy · 6601 Oakmont Blvd, Fort Worth, TX
