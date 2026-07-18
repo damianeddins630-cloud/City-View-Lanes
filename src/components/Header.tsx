@@ -22,16 +22,16 @@ export default function Header() {
   const isAdmin = Boolean(user?.permissions?.includes("view_admin"));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-white/75 shadow-[0_8px_30px_rgba(7,31,56,0.06)] backdrop-blur-2xl">
       <div className="silver-bar" />
       <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="group flex items-center gap-3">
           <Image
             src="/images/cityview-logo.webp"
             alt="CityView Lanes logo"
             width={44}
             height={44}
-            className="h-11 w-11 object-contain"
+            className="h-11 w-11 object-contain transition-transform duration-300 group-hover:scale-105"
             priority
           />
           <span className="font-display text-xl tracking-[0.08em] text-[var(--navy)] uppercase sm:text-2xl">

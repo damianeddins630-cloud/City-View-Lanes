@@ -1,7 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import InteractiveCards from "@/components/InteractiveCards";
+import SpotlightCards from "@/components/SpotlightCards";
 import { REVIEWS, SITE } from "@/lib/site";
+
+const MARQUEE = [
+  "League Bowling",
+  "Birthday Parties",
+  "Corporate Events",
+  "Hall of Fame Coaching",
+  "Open Bowling Daily",
+  "Ballard's Pro Shop",
+];
 
 export default function HomePage() {
   return (
@@ -18,21 +27,23 @@ export default function HomePage() {
           />
         </div>
         <div className="hero-veil absolute inset-0" />
+        <div className="hero-grid pointer-events-none absolute inset-0" />
         <div className="hero-shine pointer-events-none absolute inset-0" />
-        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-40" />
+        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-44" />
+        <div className="pin-streak pointer-events-none absolute inset-y-0 right-0 w-1/2" />
 
-        <div className="relative z-10 mx-auto flex min-h-[92svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
-          <div className="fade-up silver-bar mb-6 max-w-[160px]" />
-          <h1 className="font-display fade-up text-[clamp(4.2rem,12vw,8.5rem)] leading-[0.88] tracking-[0.05em]">
+        <div className="relative z-10 mx-auto flex min-h-[94svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
+          <div className="fade-up silver-bar mb-6 max-w-[180px]" />
+          <h1 className="font-display brand-title fade-up text-[clamp(4.6rem,13vw,9rem)] leading-[0.84] tracking-[0.04em]">
             CityView
-            <span className="block text-[color:var(--silver)]">Lanes</span>
+            <span className="brand-title-accent block">Lanes</span>
           </h1>
-          <p className="fade-up-delay mt-5 max-w-xl text-lg text-white/92 sm:text-xl">
+          <p className="fade-up-delay mt-6 max-w-xl text-lg text-white/93 sm:text-xl">
             Fort Worth bowling, leagues, and Hall of Fame coaching — under one
             roof.
           </p>
-          <div className="fade-up-delay-2 mt-9 flex flex-wrap gap-3">
-            <Link href="/hours" className="btn btn-hero-primary">
+          <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
+            <Link href="/hours" className="btn btn-hero-primary btn-pulse">
               See Hours
             </Link>
             <Link href="/pro-shop" className="btn btn-hero-light">
@@ -45,27 +56,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="marquee-wrap border-y border-[var(--line)] bg-[var(--navy)] text-white">
+        <div className="marquee-track">
+          {[...MARQUEE, ...MARQUEE].map((item, i) => (
+            <span key={`${item}-${i}`} className="marquee-item">
+              {item}
+              <span className="marquee-dot" aria-hidden />
+            </span>
+          ))}
+        </div>
+      </div>
+
       <section className="section">
         <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           Why CityView Lanes
         </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-5xl">
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
           Built for every kind of bowler.
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
           League nights, birthday parties, corporate events, and open bowling —
           with a Hall of Fame pro shop right on site.
         </p>
-        <InteractiveCards />
+        <SpotlightCards />
       </section>
 
-      <section className="relative overflow-hidden border-y border-[var(--line)] bg-[linear-gradient(180deg,#fff_0%,#eef4fb_100%)]">
+      <section className="relative overflow-hidden border-y border-[var(--line)] academy-band">
         <div className="section grid items-center gap-10 md:grid-cols-2">
           <div>
             <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
               Hall of Fame Coaching
             </p>
-            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-5xl">
+            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
               Ballard&apos;s Bowling Academy
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[var(--muted)]">
@@ -78,20 +100,20 @@ export default function HomePage() {
             </Link>
             <div className="mt-8 grid grid-cols-2 gap-4">
               <div className="stat-chip interactive-row">
-                <p className="font-display text-4xl text-[var(--blue)]">33</p>
+                <p className="font-display text-5xl text-[var(--blue)]">33</p>
                 <p className="mt-1 text-sm text-[var(--muted)]">
                   Combined PBA + PWBA titles
                 </p>
               </div>
               <div className="stat-chip interactive-row">
-                <p className="font-display text-4xl text-[var(--blue)]">4</p>
+                <p className="font-display text-5xl text-[var(--blue)]">4</p>
                 <p className="mt-1 text-sm text-[var(--muted)]">
                   Hall of Fame inductions
                 </p>
               </div>
             </div>
           </div>
-          <div className="media-frame relative min-h-[340px] overflow-hidden">
+          <div className="media-frame media-frame-glow relative min-h-[380px] overflow-hidden">
             <Image
               src="/images/cityview-interior.webp"
               alt="Inside CityView Lanes"
@@ -107,14 +129,14 @@ export default function HomePage() {
         <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           Inside the Center
         </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)]">
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
           The lanes in real life
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
           Real photos from CityView Lanes — more official gallery shots coming
           soon.
         </p>
-        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+        <div className="gallery-mosaic mt-8">
           {[
             "/images/yelp-lanes-kids.jpg",
             "/images/yelp-interior-1.jpg",
@@ -122,7 +144,7 @@ export default function HomePage() {
           ].map((src, index) => (
             <div
               key={src}
-              className="gallery-tile relative aspect-[4/3] overflow-hidden bg-[var(--blue-soft)]"
+              className={`gallery-tile relative overflow-hidden bg-[var(--blue-soft)] mosaic-${index + 1}`}
               style={{ animationDelay: `${index * 90}ms` }}
             >
               <Image
@@ -130,19 +152,20 @@ export default function HomePage() {
                 alt="CityView Lanes guest photo"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 33vw"
+                sizes="(max-width: 768px) 100vw, 40vw"
               />
             </div>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-[var(--line)] bg-[var(--navy)] text-white">
-        <div className="section">
+      <section className="relative overflow-hidden border-y border-[var(--line)] bg-[var(--navy)] text-white">
+        <div className="reviews-glow pointer-events-none absolute inset-0" />
+        <div className="section relative z-10">
           <p className="text-sm font-bold tracking-[0.18em] text-[var(--silver)] uppercase">
             Loved locally
           </p>
-          <h2 className="font-display mt-2 text-4xl tracking-[0.05em] sm:text-5xl">
+          <h2 className="font-display mt-2 text-4xl tracking-[0.05em] sm:text-6xl">
             What bowlers say
           </h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -167,34 +190,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section">
-        <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
-          Come visit
-        </p>
-        <div className="mt-4 grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
-          <div>
-            <h2 className="font-display text-4xl tracking-[0.05em] text-[var(--navy)] sm:text-5xl">
-              {SITE.addressLine1}
-            </h2>
-            <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
-            <a
-              href={`tel:${SITE.phoneTel}`}
-              className="mt-4 inline-block text-2xl font-bold tracking-wide text-[var(--blue)] transition-colors hover:text-[var(--navy)]"
-            >
-              {SITE.phoneDisplay}
-            </a>
-            <p className="mt-4 text-sm text-[var(--ink)]">
-              Open daily 12:00 PM – 12:00 AM
-            </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">Free parking on-site</p>
-          </div>
-          <div className="flex flex-wrap content-start gap-3">
-            <Link href="/leagues" className="btn btn-hero-primary">
-              Join a league
-            </Link>
-            <Link href="/book" className="btn btn-primary">
-              Book a party
-            </Link>
+      <section className="visit-band relative isolate overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/cityview-lanes.webp"
+            alt=""
+            fill
+            className="object-cover opacity-35"
+            sizes="100vw"
+          />
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(242,246,251,0.96)_0%,rgba(232,241,251,0.9)_55%,rgba(255,255,255,0.78)_100%)]" />
+        <div className="section relative z-10">
+          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
+            Come visit
+          </p>
+          <div className="mt-4 grid gap-8 md:grid-cols-[1.25fr_1fr] md:items-end">
+            <div>
+              <h2 className="font-display text-5xl tracking-[0.05em] text-[var(--navy)] sm:text-6xl">
+                {SITE.addressLine1}
+              </h2>
+              <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
+              <a
+                href={`tel:${SITE.phoneTel}`}
+                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue)]"
+              >
+                {SITE.phoneDisplay}
+              </a>
+              <p className="mt-4 text-sm text-[var(--ink)]">
+                Open daily 12:00 PM – 12:00 AM
+              </p>
+              <p className="mt-1 text-sm text-[var(--muted)]">Free parking on-site</p>
+            </div>
+            <div className="flex flex-wrap content-start gap-3">
+              <Link href="/leagues" className="btn btn-hero-primary">
+                Join a league
+              </Link>
+              <Link href="/book" className="btn btn-primary">
+                Book a party
+              </Link>
+            </div>
           </div>
         </div>
       </section>
