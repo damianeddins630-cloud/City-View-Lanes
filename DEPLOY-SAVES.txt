@@ -1,32 +1,39 @@
 CityView Lanes — make saves stick on Vercel
 ==========================================
 
+Your Profile / Hours will show an error until Blob is connected.
+That error means the live site is still in "memory" mode.
+
 IMPORTANT: Always upload this zip into your EXISTING Vercel project.
 Do NOT click "Create New Project" every time, or Blob settings get lost.
 
 Step-by-step (about 2 minutes)
 ------------------------------
-1. Open https://vercel.com and open the project that runs your live CityView site.
+1. Download the newest zip from GitHub Releases (cityview-v3 or newer).
 
-2. Click Storage → Create Database / Blob
+2. Open https://vercel.com → open the project that runs your LIVE CityView URL.
+
+3. Upload / deploy that zip into that SAME project.
+
+4. Click Storage → Create Database / Blob
    - Name it anything (e.g. cityview-data)
    - Private or Public both work with this build
    - Connect it to THIS project (Production)
 
-3. Confirm env vars exist:
+5. Confirm env vars exist:
    Settings → Environment Variables
    You should see at least one of:
    - BLOB_STORE_ID
    - BLOB_READ_WRITE_TOKEN
 
-4. Deployments → open the latest deployment → Redeploy
-   (Required after connecting Blob. Upload alone is not enough if Blob was just added.)
+6. Deployments → open the latest deployment → Redeploy
+   (Required after connecting Blob.)
 
-5. Open your live site → Login as masteradmin → Admin
+7. Open your live site → Login → Admin
    - Banner should say Saves are on / mode blob (not memory)
    - Click "Test save now" → must say PASS
 
-6. Edit Hours → Save → refresh /hours → times should stay.
+8. Edit Profile + Hours again — they should stay after refresh.
 
 If mode is still "memory"
 -------------------------

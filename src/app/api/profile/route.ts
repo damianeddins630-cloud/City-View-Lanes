@@ -8,7 +8,6 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import {
-  PersistenceError,
   persistenceMode,
   storageSetupHelp,
   updateStore,
@@ -24,45 +23,51 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { store, write } = await updateStore(async (s) => {
-      const user = s.users.find((u) => u.id === current.id);
-      if (!user) throw new Error("User not found");
+    // Apply the profile edit even when Blob is missing so the signed-in
+    // session can keep text fields. Durable flag tells the UI whether it
+    // will survive a full redeploy / other visitors.
+    const { store, write } = await updateStore(
+      async (s) => {
+        const user = s.users.find((u) => u.id === current.id);
+        if (!user) throw new Error("User not found");
 
-      if (body.firstName !== undefined) user.firstName = String(body.firstName).trim();
-      if (body.lastName !== undefined) user.lastName = String(body.lastName).trim();
-      if (body.phone !== undefined) user.phone = String(body.phone).trim();
-      if (body.birthDate !== undefined) user.birthDate = String(body.birthDate).trim();
-      if (body.avatarUrl !== undefined) user.avatarUrl = String(body.avatarUrl);
+        if (body.firstName !== undefined) user.firstName = String(body.firstName).trim();
+        if (body.lastName !== undefined) user.lastName = String(body.lastName).trim();
+        if (body.phone !== undefined) user.phone = String(body.phone).trim();
+        if (body.birthDate !== undefined) user.birthDate = String(body.birthDate).trim();
+        if (body.avatarUrl !== undefined) user.avatarUrl = String(body.avatarUrl);
 
-      if (body.email !== undefined) {
-        const email = String(body.email).trim().toLowerCase();
-        if (s.users.some((u) => u.id !== user.id && u.email === email)) {
-          throw new Error("Email already in use.");
+        if (body.email !== undefined) {
+          const email = String(body.email).trim().toLowerCase();
+          if (s.users.some((u) => u.id !== user.id && u.email === email)) {
+            throw new Error("Email already in use.");
+          }
+          user.email = email;
         }
-        user.email = email;
-      }
 
-      if (body.username !== undefined) {
-        const username = String(body.username).trim().toLowerCase();
-        if (s.users.some((u) => u.id !== user.id && u.username === username)) {
-          throw new Error("Username already in use.");
+        if (body.username !== undefined) {
+          const username = String(body.username).trim().toLowerCase();
+          if (s.users.some((u) => u.id !== user.id && u.username === username)) {
+            throw new Error("Username already in use.");
+          }
+          user.username = username;
         }
-        user.username = username;
-      }
 
-      if (body.newPassword) {
-        const currentPassword = String(body.currentPassword || "");
-        if (!(await verifyPassword(currentPassword, user.passwordHash))) {
-          throw new Error("Current password is incorrect.");
+        if (body.newPassword) {
+          const currentPassword = String(body.currentPassword || "");
+          if (!(await verifyPassword(currentPassword, user.passwordHash))) {
+            throw new Error("Current password is incorrect.");
+          }
+          if (String(body.newPassword).length < 6) {
+            throw new Error("New password must be at least 6 characters.");
+          }
+          user.passwordHash = await hashPassword(String(body.newPassword));
         }
-        if (String(body.newPassword).length < 6) {
-          throw new Error("New password must be at least 6 characters.");
-        }
-        user.passwordHash = await hashPassword(String(body.newPassword));
-      }
 
-      user.updatedAt = new Date().toISOString();
-    });
+        user.updatedAt = new Date().toISOString();
+      },
+      { requireDurable: false },
+    );
 
     const user = store.users.find((u) => u.id === current.id)!;
     const role = store.roles.find((r) => r.id === user.roleId);
@@ -71,25 +76,32 @@ export async function PATCH(request: Request) {
     revalidatePath("/profile");
     revalidatePath("/admin");
 
+    if (!write.durable) {
+      return NextResponse.json({
+        user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
+        persistence: write.mode,
+        durable: false,
+        ok: false,
+        setupNeeded: true,
+        error: storageSetupHelp(),
+        help: storageSetupHelp(),
+      });
+    }
+
     return NextResponse.json({
       user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
       persistence: write.mode,
-      durable: write.durable,
+      durable: true,
       ok: true,
     });
   } catch (error) {
-    if (error instanceof PersistenceError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          persistence: persistenceMode(),
-          durable: false,
-          help: storageSetupHelp(),
-        },
-        { status: 503 },
-      );
-    }
     const message = error instanceof Error ? error.message : "Update failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return NextResponse.json(
+      {
+        error: message,
+        persistence: persistenceMode(),
+      },
+      { status: 400 },
+    );
   }
 }

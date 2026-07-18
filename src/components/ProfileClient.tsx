@@ -68,26 +68,32 @@ export default function ProfileClient() {
       body: JSON.stringify(form),
     });
     const data = await res.json();
-    if (!res.ok) {
+    if (!res.ok && !data.user) {
       setError(data.error || "Update failed");
       return;
     }
-    setUser(data.user);
-    setForm({
-      firstName: data.user.firstName || "",
-      lastName: data.user.lastName || "",
-      email: data.user.email || "",
-      phone: data.user.phone || "",
-      birthDate: data.user.birthDate || "",
-      username: data.user.username || "",
-      avatarUrl: data.user.avatarUrl || "",
-      currentPassword: "",
-      newPassword: "",
-    });
-    setMessage(
-      data.durable
-        ? "Profile updated and saved."
-        : "Profile could not be saved permanently. Connect Vercel Blob, then redeploy.",
+    if (data.user) {
+      setUser(data.user);
+      setForm({
+        firstName: data.user.firstName || "",
+        lastName: data.user.lastName || "",
+        email: data.user.email || "",
+        phone: data.user.phone || "",
+        birthDate: data.user.birthDate || "",
+        username: data.user.username || "",
+        avatarUrl: data.user.avatarUrl || "",
+        currentPassword: "",
+        newPassword: "",
+      });
+    }
+    if (data.durable) {
+      setMessage("Profile updated and saved permanently.");
+      return;
+    }
+    setError(
+      data.help ||
+        data.error ||
+        "Saved only for this login. Connect Vercel Blob so it stays forever.",
     );
   }
 
@@ -131,6 +137,34 @@ export default function ProfileClient() {
       </aside>
 
       <form onSubmit={onSubmit} className="panel grid gap-4 p-6">
+        {error ? (
+          <div className="border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            <p className="font-semibold text-amber-50">
+              Profile is not saving permanently yet
+            </p>
+            <p className="mt-2 opacity-95">{error}</p>
+            <ol className="mt-3 list-decimal space-y-1 pl-5 text-amber-50/95">
+              <li>
+                Download the latest zip:{" "}
+                <a
+                  className="underline"
+                  href="https://github.com/damianeddins630-cloud/City-View-Lanes/releases/download/cityview-v3/City-View-Lanes-vercel.zip"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  cityview-v3
+                </a>
+              </li>
+              <li>Upload it into your existing Vercel project (not a new one)</li>
+              <li>Vercel → Storage → Blob → Create/Connect</li>
+              <li>Deployments → Redeploy</li>
+              <li>
+                Open <Link href="/admin" className="underline">Admin</Link> →
+                Test save now → must say PASS
+              </li>
+            </ol>
+          </div>
+        ) : null}
         <div className="field">
           <label htmlFor="avatar">Profile picture</label>
           <input
@@ -218,9 +252,8 @@ export default function ProfileClient() {
             />
           </div>
         </div>
-        {error ? <p className="text-sm font-semibold text-red-700">{error}</p> : null}
         {message ? (
-          <p className="text-sm font-semibold text-[var(--blue)]">{message}</p>
+          <p className="text-sm font-semibold text-emerald-300">{message}</p>
         ) : null}
         <button type="submit" className="btn btn-primary w-fit">
           Save changes
