@@ -34,7 +34,7 @@ export default function HomePage() {
 
         <div className="relative z-10 mx-auto flex min-h-[94svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
           <div className="fade-up silver-bar mb-6 max-w-[180px]" />
-          <h1 className="font-display brand-title fade-up text-[clamp(4.6rem,13vw,9rem)] leading-[0.84] tracking-[0.04em]">
+          <h1 className="font-display brand-title fade-up text-[clamp(4.6rem,13vw,9rem)] leading-[0.84] tracking-[0.04em] text-white">
             CityView
             <span className="brand-title-accent block">Lanes</span>
           </h1>

@@ -187,8 +187,8 @@ a {
 
 .hero-veil {
   background:
-    linear-gradient(180deg, rgba(7, 31, 56, 0.22) 0%, rgba(7, 31, 56, 0.12) 32%, rgba(7, 31, 56, 0.9) 100%),
-    linear-gradient(115deg, rgba(7, 31, 56, 0.78) 0%, rgba(7, 31, 56, 0.28) 48%, rgba(26, 95, 173, 0.34) 100%);
+    linear-gradient(180deg, rgba(7, 31, 56, 0.15) 0%, rgba(7, 31, 56, 0.05) 28%, rgba(7, 31, 56, 0.78) 100%),
+    linear-gradient(115deg, rgba(7, 31, 56, 0.55) 0%, rgba(7, 31, 56, 0.18) 52%, rgba(26, 95, 173, 0.22) 100%);
 }
 
 .hero-grid {
