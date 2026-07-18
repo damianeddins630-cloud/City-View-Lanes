@@ -1,10 +1,16 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { readStore, updateStore } from "@/lib/db";
+import { persistenceMode, readStore, updateStore } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const store = await readStore();
-  return NextResponse.json({ hours: store.hours });
+  return NextResponse.json({
+    hours: store.hours,
+    persistence: persistenceMode(),
+  });
 }
 
 export async function PUT(request: Request) {
@@ -29,5 +35,12 @@ export async function PUT(request: Request) {
     );
   });
 
-  return NextResponse.json({ hours: store.hours });
+  revalidatePath("/hours");
+  revalidatePath("/");
+
+  return NextResponse.json({
+    hours: store.hours,
+    persistence: persistenceMode(),
+    ok: true,
+  });
 }

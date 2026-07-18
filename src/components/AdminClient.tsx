@@ -355,7 +355,11 @@ export default function AdminClient() {
       return;
     }
     setHours(data.hours);
-    setNotice("Hours updated.");
+    setNotice(
+      data.persistence === "memory"
+        ? "Hours saved in memory only — add BLOB_READ_WRITE_TOKEN in Vercel so they stick."
+        : "Hours updated. Open /hours to confirm.",
+    );
   }
 
   const admins = useMemo(() => {

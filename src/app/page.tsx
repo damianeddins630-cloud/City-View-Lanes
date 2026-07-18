@@ -20,7 +20,7 @@ export default function HomePage() {
 
         <div className="relative z-10 mx-auto flex min-h-[88svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28">
           <p className="fade-up text-sm font-bold tracking-[0.22em] text-[var(--silver)] uppercase">
-            Bowling lanes at dusk · Fort Worth, Texas
+            Fort Worth, Texas
           </p>
           <h1 className="font-display fade-up mt-3 text-6xl leading-none tracking-[0.06em] sm:text-8xl">
             CityView Lanes

@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import {
   getCurrentUser,
@@ -5,7 +6,9 @@ import {
   toPublicUser,
   verifyPassword,
 } from "@/lib/auth";
-import { updateStore } from "@/lib/db";
+import { persistenceMode, updateStore } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export async function PATCH(request: Request) {
   const current = await getCurrentUser();
@@ -61,8 +64,11 @@ export async function PATCH(request: Request) {
 
     const user = store.users.find((u) => u.id === current.id)!;
     const role = store.roles.find((r) => r.id === user.roleId);
+    revalidatePath("/profile");
     return NextResponse.json({
       user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
+      persistence: persistenceMode(),
+      ok: true,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Update failed";

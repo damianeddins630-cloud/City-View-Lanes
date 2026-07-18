@@ -1,7 +1,10 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { readStore, updateStore } from "@/lib/db";
 import { makeId } from "@/lib/ids";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const store = await readStore();
@@ -39,6 +42,7 @@ export async function POST(request: Request) {
       s.leagues.push(league);
     });
 
+    revalidatePath("/leagues");
     return NextResponse.json({ leagues: store.leagues, league });
   } catch {
     return NextResponse.json({ error: "Could not add league." }, { status: 500 });
@@ -69,6 +73,7 @@ export async function PUT(request: Request) {
     if (body.meetingInfo !== undefined) league.meetingInfo = String(body.meetingInfo);
   });
 
+  revalidatePath("/leagues");
   return NextResponse.json({ leagues: store.leagues });
 }
 
@@ -88,5 +93,6 @@ export async function DELETE(request: Request) {
     s.leagues = s.leagues.filter((l) => l.id !== id);
   });
 
+  revalidatePath("/leagues");
   return NextResponse.json({ leagues: store.leagues });
 }

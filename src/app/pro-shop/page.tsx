@@ -57,6 +57,57 @@ export default function ProShopPage() {
         </p>
       </section>
 
+      <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pb-10">
+        <article className="border border-[rgba(201,162,39,0.45)] bg-black/50 p-6 sm:p-8">
+          <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-gold)] uppercase">
+            Pro Shop Manager · Cityview Lanes
+          </p>
+          <h2 className="font-display mt-2 text-4xl text-white sm:text-5xl">
+            Tim Watson
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/75">
+            Day-to-day manager of Ballard&apos;s Bowling Academy at CityView
+            Lanes — your point of contact for pro shop visits, equipment, custom
+            drilling appointments, and on-site questions at the Fort Worth
+            location.
+          </p>
+          <div className="mt-5 grid gap-3 text-sm sm:grid-cols-3">
+            <div className="border border-[rgba(201,162,39,0.3)] p-3">
+              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
+                Role
+              </p>
+              <p className="mt-1 font-semibold text-white">Pro Shop Manager</p>
+            </div>
+            <div className="border border-[rgba(201,162,39,0.3)] p-3">
+              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
+                Phone
+              </p>
+              <a
+                href="tel:8177688748"
+                className="mt-1 inline-block font-semibold text-white hover:text-[var(--hof-gold)]"
+              >
+                (817) 768-8748
+              </a>
+            </div>
+            <div className="border border-[rgba(201,162,39,0.3)] p-3">
+              <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
+                Email
+              </p>
+              <a
+                href="mailto:Tim.ballardsbowlingacademy@gmail.com"
+                className="mt-1 inline-block break-all font-semibold text-white hover:text-[var(--hof-gold)]"
+              >
+                Tim.ballardsbowlingacademy@gmail.com
+              </a>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-white/60">
+            Ballard&apos;s Bowling Academy · 6601 Oakmont Blvd, Fort Worth, TX
+            76132
+          </p>
+        </article>
+      </section>
+
       <section className="mx-auto grid w-[min(1140px,calc(100%-1.5rem))] gap-4 pb-12 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((item) => (
           <article

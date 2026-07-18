@@ -48,14 +48,33 @@ Outbound emails are recorded in the data store and logged to the server console 
 
 ## Deploy to Vercel
 
-1. Import this GitHub repo at [vercel.com/new](https://vercel.com/new)
+1. Import this GitHub repo (or upload the zip) at [vercel.com/new](https://vercel.com/new)
 2. Framework: **Next.js**
-3. Add env var `AUTH_SECRET` (long random string)
+3. Add env vars:
+   - `AUTH_SECRET` = long random string
+   - `BLOB_READ_WRITE_TOKEN` = from Vercel **Storage → Blob** (needed so profile/hours/admin changes save)
 4. Deploy
 
-> Note: On Vercel’s serverless filesystem, runtime data writes go to `/tmp` and can reset on cold starts. For production persistence, plug in Postgres / Supabase later — the API layer is ready to swap.
+### Make saves stick on Vercel (important)
+
+Without Blob storage, profile/hours changes can disappear after a redeploy.
+
+1. Vercel project → **Storage** → **Blob** → create/connect to this project  
+2. Vercel adds `BLOB_READ_WRITE_TOKEN`  
+3. **Redeploy**
+
+### How to update / fix the live site later
+
+**Option A — GitHub (best)**  
+Push to the connected branch → Vercel redeploys automatically.
+
+**Option B — Zip upload**  
+1. Download the latest release zip  
+2. Vercel → your project → upload / create deployment  
+3. Keep the same env vars
 
 ## Business info
 
 - **Address:** 6601 Oakmont Blvd, Fort Worth, TX 76132
 - **Phone:** (817) 346-0333
+- **Pro Shop Manager:** Tim Watson — (817) 768-8748 — Tim.ballardsbowlingacademy@gmail.com

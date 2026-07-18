@@ -73,8 +73,22 @@ export default function ProfileClient() {
       return;
     }
     setUser(data.user);
-    setMessage("Profile updated.");
-    setForm((f) => ({ ...f, currentPassword: "", newPassword: "" }));
+    setForm({
+      firstName: data.user.firstName || "",
+      lastName: data.user.lastName || "",
+      email: data.user.email || "",
+      phone: data.user.phone || "",
+      birthDate: data.user.birthDate || "",
+      username: data.user.username || "",
+      avatarUrl: data.user.avatarUrl || "",
+      currentPassword: "",
+      newPassword: "",
+    });
+    setMessage(
+      data.persistence === "memory"
+        ? "Saved for now — add BLOB_READ_WRITE_TOKEN in Vercel so it stays after redeploy."
+        : "Profile updated and saved.",
+    );
   }
 
   async function logout() {
