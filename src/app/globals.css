@@ -1,21 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #0b2a4a;
+  --navy: #0a2744;
   --blue: #1f5ea8;
-  --blue-soft: #e8f1fb;
-  --silver: #c5ced9;
-  --silver-deep: #8b97a8;
+  --blue-bright: #3b82c4;
+  --blue-soft: #eaf2fb;
+  --silver: #d7dde6;
+  --silver-deep: #8e9aab;
+  --silver-shine: linear-gradient(
+    120deg,
+    #f8fafc 0%,
+    #c9d2de 35%,
+    #f1f4f8 55%,
+    #aeb8c6 100%
+  );
   --white: #ffffff;
-  --ink: #12171e;
-  --muted: #5b6573;
-  --line: #d7dee8;
-  --bg: #f4f7fb;
+  --ink: #10151c;
+  --muted: #5a6574;
+  --line: #d5deea;
+  --bg: #f3f7fc;
   --hof-gold: #c9a227;
   --hof-red: #9b1b1e;
   --hof-black: #111111;
   --background: var(--bg);
   --foreground: var(--ink);
+  --shadow-soft: 0 18px 50px rgba(11, 42, 74, 0.08);
+  --shadow-lift: 0 12px 28px rgba(31, 94, 168, 0.16);
 }
 
 @theme inline {
@@ -38,10 +48,33 @@ body {
   min-height: 100%;
   color: var(--ink);
   background:
-    radial-gradient(900px 420px at 100% -10%, rgba(31, 94, 168, 0.12), transparent 55%),
-    radial-gradient(700px 360px at 0% 0%, rgba(197, 206, 217, 0.55), transparent 50%),
-    linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+    radial-gradient(1000px 480px at 100% -8%, rgba(31, 94, 168, 0.16), transparent 55%),
+    radial-gradient(800px 420px at -5% 0%, rgba(197, 206, 217, 0.7), transparent 52%),
+    linear-gradient(180deg, #ffffff 0%, var(--bg) 42%, #eef3f9 100%);
   font-family: var(--font-body), sans-serif;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, transparent 0%, rgba(197, 206, 217, 0.08) 50%, transparent 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 72px,
+      rgba(31, 94, 168, 0.03) 73px,
+      transparent 74px
+    );
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 75%);
+  z-index: 0;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
 }
 
 a {
@@ -75,31 +108,34 @@ a {
     transform 180ms ease,
     background-color 180ms ease,
     border-color 180ms ease,
-    color 180ms ease;
+    color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--blue), var(--navy));
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue) 45%, var(--navy));
   color: white;
+  box-shadow: var(--shadow-lift);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #2a6fbe, var(--navy));
+  box-shadow: 0 16px 34px rgba(31, 94, 168, 0.28);
 }
 
 .btn-ghost {
-  border-color: var(--line);
-  background: white;
+  border-color: color-mix(in srgb, var(--silver-deep) 35%, white);
+  background: linear-gradient(180deg, #ffffff, #f4f7fb);
   color: var(--navy);
 }
 
 .btn-ghost:hover {
   border-color: var(--blue);
   color: var(--blue);
+  box-shadow: 0 8px 20px rgba(11, 42, 74, 0.08);
 }
 
 .btn-dark {
@@ -130,6 +166,7 @@ a {
   padding: 0.65rem 0.8rem;
   font: inherit;
   color: var(--ink);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .field textarea {
@@ -140,13 +177,56 @@ a {
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  outline: 2px solid color-mix(in srgb, var(--blue) 35%, white);
+  outline: none;
   border-color: var(--blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 18%, white);
 }
 
 .panel {
+  border: 1px solid color-mix(in srgb, var(--line) 80%, white);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 251, 0.94));
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+}
+
+.glass {
+  border: 1px solid rgba(215, 222, 232, 0.85);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-soft);
+}
+
+.silver-bar {
+  height: 3px;
+  width: 100%;
+  background: var(--silver-shine);
+  background-size: 200% 100%;
+  animation: silver-sweep 4.5s linear infinite;
+}
+
+.stat-chip {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--blue-soft));
+  padding: 0.85rem 1rem;
+}
+
+.admin-tab {
   border: 1px solid var(--line);
   background: white;
+  color: var(--muted);
+  transition: all 160ms ease;
+}
+
+.admin-tab:hover {
+  border-color: var(--blue);
+  color: var(--navy);
+}
+
+.admin-tab-active {
+  background: linear-gradient(135deg, var(--blue), var(--navy));
+  border-color: transparent;
+  color: white;
+  box-shadow: var(--shadow-lift);
 }
 
 .fade-up {
@@ -169,6 +249,15 @@ a {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes silver-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
   }
 }
 
@@ -195,7 +284,8 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
   .fade-up-delay,
-  .fade-up-delay-2 {
+  .fade-up-delay-2,
+  .silver-bar {
     animation: none;
   }
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { readStore, updateStore } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const user = await getCurrentUser();
   if (!hasPermission(user, "manage_users") && !hasPermission(user, "view_admins")) {
@@ -11,8 +13,37 @@ export async function GET() {
   const store = await readStore();
   const users = store.users.map((u) => {
     const role = store.roles.find((r) => r.id === u.roleId);
-    const bookings = store.bookings.filter((b) => b.userId === u.id);
-    const leagueSignups = store.leagueSignups.filter((s) => s.userId === u.id);
+    const bookings = store.bookings
+      .filter((b) => b.userId === u.id)
+      .map((b) => ({
+        id: b.id,
+        status: b.status,
+        eventType: b.eventType,
+        eventDate: b.eventDate,
+        eventTime: b.eventTime,
+        partySize: b.partySize,
+        phone: b.phone,
+        email: b.email,
+        notes: b.notes,
+        createdAt: b.createdAt,
+        adminNote: b.adminNote || "",
+      }));
+    const leagueSignups = store.leagueSignups
+      .filter((s) => s.userId === u.id)
+      .map((s) => {
+        const league = store.leagues.find((l) => l.id === s.leagueId);
+        return {
+          id: s.id,
+          status: s.status,
+          leagueId: s.leagueId,
+          leagueName: league?.name || "Unknown league",
+          leagueDay: league?.day || "",
+          leagueTime: league?.time || "",
+          note: s.note,
+          createdAt: s.createdAt,
+          adminNote: s.adminNote || "",
+        };
+      });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...rest } = u;
     return {
@@ -46,7 +77,6 @@ export async function PATCH(request: Request) {
       const role = s.roles.find((r) => r.id === roleId);
       if (!role) throw new Error("Role not found");
 
-      // Prevent demoting the only Master Admin
       if (target.roleId === "role_master_admin" && roleId !== "role_master_admin") {
         const masters = s.users.filter((u) => u.roleId === "role_master_admin");
         if (masters.length <= 1) {

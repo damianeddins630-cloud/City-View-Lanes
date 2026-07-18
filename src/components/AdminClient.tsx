@@ -16,8 +16,30 @@ type Tab =
 type AdminUser = PublicUser & {
   bookingCount: number;
   leagueSignupCount: number;
-  bookings: Array<{ id: string; status: string; eventType: string; eventDate: string }>;
-  leagueSignups: Array<{ id: string; status: string; leagueId: string }>;
+  bookings: Array<{
+    id: string;
+    status: string;
+    eventType: string;
+    eventDate: string;
+    eventTime?: string;
+    partySize?: number;
+    phone?: string;
+    email?: string;
+    notes?: string;
+    createdAt?: string;
+    adminNote?: string;
+  }>;
+  leagueSignups: Array<{
+    id: string;
+    status: string;
+    leagueId: string;
+    leagueName?: string;
+    leagueDay?: string;
+    leagueTime?: string;
+    note?: string;
+    createdAt?: string;
+    adminNote?: string;
+  }>;
 };
 
 type BookingRow = {
@@ -368,15 +390,96 @@ export default function AdminClient() {
       .sort((a, b) => a.roleName.localeCompare(b.roleName) || a.username.localeCompare(b.username));
   }, [users]);
 
+  const myRecord = useMemo(
+    () => users.find((u) => u.id === user?.id) || null,
+    [users, user],
+  );
+
   if (!user) {
     return <p className="mt-8 text-sm text-[var(--muted)]">Checking access…</p>;
   }
 
   return (
     <div className="mt-8">
-      <p className="text-sm text-[var(--muted)]">
-        Signed in as <strong>{user.username}</strong> · {user.roleName}
-      </p>
+      <div className="panel overflow-hidden">
+        <div className="silver-bar" />
+        <div className="grid gap-6 p-5 md:grid-cols-[120px_1fr_auto] md:items-center">
+          <div className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)] md:mx-0">
+            {user.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="font-display text-3xl text-[var(--blue)]">
+                {(user.firstName || user.username || "?").slice(0, 1).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <div>
+            <p className="text-xs font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
+              Signed-in admin profile
+            </p>
+            <h2 className="font-display mt-1 text-3xl tracking-[0.04em] text-[var(--navy)]">
+              {user.firstName} {user.lastName}
+            </h2>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              @{user.username} · {user.roleName}
+            </p>
+            <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Email:</span> {user.email}
+              </p>
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Phone:</span>{" "}
+                {user.phone || "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Birth date:</span>{" "}
+                {user.birthDate || "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Member since:</span>{" "}
+                {user.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Last updated:</span>{" "}
+                {user.updatedAt
+                  ? new Date(user.updatedAt).toLocaleString()
+                  : "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-[var(--navy)]">Permissions:</span>{" "}
+                {user.permissions.length}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 md:w-56">
+            <div className="stat-chip">
+              <p className="font-display text-2xl text-[var(--blue)]">
+                {myRecord?.bookingCount ?? 0}
+              </p>
+              <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
+                My bookings
+              </p>
+            </div>
+            <div className="stat-chip">
+              <p className="font-display text-2xl text-[var(--blue)]">
+                {myRecord?.leagueSignupCount ?? 0}
+              </p>
+              <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
+                My leagues
+              </p>
+            </div>
+            <div className="stat-chip col-span-2">
+              <p className="font-display text-2xl text-[var(--navy)]">{users.length}</p>
+              <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
+                Total accounts
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-5 flex flex-wrap gap-2 border-b border-[var(--line)] pb-3">
         {visibleTabs.map((t) => (
@@ -388,10 +491,8 @@ export default function AdminClient() {
               setError("");
               setNotice("");
             }}
-            className={`px-3 py-2 text-xs font-bold tracking-wide uppercase ${
-              activeTab === t.id
-                ? "bg-[var(--navy)] text-white"
-                : "bg-white text-[var(--muted)] border border-[var(--line)]"
+            className={`admin-tab px-3 py-2 text-xs font-bold tracking-wide uppercase ${
+              activeTab === t.id ? "admin-tab-active" : ""
             }`}
           >
             {t.label}
@@ -403,8 +504,8 @@ export default function AdminClient() {
       {notice ? <p className="mt-4 text-sm font-semibold text-[var(--blue)]">{notice}</p> : null}
 
       {activeTab === "users" && can("manage_users") ? (
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-          <div className="overflow-x-auto border border-[var(--line)] bg-white">
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+          <div className="panel overflow-x-auto">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-[var(--blue-soft)] text-xs uppercase tracking-wide">
                 <tr>
@@ -418,12 +519,30 @@ export default function AdminClient() {
                 {users.map((u) => (
                   <tr
                     key={u.id}
-                    className="cursor-pointer border-t border-[var(--line)] hover:bg-[var(--blue-soft)]/50"
+                    className={`cursor-pointer border-t border-[var(--line)] hover:bg-[var(--blue-soft)]/60 ${
+                      selectedUser?.id === u.id ? "bg-[var(--blue-soft)]" : ""
+                    }`}
                     onClick={() => setSelectedUser(u)}
                   >
                     <td className="px-3 py-3">
-                      <p className="font-semibold text-[var(--navy)]">{u.username}</p>
-                      <p className="text-xs text-[var(--muted)]">{u.email}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-white text-xs font-bold text-[var(--blue)]">
+                          {u.avatarUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={u.avatarUrl} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            (u.firstName || u.username || "?").slice(0, 1).toUpperCase()
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[var(--navy)]">
+                            {u.firstName} {u.lastName}
+                          </p>
+                          <p className="text-xs text-[var(--muted)]">
+                            @{u.username} · {u.email}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-3 py-3">
                       <select
@@ -446,46 +565,130 @@ export default function AdminClient() {
               </tbody>
             </table>
           </div>
-          <div className="panel p-5">
-            <h2 className="font-display text-2xl text-[var(--navy)]">User profile</h2>
-            {selectedUser ? (
-              <div className="mt-4 space-y-2 text-sm">
-                <p>
-                  <strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}
+          <div className="panel overflow-hidden">
+            <div className="silver-bar" />
+            <div className="p-5">
+              <h2 className="font-display text-2xl text-[var(--navy)]">Member profile</h2>
+              {selectedUser ? (
+                <div className="mt-4 space-y-4 text-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]">
+                      {selectedUser.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={selectedUser.avatarUrl}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="font-display text-2xl text-[var(--blue)]">
+                          {(selectedUser.firstName || selectedUser.username || "?")
+                            .slice(0, 1)
+                            .toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-display text-xl text-[var(--navy)]">
+                        {selectedUser.firstName} {selectedUser.lastName}
+                      </p>
+                      <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
+                        {selectedUser.roleName}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <p>
+                      <strong>Username:</strong> @{selectedUser.username}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {selectedUser.email}
+                    </p>
+                    <p>
+                      <strong>Phone:</strong> {selectedUser.phone || "—"}
+                    </p>
+                    <p>
+                      <strong>Birth date:</strong> {selectedUser.birthDate || "—"}
+                    </p>
+                    <p>
+                      <strong>Created:</strong>{" "}
+                      {selectedUser.createdAt
+                        ? new Date(selectedUser.createdAt).toLocaleString()
+                        : "—"}
+                    </p>
+                    <p>
+                      <strong>Updated:</strong>{" "}
+                      {selectedUser.updatedAt
+                        ? new Date(selectedUser.updatedAt).toLocaleString()
+                        : "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="font-semibold text-[var(--navy)]">
+                      Bookings ({selectedUser.bookingCount})
+                    </p>
+                    {selectedUser.bookings.length === 0 ? (
+                      <p className="mt-1 text-[var(--muted)]">No bookings yet.</p>
+                    ) : (
+                      <ul className="mt-2 space-y-2">
+                        {selectedUser.bookings.map((b) => (
+                          <li
+                            key={b.id}
+                            className="border border-[var(--line)] bg-white/80 px-3 py-2"
+                          >
+                            <p className="font-semibold">
+                              {b.eventType} · {b.status}
+                            </p>
+                            <p className="text-xs text-[var(--muted)]">
+                              {b.eventDate} {b.eventTime || ""} · party of{" "}
+                              {b.partySize ?? "?"}
+                            </p>
+                            {b.notes ? (
+                              <p className="mt-1 text-xs">{b.notes}</p>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <div>
+                    <p className="font-semibold text-[var(--navy)]">
+                      League signups ({selectedUser.leagueSignupCount})
+                    </p>
+                    {selectedUser.leagueSignups.length === 0 ? (
+                      <p className="mt-1 text-[var(--muted)]">No league signups yet.</p>
+                    ) : (
+                      <ul className="mt-2 space-y-2">
+                        {selectedUser.leagueSignups.map((s) => (
+                          <li
+                            key={s.id}
+                            className="border border-[var(--line)] bg-white/80 px-3 py-2"
+                          >
+                            <p className="font-semibold">
+                              {s.leagueName || s.leagueId} · {s.status}
+                            </p>
+                            <p className="text-xs text-[var(--muted)]">
+                              {s.leagueDay} {s.leagueTime}
+                              {s.createdAt
+                                ? ` · requested ${new Date(s.createdAt).toLocaleDateString()}`
+                                : ""}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-4 text-sm text-[var(--muted)]">
+                  Select a user to view their full profile, dates, bookings, and
+                  league history.
                 </p>
-                <p>
-                  <strong>Email:</strong> {selectedUser.email}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {selectedUser.phone || "—"}
-                </p>
-                <p>
-                  <strong>Role:</strong> {selectedUser.roleName}
-                </p>
-                <p>
-                  <strong>Bookings:</strong> {selectedUser.bookingCount}
-                </p>
-                <ul className="ml-4 list-disc text-[var(--muted)]">
-                  {selectedUser.bookings.map((b) => (
-                    <li key={b.id}>
-                      {b.eventType} · {b.eventDate} · {b.status}
-                    </li>
-                  ))}
-                </ul>
-                <p>
-                  <strong>League signups:</strong> {selectedUser.leagueSignupCount}
-                </p>
-                <ul className="ml-4 list-disc text-[var(--muted)]">
-                  {selectedUser.leagueSignups.map((s) => (
-                    <li key={s.id}>
-                      {s.leagueId} · {s.status}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="mt-4 text-sm text-[var(--muted)]">Select a user to view details.</p>
-            )}
+              )}
+            </div>
           </div>
         </div>
       ) : null}

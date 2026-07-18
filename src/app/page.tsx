@@ -19,6 +19,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(11,42,74,0.92)_0%,rgba(11,42,74,0.72)_55%,rgba(31,94,168,0.55)_100%)]" />
 
         <div className="relative z-10 mx-auto flex min-h-[88svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28">
+          <div className="fade-up silver-bar mb-5 max-w-[140px]" />
           <p className="fade-up text-sm font-bold tracking-[0.22em] text-[var(--silver)] uppercase">
             Fort Worth, Texas
           </p>
@@ -59,7 +60,7 @@ export default function HomePage() {
           {WHY_CARDS.map((card) => (
             <article
               key={card.title}
-              className="border border-[var(--line)] bg-white p-5 transition-colors hover:border-[var(--blue)]"
+              className="panel p-5 transition-transform hover:-translate-y-1"
             >
               <h3 className="font-display text-2xl tracking-[0.04em] text-[var(--navy)]">
                 {card.title}
