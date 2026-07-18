@@ -470,7 +470,7 @@ export default function AdminClient() {
       if (data.ok) {
         setStorageTest({
           running: false,
-          message: "PASS — Blob write + read worked. Saves will stick.",
+          message: `PASS — Blob write + read worked (${data.access || "ok"}). Saves will stick.`,
         });
         setNotice("Storage test passed. Saves are durable.");
       } else {

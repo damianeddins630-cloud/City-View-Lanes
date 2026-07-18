@@ -33,13 +33,35 @@ export type BlobAuthInfo = {
   method: "token" | "oidc" | "none";
 };
 
+type BlobAccess = "private" | "public";
+
 type GlobalDb = {
   __cityviewStore?: Store;
   __cityviewStoreLoadedAt?: number;
+  __cityviewBlobAccess?: BlobAccess;
+  __cityviewBlobAccessError?: string;
 };
 
 function g(): GlobalDb {
   return globalThis as unknown as GlobalDb;
+}
+
+function blobAccessCandidates(): BlobAccess[] {
+  const preferred = g().__cityviewBlobAccess;
+  const fromEnv = process.env.BLOB_ACCESS?.trim().toLowerCase();
+  const envAccess =
+    fromEnv === "private" || fromEnv === "public" ? (fromEnv as BlobAccess) : null;
+  // New Vercel Blob stores default to private; try that first, then public.
+  const order: BlobAccess[] = [];
+  for (const access of [preferred, envAccess, "private" as const, "public" as const]) {
+    if (access && !order.includes(access)) order.push(access);
+  }
+  return order;
+}
+
+function rememberBlobAccess(access: BlobAccess) {
+  g().__cityviewBlobAccess = access;
+  g().__cityviewBlobAccessError = undefined;
 }
 
 /**
@@ -109,35 +131,64 @@ async function writeJsonFile(filePath: string, store: Store): Promise<boolean> {
 
 async function readFromBlob(): Promise<Store | null> {
   if (!hasBlobCredentials()) return null;
-  try {
-    const result = await get(BLOB_NAME, {
-      access: "public",
-      useCache: false,
-    });
-    if (!result || result.statusCode !== 200 || !result.stream) return null;
-    const text = await new Response(result.stream).text();
-    return JSON.parse(text) as Store;
-  } catch (error) {
-    console.error("[CityView DB] Blob read failed", error);
-    return null;
+  const errors: string[] = [];
+
+  for (const access of blobAccessCandidates()) {
+    try {
+      const result = await get(BLOB_NAME, {
+        access,
+        useCache: false,
+      });
+      if (!result || result.statusCode !== 200 || !result.stream) continue;
+      const text = await new Response(result.stream).text();
+      rememberBlobAccess(access);
+      return JSON.parse(text) as Store;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`${access}: ${message}`);
+    }
   }
+
+  if (errors.length) {
+    g().__cityviewBlobAccessError = errors.join(" | ");
+    console.error("[CityView DB] Blob read failed", errors.join(" | "));
+  }
+  return null;
 }
 
 async function writeToBlob(store: Store): Promise<boolean> {
   if (!hasBlobCredentials()) return false;
-  try {
-    await put(BLOB_NAME, JSON.stringify(store), {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 60,
-    });
-    return true;
-  } catch (error) {
-    console.error("[CityView DB] Blob write failed", error);
-    return false;
+  const body = JSON.stringify(store);
+  const errors: string[] = [];
+
+  for (const access of blobAccessCandidates()) {
+    try {
+      await put(BLOB_NAME, body, {
+        access,
+        contentType: "application/json",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        cacheControlMaxAge: 60,
+      });
+      rememberBlobAccess(access);
+      return true;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`${access}: ${message}`);
+    }
   }
+
+  g().__cityviewBlobAccessError = errors.join(" | ");
+  console.error("[CityView DB] Blob write failed", errors.join(" | "));
+  return false;
+}
+
+export function getLastBlobAccess(): BlobAccess | null {
+  return g().__cityviewBlobAccess || null;
+}
+
+export function getLastBlobError(): string | null {
+  return g().__cityviewBlobAccessError || null;
 }
 
 async function readFromGithub(): Promise<Store | null> {
@@ -229,7 +280,7 @@ export function persistenceMode() {
 }
 
 export function storageSetupHelp() {
-  return "Saves need Vercel Blob. In Vercel → Storage → Blob → Create/Connect to THIS project (adds BLOB_STORE_ID and/or BLOB_READ_WRITE_TOKEN), then Deployments → Redeploy. After deploy, mode should be blob — not memory.";
+  return "Saves need Vercel Blob on THIS project. Storage → Blob → Create/Connect (adds BLOB_STORE_ID and/or BLOB_READ_WRITE_TOKEN), then Deployments → Redeploy. Open Admin → Test save now. Mode must be blob, not memory. See DEPLOY-SAVES.txt.";
 }
 
 /** Probe write/read against Blob so admins can verify saves without guessing. */
@@ -238,6 +289,7 @@ export async function testBlobRoundTrip(): Promise<{
   auth: BlobAuthInfo;
   wrote: boolean;
   readBack: boolean;
+  access?: BlobAccess;
   error?: string;
 }> {
   const auth = getBlobAuthInfo();
@@ -255,29 +307,40 @@ export async function testBlobRoundTrip(): Promise<{
   const probePath = "cityview/_save-probe.json";
   const marker = `cityview-probe-${Date.now()}`;
   const payload = JSON.stringify({ marker, at: new Date().toISOString() });
+  const writeErrors: string[] = [];
 
-  try {
-    await put(probePath, payload, {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 60,
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+  let usedAccess: BlobAccess | null = null;
+  for (const access of blobAccessCandidates()) {
+    try {
+      await put(probePath, payload, {
+        access,
+        contentType: "application/json",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        cacheControlMaxAge: 60,
+      });
+      usedAccess = access;
+      rememberBlobAccess(access);
+      break;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      writeErrors.push(`${access}: ${message}`);
+    }
+  }
+
+  if (!usedAccess) {
     return {
       ok: false,
       auth,
       wrote: false,
       readBack: false,
-      error: `Blob write failed: ${message}`,
+      error: `Blob write failed for private and public access. ${writeErrors.join(" | ")}`,
     };
   }
 
   try {
     const result = await get(probePath, {
-      access: "public",
+      access: usedAccess,
       useCache: false,
     });
     if (!result?.stream) {
@@ -286,7 +349,8 @@ export async function testBlobRoundTrip(): Promise<{
         auth,
         wrote: true,
         readBack: false,
-        error: "Wrote probe but could not read it back (empty response).",
+        access: usedAccess,
+        error: `Wrote probe (${usedAccess}) but could not read it back (empty response).`,
       };
     }
     const text = await new Response(result.stream).text();
@@ -297,9 +361,10 @@ export async function testBlobRoundTrip(): Promise<{
       auth,
       wrote: true,
       readBack,
+      access: usedAccess,
       error: readBack
         ? undefined
-        : "Wrote probe but read-back marker did not match.",
+        : `Wrote probe (${usedAccess}) but read-back marker did not match.`,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -308,7 +373,8 @@ export async function testBlobRoundTrip(): Promise<{
       auth,
       wrote: true,
       readBack: false,
-      error: `Blob read-back failed: ${message}`,
+      access: usedAccess,
+      error: `Blob read-back failed (${usedAccess}): ${message}`,
     };
   }
 }

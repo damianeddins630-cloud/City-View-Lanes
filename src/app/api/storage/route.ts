@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import {
   getBlobAuthInfo,
+  getLastBlobAccess,
+  getLastBlobError,
   persistenceMode,
   storageSetupHelp,
   testBlobRoundTrip,
@@ -24,6 +26,8 @@ export async function GET() {
     hasOidcToken: blobAuth.hasOidcToken,
     blobAuthMethod: blobAuth.method,
     blobCanAttempt: blobAuth.canAttempt,
+    blobAccess: getLastBlobAccess(),
+    blobLastError: getLastBlobError(),
     hasGithub: Boolean(process.env.GITHUB_TOKEN && process.env.GITHUB_REPO),
     help: durable ? null : storageSetupHelp(),
   };
@@ -55,6 +59,7 @@ export async function POST() {
       durable: result.ok || mode === "github" || mode === "file",
       wrote: result.wrote,
       readBack: result.readBack,
+      access: result.access || null,
       auth: result.auth,
       error: result.error || null,
       help: result.ok ? null : storageSetupHelp(),
