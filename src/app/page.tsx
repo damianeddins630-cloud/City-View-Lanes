@@ -15,7 +15,7 @@ const MARQUEE = [
 export default function HomePage() {
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[var(--navy)] text-white">
+      <section className="hero-stage relative isolate overflow-hidden bg-black text-white">
         <div className="absolute inset-0">
           <Image
             src="/images/cityview-lanes.webp"
@@ -29,30 +29,32 @@ export default function HomePage() {
         <div className="hero-veil absolute inset-0" />
         <div className="hero-dots pointer-events-none absolute inset-0" />
         <div className="hero-swoosh pointer-events-none absolute inset-0" />
+        <div className="hero-beam pointer-events-none absolute inset-0" />
         <div className="hero-shine pointer-events-none absolute inset-0" />
-        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-44" />
+        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-52" />
+        <div className="neon-ring pointer-events-none absolute -right-24 top-1/4 h-80 w-80" />
 
-        <div className="relative z-10 mx-auto flex min-h-[94svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
-          <div className="fade-up mb-5 flex items-center gap-3">
-            <span className="brand-star" aria-hidden />
-            <div className="silver-bar max-w-[140px]" />
+        <div className="relative z-10 mx-auto flex min-h-[96svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
+          <div className="fade-up mb-6 flex items-center gap-3">
+            <span className="brand-star brand-star-lg" aria-hidden />
+            <div className="silver-bar max-w-[180px]" />
           </div>
-          <h1 className="font-display brand-title fade-up text-[clamp(4.8rem,14vw,9.5rem)] leading-[0.82] tracking-[0.04em] text-white">
+          <h1 className="font-display brand-title fade-up text-[clamp(5.2rem,15vw,10rem)] leading-[0.8] tracking-[0.03em] text-white">
             CityView
             <span className="brand-title-accent block">Lanes</span>
           </h1>
-          <p className="fade-up-delay mt-6 max-w-xl text-lg text-white/93 sm:text-xl">
+          <p className="fade-up-delay mt-6 max-w-xl text-xl text-white sm:text-2xl">
             Fort Worth bowling, leagues, and Hall of Fame coaching — under one
             roof.
           </p>
           <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
-            <Link href="/hours" className="btn btn-hero-primary btn-pulse">
+            <Link href="/hours" className="btn btn-hero-primary btn-pulse btn-xl">
               See Hours
             </Link>
-            <Link href="/pro-shop" className="btn btn-hero-light">
+            <Link href="/pro-shop" className="btn btn-hero-light btn-xl">
               Visit the Pro Shop
             </Link>
-            <Link href="/book" className="btn btn-hero-outline">
+            <Link href="/book" className="btn btn-hero-outline btn-xl">
               Book a Party
             </Link>
           </div>
@@ -71,10 +73,8 @@ export default function HomePage() {
       </div>
 
       <section className="section">
-        <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
-          Why CityView Lanes
-        </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+        <p className="section-kicker">Why CityView Lanes</p>
+        <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
           Built for every kind of bowler.
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
@@ -87,10 +87,8 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-y border-[var(--line)] academy-band">
         <div className="section grid items-center gap-10 md:grid-cols-2">
           <div>
-            <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
-              Hall of Fame Coaching
-            </p>
-            <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+            <p className="section-kicker">Hall of Fame Coaching</p>
+            <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
               Ballard&apos;s Bowling Academy
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[var(--muted)]">
