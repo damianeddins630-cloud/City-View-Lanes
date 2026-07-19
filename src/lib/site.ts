@@ -11,6 +11,10 @@ export const SITE = {
   leaguePhoneTel: "8173460444",
   email: "sales@cityviewlanesfortworth.com",
   fallSeasonLabel: "Fall Season 2026-2027",
+  /** Ballard's Bowling Academy (Hall of Fame Pro Shop) */
+  proShopName: "Ballard's Bowling Academy",
+  proShopUrl: "https://ballardsbowlingacademy.com/",
+  proShopUrlLabel: "ballardsbowlingacademy.com",
 };
 
 export const NAV = [

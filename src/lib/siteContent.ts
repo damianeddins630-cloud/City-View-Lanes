@@ -156,7 +156,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       academyKicker: mergeString(homeIn.academyKicker, d.home.academyKicker),
       academyTitle: mergeString(homeIn.academyTitle, d.home.academyTitle),
       academyCopy: mergeString(homeIn.academyCopy, d.home.academyCopy),
-      academyImage: mergeString(homeIn.academyImage, d.home.academyImage),
+      academyImage: refreshBundledPhoto(homeIn.academyImage, d.home.academyImage, [
+        "/images/cityview-interior.webp",
+      ]),
       academyImageAlt: mergeString(homeIn.academyImageAlt, d.home.academyImageAlt),
       academyStat1Value: mergeString(
         homeIn.academyStat1Value,
@@ -180,9 +182,14 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       galleryImages:
         Array.isArray(homeIn.galleryImages) && homeIn.galleryImages.length
           ? [0, 1, 2].map((i) => ({
-              src: mergeString(
+              src: refreshBundledPhoto(
                 homeIn.galleryImages[i]?.src,
                 d.home.galleryImages[i]?.src || d.home.heroImage,
+                [
+                  "/images/yelp-lanes-kids.jpg",
+                  "/images/yelp-interior-1.jpg",
+                  "/images/yelp-interior-2.jpg",
+                ],
               ),
               alt: mergeString(
                 homeIn.galleryImages[i]?.alt,
@@ -201,7 +208,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
             }))
           : d.home.reviews,
       visitKicker: mergeString(homeIn.visitKicker, d.home.visitKicker),
-      visitImage: mergeString(homeIn.visitImage, d.home.visitImage),
+      visitImage: refreshBundledPhoto(homeIn.visitImage, d.home.visitImage, [
+        "/images/cityview-lanes.webp",
+      ]),
       visitHoursNote: mergeString(homeIn.visitHoursNote, d.home.visitHoursNote),
       visitParkingNote: mergeString(
         homeIn.visitParkingNote,
@@ -234,13 +243,20 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       season: mergeString(youthIn.season, d.youth.season),
       format: mergeString(youthIn.format, d.youth.format),
       phoneNote: mergeString(youthIn.phoneNote, d.youth.phoneNote),
-      heroImage: mergeString(youthIn.heroImage, d.youth.heroImage),
+      heroImage: refreshBundledPhoto(youthIn.heroImage, d.youth.heroImage, [
+        "/images/cityview-lanes.webp",
+      ]),
       photos:
         Array.isArray(youthIn.photos) && youthIn.photos.length
           ? [0, 1, 2].map((i) => ({
-              src: mergeString(
+              src: refreshBundledPhoto(
                 youthIn.photos[i]?.src,
                 d.youth.photos[i]?.src || d.youth.heroImage,
+                [
+                  "/images/yelp-lanes-kids.jpg",
+                  "/images/cityview-lanes.webp",
+                  "/images/yelp-interior-1.jpg",
+                ],
               ),
               alt: mergeString(
                 youthIn.photos[i]?.alt,
