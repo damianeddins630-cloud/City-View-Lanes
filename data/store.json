@@ -21,7 +21,6 @@
       "name": "Website Owner",
       "description": "Full website access \u2014 cannot be deleted or outranked",
       "permissions": [
-        "view_admin",
         "manage_users",
         "manage_roles",
         "admin_chat",
@@ -30,7 +29,8 @@
         "manage_leagues",
         "manage_hours",
         "view_admins",
-        "manage_employment"
+        "manage_employment",
+        "manage_content"
       ],
       "locked": true,
       "rank": 0
@@ -38,17 +38,14 @@
     {
       "id": "role_admin",
       "name": "Admin",
-      "description": "Staff admin with operational access",
+      "description": "Staff admin — no application review access",
       "permissions": [
-        "view_admin",
         "manage_users",
         "admin_chat",
-        "manage_bookings",
-        "manage_league_signups",
         "manage_leagues",
         "manage_hours",
         "view_admins",
-        "manage_employment"
+        "manage_content"
       ],
       "locked": false,
       "rank": 10

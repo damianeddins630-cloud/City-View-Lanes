@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree, Oswald } from "next/font/google";
-import EditModeProvider from "@/components/EditModeProvider";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import SiteEditBar from "@/components/SiteEditBar";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -34,12 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
       <body className="flex min-h-full flex-col antialiased">
-        <EditModeProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <SiteEditBar />
-        </EditModeProvider>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );

@@ -3,6 +3,13 @@ import type { Permission, Role, Store } from "./types";
 export const WEBSITE_OWNER_ROLE_ID = "role_master_admin";
 export const WEBSITE_OWNER_ROLE_NAME = "Website Owner";
 
+/** Application review — Website Owner only by default; not on Admin. */
+const APPLICATION_PERMISSIONS: Permission[] = [
+  "manage_bookings",
+  "manage_league_signups",
+  "manage_employment",
+];
+
 const OWNER_PERMISSIONS: Permission[] = [
   "manage_users",
   "manage_roles",
@@ -14,7 +21,6 @@ const OWNER_PERMISSIONS: Permission[] = [
   "view_admins",
   "manage_employment",
   "manage_content",
-  "edit_site",
 ];
 
 export function roleRank(role: Role | undefined | null): number {
@@ -70,20 +76,22 @@ export function ensureRoles(store: Store): Store {
     if (typeof role.rank !== "number") {
       role.rank = roleRank(role);
     }
-    // Drop legacy "Access admin panel" flag — access is granted by capabilities.
-    role.permissions = role.permissions.filter((p) => p !== "view_admin");
+    // Drop legacy flags that are not assignable permissions.
+    role.permissions = role.permissions.filter(
+      (p) => p !== "view_admin" && p !== "edit_site",
+    );
+
     if (role.id === "role_admin" || role.name === "Admin") {
-      const extras: Permission[] = [
-        "manage_employment",
-        "manage_content",
-        "edit_site",
-      ];
-      for (const p of extras) {
-        if (!role.permissions.includes(p)) {
-          role.permissions = [...role.permissions, p];
-        }
+      // Admin must NOT see party / league / employment applications.
+      role.permissions = role.permissions.filter(
+        (p) => !APPLICATION_PERMISSIONS.includes(p),
+      );
+      if (!role.permissions.includes("manage_content")) {
+        role.permissions = [...role.permissions, "manage_content"];
       }
       if (typeof role.rank !== "number" || role.rank < 1) role.rank = 10;
+      role.description =
+        role.description || "Staff admin — no application review access";
     }
     if (role.id === "role_member" || role.name === "Member") {
       role.rank = 100;

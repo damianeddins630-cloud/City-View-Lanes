@@ -10,6 +10,7 @@ export type Permission =
   | "view_admins"
   | "manage_employment"
   | "manage_content"
+  /** Legacy — stripped from roles; not assignable. */
   | "edit_site";
 
 export type SiteImageSlot = {

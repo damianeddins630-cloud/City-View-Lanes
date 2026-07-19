@@ -140,10 +140,6 @@ export const ALL_PERMISSIONS = [
     id: "manage_content",
     label: "Edit homepage / youth photos & descriptions",
   },
-  {
-    id: "edit_site",
-    label: "Edit website (double-click mode)",
-  },
 ] as const;
 
 export const ASSIGNABLE_PERMISSION_IDS = ALL_PERMISSIONS.map((p) => p.id);
