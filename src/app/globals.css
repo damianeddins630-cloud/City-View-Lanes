@@ -651,8 +651,8 @@ a {
 .field select,
 .field textarea {
   min-height: 2.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 204, 214, 0.32);
+  background: rgba(255, 255, 255, 0.06);
   padding: 0.65rem 0.8rem;
   font: inherit;
   color: white;
@@ -668,24 +668,29 @@ a {
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(29, 111, 255, 0.25);
+  border-color: var(--blue-bright);
+  box-shadow: 0 0 0 3px rgba(30, 111, 255, 0.28);
 }
 
 .field option {
-  color: #05070c;
+  color: #111;
+  background: #fff;
 }
 
 .panel {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(180deg, rgba(16, 26, 46, 0.92), rgba(5, 7, 12, 0.94));
+  border: 1px solid rgba(197, 204, 214, 0.28);
+  background: linear-gradient(
+    180deg,
+    rgba(42, 48, 56, 0.92) 0%,
+    rgba(28, 33, 40, 0.96) 100%
+  );
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(10px);
 }
 
 .glass {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(5, 7, 12, 0.7);
+  border: 1px solid rgba(197, 204, 214, 0.22);
+  background: rgba(28, 33, 40, 0.78);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow-soft);
 }
