@@ -175,7 +175,7 @@ export default function LeaguesClient({
         </a>
       </div>
 
-      <div className="league-filters mt-6 flex flex-wrap gap-2">
+      <div className="league-filters mt-6 flex flex-wrap">
         {["All", "Youth", "Adult", "Senior", "IGBO"].map((type) => (
           <button
             key={type}
