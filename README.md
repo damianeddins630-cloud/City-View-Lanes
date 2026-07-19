@@ -4,6 +4,19 @@ Fort Worth bowling center website — leagues, parties, Hall of Fame pro shop, m
 
 Built with **Next.js** for easy deploy on **Vercel**.
 
+## Edit from GitHub (easiest)
+
+Your site files live here:  
+**https://github.com/damianeddins630-cloud/City-View-Lanes** (branch: `main`)
+
+1. Open a file (example: `src/app/page.tsx` for the home page)
+2. Click the pencil → edit → **Commit changes** to `main`
+3. Connect this repo to your **same** Vercel project (Settings → Git) once  
+   → then every commit updates the live site automatically
+
+**Which file does what?** See [`EDIT-ON-GITHUB.txt`](./EDIT-ON-GITHUB.txt)  
+**Deploy steps:** See [`UPDATE-VERCEL.txt`](./UPDATE-VERCEL.txt)
+
 ## Website Owner login
 
 | Field | Value |
