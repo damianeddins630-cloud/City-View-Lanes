@@ -35,7 +35,12 @@ export async function POST(request: Request) {
     await refreshSessionForUser(user);
 
     return NextResponse.json({
-      user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
+      user: toPublicUser(
+        user,
+        role?.name || "Member",
+        role?.permissions || [],
+        typeof role?.rank === "number" ? role.rank : 999,
+      ),
     });
   } catch {
     return NextResponse.json({ error: "Login failed." }, { status: 500 });

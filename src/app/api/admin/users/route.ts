@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { readStore, updateStore } from "@/lib/db";
+import {
+  WEBSITE_OWNER_ROLE_ID,
+  roleRank,
+} from "@/lib/roles";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +40,10 @@ export async function GET() {
           id: s.id,
           status: s.status,
           leagueId: s.leagueId,
-          leagueName: league?.name || "Unknown league",
+          leagueName:
+            s.leagueId === "waitlist"
+              ? "League interest / waitlist"
+              : league?.name || "Unknown league",
           leagueDay: league?.day || "",
           leagueTime: league?.time || "",
           note: s.note,
@@ -44,25 +51,38 @@ export async function GET() {
           adminNote: s.adminNote || "",
         };
       });
+    const employmentApps = (store.employmentApplications || [])
+      .filter((a) => a.userId === u.id)
+      .map((a) => ({
+        id: a.id,
+        status: a.status,
+        position: a.position,
+        applicationDate: a.applicationDate,
+        createdAt: a.createdAt,
+        adminNote: a.adminNote || "",
+      }));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...rest } = u;
     return {
       ...rest,
       roleName: role?.name || "Member",
+      roleRank: roleRank(role),
       permissions: role?.permissions || [],
       bookingCount: bookings.length,
       leagueSignupCount: leagueSignups.length,
+      employmentCount: employmentApps.length,
       bookings,
       leagueSignups,
+      employmentApps,
     };
   });
 
-  return NextResponse.json({ users });
+  return NextResponse.json({ users, actorRank: user?.roleRank ?? 999 });
 }
 
 export async function PATCH(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_users")) {
+  if (!hasPermission(user, "manage_users") || !user) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -70,17 +90,29 @@ export async function PATCH(request: Request) {
     const body = await request.json();
     const userId = String(body.userId || "");
     const roleId = String(body.roleId || "");
+    const actorRank = user.roleRank ?? 999;
 
     const { store } = await updateStore((s) => {
       const target = s.users.find((u) => u.id === userId);
       if (!target) throw new Error("User not found");
-      const role = s.roles.find((r) => r.id === roleId);
-      if (!role) throw new Error("Role not found");
+      const newRole = s.roles.find((r) => r.id === roleId);
+      if (!newRole) throw new Error("Role not found");
+      const currentRole = s.roles.find((r) => r.id === target.roleId);
 
-      if (target.roleId === "role_master_admin" && roleId !== "role_master_admin") {
-        const masters = s.users.filter((u) => u.roleId === "role_master_admin");
-        if (masters.length <= 1) {
-          throw new Error("Cannot remove the only Master Admin.");
+      if (roleRank(currentRole) <= actorRank) {
+        throw new Error("You cannot change a user at or above your level.");
+      }
+      if (roleRank(newRole) <= actorRank) {
+        throw new Error("You cannot assign a role at or above your level.");
+      }
+
+      if (
+        target.roleId === WEBSITE_OWNER_ROLE_ID &&
+        roleId !== WEBSITE_OWNER_ROLE_ID
+      ) {
+        const owners = s.users.filter((u) => u.roleId === WEBSITE_OWNER_ROLE_ID);
+        if (owners.length <= 1) {
+          throw new Error("Cannot remove the only Website Owner.");
         }
       }
 

@@ -78,7 +78,12 @@ export async function PATCH(request: Request) {
 
     if (!write.durable) {
       return NextResponse.json({
-        user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
+        user: toPublicUser(
+          user,
+          role?.name || "Member",
+          role?.permissions || [],
+          typeof role?.rank === "number" ? role.rank : 999,
+        ),
         persistence: write.mode,
         durable: false,
         ok: false,
@@ -89,7 +94,12 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json({
-      user: toPublicUser(user, role?.name || "Member", role?.permissions || []),
+      user: toPublicUser(
+        user,
+        role?.name || "Member",
+        role?.permissions || [],
+        typeof role?.rank === "number" ? role.rank : 999,
+      ),
       persistence: write.mode,
       durable: true,
       ok: true,

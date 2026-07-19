@@ -1,8 +1,8 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
-import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
 import { ensureMasterAdmin } from "./masterAdmin";
+import { ensureRoles } from "./roles";
 import type { Store } from "./types";
 
 const seedPath = path.join(process.cwd(), "data", "store.json");
@@ -434,9 +434,18 @@ export async function testBlobRoundTrip(): Promise<{
 }
 
 function finalizeStore(store: Store): Store {
-  if (!store.leagues?.length) {
-    store.leagues = structuredClone(FALL_LEAGUES_SEED);
+  if (!Array.isArray(store.leagues)) store.leagues = [];
+  if (!Array.isArray(store.leagueSignups)) store.leagueSignups = [];
+  if (!Array.isArray(store.bookings)) store.bookings = [];
+  if (!Array.isArray(store.employmentApplications)) {
+    store.employmentApplications = [];
   }
+  if (!Array.isArray(store.notifications)) store.notifications = [];
+  if (!Array.isArray(store.chatMessages)) store.chatMessages = [];
+  if (!Array.isArray(store.hours)) store.hours = [];
+  if (!Array.isArray(store.users)) store.users = [];
+  // Do NOT re-seed leagues when empty — deleting all leagues must stay empty.
+  ensureRoles(store);
   ensureMasterAdmin(store);
   return store;
 }

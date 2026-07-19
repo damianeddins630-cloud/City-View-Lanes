@@ -76,7 +76,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       booking,
-      message: "We will be with you shortly.",
+      message:
+        "Party application submitted — it is under review. Check your Profile for updates.",
     });
   } catch (error) {
     if (error instanceof PersistenceError) {

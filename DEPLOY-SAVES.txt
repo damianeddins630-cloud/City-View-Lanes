@@ -40,7 +40,7 @@ If mode is still "memory"
 You are looking at a different Vercel project than the one with Blob,
 or you have not Redeployed after connecting Blob.
 
-Master admin
-------------
+Master admin / Website Owner
+----------------------------
 Username: cityview_damian
 Password: Archer6!9_20

@@ -61,7 +61,7 @@ export default function BookClient() {
     }
     setMessage(
       data.message ||
-        "We will be with you shortly. A confirmation email has been queued.",
+        "Party application submitted — it is under review. Check your Profile for status updates.",
     );
   }
 
@@ -73,7 +73,7 @@ export default function BookClient() {
     return (
       <div className="mt-8 border border-[var(--line)] bg-black/40 p-6">
         <p className="text-[var(--ink)]">
-          Please sign in or create an account to book a party or join a league.
+          Please sign in or create an account to submit a party application.
         </p>
         <Link href="/login?next=/book" className="btn btn-primary mt-5">
           Sign in to continue

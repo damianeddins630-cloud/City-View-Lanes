@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasPermission } from "@/lib/auth";
+import {
+  getCurrentUser,
+  hasPermission,
+  toPublicUser,
+} from "@/lib/auth";
 import { readStore, updateStore } from "@/lib/db";
+import {
+  WEBSITE_OWNER_ROLE_ID,
+  WEBSITE_OWNER_ROLE_NAME,
+  canManageRole,
+  nextRankBelow,
+  roleRank,
+} from "@/lib/roles";
 import { makeId } from "@/lib/ids";
 import type { Permission } from "@/lib/types";
 
@@ -10,12 +21,18 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const store = await readStore();
-  return NextResponse.json({ roles: store.roles });
+  const roles = [...store.roles].sort(
+    (a, b) => roleRank(a) - roleRank(b) || a.name.localeCompare(b.name),
+  );
+  return NextResponse.json({
+    roles,
+    actorRank: user?.roleRank ?? 999,
+  });
 }
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_roles")) {
+  if (!hasPermission(user, "manage_roles") || !user) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -26,9 +43,18 @@ export async function POST(request: Request) {
     const permissions = Array.isArray(body.permissions)
       ? (body.permissions as Permission[])
       : [];
+    const actorRank = user.roleRank ?? 999;
+    let rank =
+      typeof body.rank === "number" ? Number(body.rank) : nextRankBelow(actorRank, []);
 
     if (!name) {
       return NextResponse.json({ error: "Role name is required." }, { status: 400 });
+    }
+    if (rank <= actorRank) {
+      return NextResponse.json(
+        { error: "You can only create roles below your authority level." },
+        { status: 403 },
+      );
     }
 
     const role = {
@@ -36,6 +62,7 @@ export async function POST(request: Request) {
       name,
       description,
       permissions,
+      rank,
       locked: false,
     };
 
@@ -43,7 +70,11 @@ export async function POST(request: Request) {
       if (s.roles.some((r) => r.name.toLowerCase() === name.toLowerCase())) {
         throw new Error("A role with that name already exists.");
       }
+      if (typeof body.rank !== "number") {
+        role.rank = nextRankBelow(actorRank, s.roles);
+      }
       s.roles.push(role);
+      s.roles.sort((a, b) => roleRank(a) - roleRank(b));
     });
 
     return NextResponse.json({ roles: store.roles, role });
@@ -55,31 +86,56 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_roles")) {
+  if (!hasPermission(user, "manage_roles") || !user) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
     const body = await request.json();
     const id = String(body.id || "");
+    const actorRank = user.roleRank ?? 999;
+
     const { store } = await updateStore((s) => {
       const role = s.roles.find((r) => r.id === id);
       if (!role) throw new Error("Role not found");
-      if (role.locked && role.name === "Master Admin") {
-        // Allow permission edits only for non-locked fields except Master Admin stay full
-        if (body.permissions) {
-          role.permissions = body.permissions as Permission[];
+
+      if (!canManageRole(actorRank, role) && role.id !== WEBSITE_OWNER_ROLE_ID) {
+        // Website Owner may edit any role; others only weaker roles
+        if (actorRank > 0) {
+          throw new Error("You cannot edit a role at or above your level.");
         }
+      }
+      if (actorRank > 0 && !canManageRole(actorRank, role)) {
+        throw new Error("You cannot edit a role at or above your level.");
+      }
+
+      if (role.id === WEBSITE_OWNER_ROLE_ID || role.locked && role.name === WEBSITE_OWNER_ROLE_NAME) {
+        if (actorRank !== 0) {
+          throw new Error("Only the Website Owner can change that role.");
+        }
+        if (body.permissions) role.permissions = body.permissions as Permission[];
         if (body.description !== undefined) {
           role.description = String(body.description);
         }
+        role.name = WEBSITE_OWNER_ROLE_NAME;
+        role.rank = 0;
+        role.locked = true;
         return;
       }
+
       if (body.name !== undefined && !role.locked) role.name = String(body.name);
       if (body.description !== undefined) role.description = String(body.description);
       if (body.permissions !== undefined) {
         role.permissions = body.permissions as Permission[];
       }
+      if (typeof body.rank === "number") {
+        const next = Number(body.rank);
+        if (next <= actorRank) {
+          throw new Error("Role order must stay below your authority level.");
+        }
+        role.rank = next;
+      }
+      s.roles.sort((a, b) => roleRank(a) - roleRank(b));
     });
     return NextResponse.json({ roles: store.roles });
   } catch (error) {
@@ -90,7 +146,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_roles")) {
+  if (!hasPermission(user, "manage_roles") || !user) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -101,10 +157,14 @@ export async function DELETE(request: Request) {
   }
 
   try {
+    const actorRank = user.roleRank ?? 999;
     const { store } = await updateStore((s) => {
       const role = s.roles.find((r) => r.id === id);
       if (!role) throw new Error("Role not found");
       if (role.locked) throw new Error("This role cannot be deleted.");
+      if (!canManageRole(actorRank, role)) {
+        throw new Error("You cannot delete a role at or above your level.");
+      }
       if (s.users.some((u) => u.roleId === id)) {
         throw new Error("Reassign users before deleting this role.");
       }

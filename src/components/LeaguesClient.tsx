@@ -97,7 +97,7 @@ export default function LeaguesClient({
       return;
     }
 
-    setMessage(data.message || "Signup submitted — we will be with you shortly.");
+    setMessage(data.message || "Application submitted — it is under review on your Profile.");
     setShowInterest(false);
   }
 

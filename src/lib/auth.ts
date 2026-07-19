@@ -87,10 +87,11 @@ export function toPublicUser(
   user: User,
   roleName: string,
   permissions: Permission[],
+  roleRank = 999,
 ): PublicUser {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, ...rest } = user;
-  return { ...rest, roleName, permissions };
+  return { ...rest, roleName, roleRank, permissions };
 }
 
 export async function getCurrentUser(): Promise<PublicUser | null> {
@@ -101,7 +102,8 @@ export async function getCurrentUser(): Promise<PublicUser | null> {
   const user = store.users.find((u) => u.id === session.userId);
   if (!user) return null;
 
-  // Session overlay keeps text profile edits visible if durable DB lags.
+  // Always use the store roleId so admin role changes take effect immediately.
+  // Session overlay only keeps profile text fields visible if durable DB lags.
   const merged: User = {
     ...user,
     username: session.username || user.username,
@@ -111,11 +113,16 @@ export async function getCurrentUser(): Promise<PublicUser | null> {
     phone: session.phone ?? user.phone,
     birthDate: session.birthDate ?? user.birthDate,
     avatarUrl: user.avatarUrl || session.avatarUrl || "",
-    roleId: session.roleId || user.roleId,
+    roleId: user.roleId,
   };
 
   const role = store.roles.find((r) => r.id === merged.roleId);
-  return toPublicUser(merged, role?.name || "Member", role?.permissions || []);
+  return toPublicUser(
+    merged,
+    role?.name || "Member",
+    role?.permissions || [],
+    typeof role?.rank === "number" ? role.rank : 999,
+  );
 }
 
 export function hasPermission(user: PublicUser | null, permission: Permission) {

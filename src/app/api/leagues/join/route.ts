@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { PersistenceError, readStore, updateStore } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { leagueReceivedEmail, sendEmail } from "@/lib/email";
 import { makeId } from "@/lib/ids";
 
 export const dynamic = "force-dynamic";
@@ -77,17 +77,19 @@ export async function POST(request: Request) {
         ? "Fall league interest / waitlist"
         : store.leagues.find((l) => l.id === leagueId)?.name || "League";
 
+    const mail = leagueReceivedEmail(user.firstName || user.username, leagueName);
     await sendEmail({
       userId: user.id,
       email: user.email,
-      subject: "CityView Lanes — league signup received",
-      body: `Hi ${user.firstName || user.username},\n\nWe received your request for: ${leagueName}.\n\nWe will be with you shortly to confirm details.\n\n— CityView Lanes\n(817) 346-0333`,
+      subject: mail.subject,
+      body: mail.body,
       kind: "league_signup_received",
     });
 
     return NextResponse.json({
       signup,
-      message: "Signup submitted — we will be with you shortly.",
+      message:
+        "Application submitted — it is under review. Check your Profile for updates.",
     });
   } catch (error) {
     if (error instanceof PersistenceError) {

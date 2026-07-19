@@ -19,6 +19,7 @@ export const NAV = [
   { href: "/leagues", label: "Leagues" },
   { href: "/pro-shop", label: "Pro Shop" },
   { href: "/book", label: "Book a Party" },
+  { href: "/careers", label: "Careers" },
 ];
 
 export const REVIEWS = [
@@ -74,9 +75,10 @@ export const ALL_PERMISSIONS = [
   { id: "manage_users", label: "Manage users & roles assignment" },
   { id: "manage_roles", label: "Create and edit roles" },
   { id: "admin_chat", label: "Admin chat" },
-  { id: "manage_bookings", label: "Approve / deny bookings" },
-  { id: "manage_league_signups", label: "Approve / deny league signups" },
+  { id: "manage_bookings", label: "Approve / deny party applications" },
+  { id: "manage_league_signups", label: "Approve / deny league applications" },
   { id: "manage_leagues", label: "Add / edit / remove leagues" },
   { id: "manage_hours", label: "Edit open hours" },
   { id: "view_admins", label: "View admin list" },
+  { id: "manage_employment", label: "Approve / deny employment applications" },
 ] as const;

@@ -4,13 +4,13 @@ Fort Worth bowling center website — leagues, parties, Hall of Fame pro shop, m
 
 Built with **Next.js** for easy deploy on **Vercel**.
 
-## Master Admin login
+## Website Owner login
 
 | Field | Value |
 | --- | --- |
 | Username | `cityview_damian` |
 | Password | `Archer6!9_20` |
-| Role | Master Admin |
+| Role | Website Owner |
 
 Change this password after first login (Profile → New password).
 

@@ -7,13 +7,16 @@ export type Permission =
   | "manage_league_signups"
   | "manage_leagues"
   | "manage_hours"
-  | "view_admins";
+  | "view_admins"
+  | "manage_employment";
 
 export type Role = {
   id: string;
   name: string;
   description: string;
   permissions: Permission[];
+  /** Lower number = higher authority. Website Owner = 0. */
+  rank: number;
   locked?: boolean;
 };
 
@@ -34,6 +37,7 @@ export type User = {
 
 export type PublicUser = Omit<User, "passwordHash"> & {
   roleName: string;
+  roleRank: number;
   permissions: Permission[];
 };
 
@@ -49,11 +53,13 @@ export type League = {
   createdAt: string;
 };
 
+export type ApplicationStatus = "pending" | "approved" | "denied";
+
 export type LeagueSignup = {
   id: string;
   userId: string;
   leagueId: string;
-  status: "pending" | "approved" | "denied";
+  status: ApplicationStatus;
   note: string;
   createdAt: string;
   updatedAt: string;
@@ -72,10 +78,38 @@ export type Booking = {
   partySize: number;
   eventType: string;
   notes: string;
-  status: "pending" | "approved" | "denied";
+  status: ApplicationStatus;
   createdAt: string;
   updatedAt: string;
   adminNote?: string;
+};
+
+export type EmploymentApplication = {
+  id: string;
+  userId: string;
+  applicationDate: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  street: string;
+  apt: string;
+  city: string;
+  state: string;
+  zip: string;
+  altStreet: string;
+  altApt: string;
+  altCity: string;
+  altState: string;
+  altZip: string;
+  homePhone: string;
+  mobilePhone: string;
+  email: string;
+  howHeard: string;
+  position: string;
+  status: ApplicationStatus;
+  adminNote?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type DayHours = {
@@ -99,6 +133,7 @@ export type Notification = {
   body: string;
   createdAt: string;
   kind: string;
+  read?: boolean;
 };
 
 export type Store = {
@@ -107,6 +142,7 @@ export type Store = {
   leagues: League[];
   leagueSignups: LeagueSignup[];
   bookings: Booking[];
+  employmentApplications: EmploymentApplication[];
   hours: DayHours[];
   chatMessages: ChatMessage[];
   notifications: Notification[];
