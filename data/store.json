@@ -106,6 +106,28 @@
       "startDate": "09/15/26",
       "meetingInfo": "See center for meeting",
       "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_youth_saturday",
+      "day": "Sat",
+      "time": "10:00 AM",
+      "name": "CityView Youth League",
+      "type": "Youth",
+      "teamSize": "4",
+      "startDate": "09/12/26",
+      "meetingInfo": "Parents meeting — see front desk",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_youth_sunday",
+      "day": "Sun",
+      "time": "1:00 PM",
+      "name": "Junior Scratch Practice",
+      "type": "Youth",
+      "teamSize": "Open",
+      "startDate": "09/13/26",
+      "meetingInfo": "Ask for youth coach",
+      "createdAt": "2026-07-18T00:00:00.000Z"
     }
   ],
   "leagueSignups": [],

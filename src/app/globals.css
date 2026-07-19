@@ -51,9 +51,10 @@ body {
   min-height: 100%;
   color: var(--ink);
   background:
-    radial-gradient(900px 520px at 90% -10%, rgba(30, 111, 255, 0.28), transparent 55%),
-    radial-gradient(700px 420px at -5% 20%, rgba(197, 204, 214, 0.18), transparent 50%),
-    linear-gradient(165deg, #2a3038 0%, #1c2128 38%, #151920 72%, #1a1f26 100%);
+    radial-gradient(1100px 620px at 88% -12%, rgba(60, 140, 255, 0.38), transparent 58%),
+    radial-gradient(780px 480px at -8% 18%, rgba(220, 230, 245, 0.16), transparent 52%),
+    radial-gradient(640px 360px at 50% 110%, rgba(30, 111, 255, 0.18), transparent 55%),
+    linear-gradient(165deg, #303843 0%, #1c2128 36%, #12161d 70%, #181d24 100%);
   font-family: var(--font-body), sans-serif;
 }
 
@@ -678,14 +679,17 @@ a {
 }
 
 .panel {
-  border: 1px solid rgba(197, 204, 214, 0.28);
+  border: 1px solid rgba(197, 204, 214, 0.32);
   background: linear-gradient(
-    180deg,
-    rgba(42, 48, 56, 0.92) 0%,
-    rgba(28, 33, 40, 0.96) 100%
+    160deg,
+    rgba(52, 60, 72, 0.95) 0%,
+    rgba(28, 33, 40, 0.97) 55%,
+    rgba(18, 22, 28, 0.98) 100%
   );
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(10px);
+  box-shadow:
+    var(--shadow-soft),
+    0 0 0 1px rgba(91, 155, 255, 0.06) inset;
+  backdrop-filter: blur(12px);
 }
 
 .glass {
@@ -757,6 +761,157 @@ a {
   }
   100% {
     background-position: 200% 50%;
+  }
+}
+
+.league-hero {
+  min-height: 72svh;
+  background: #05070c;
+}
+
+.youth-band {
+  border-block: 1px solid rgba(197, 204, 214, 0.18);
+  background:
+    radial-gradient(900px 420px at 8% 0%, rgba(30, 111, 255, 0.26), transparent 58%),
+    radial-gradient(700px 380px at 100% 40%, rgba(255, 255, 255, 0.06), transparent 55%),
+    linear-gradient(180deg, #10151d 0%, #171c24 55%, #0d1117 100%);
+}
+
+.youth-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.youth-highlight {
+  padding: 0.9rem 1rem;
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, #fff, var(--blue-bright)) 1;
+  background: linear-gradient(180deg, rgba(30, 111, 255, 0.12), rgba(0, 0, 0, 0.25));
+}
+
+.youth-photo-stack {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-rows: 210px 180px;
+  min-height: 400px;
+}
+
+.youth-photo {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.4);
+  animation: fade-up 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.youth-photo-1 {
+  grid-row: 1 / span 2;
+  min-height: 100%;
+}
+
+.youth-photo img {
+  transition: transform 700ms ease;
+}
+
+.youth-photo:hover img {
+  transform: scale(1.06);
+}
+
+.youth-states-board {
+  margin-top: 0.5rem;
+  padding: 1.6rem 1.4rem 1.4rem;
+  border: 1px solid rgba(197, 204, 214, 0.22);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 40%),
+    linear-gradient(180deg, rgba(20, 28, 42, 0.95), rgba(8, 10, 14, 0.98));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.state-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+@media (min-width: 700px) {
+  .state-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .state-strip {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.state-chip {
+  padding: 0.85rem 0.7rem;
+  border-left: 3px solid var(--blue-bright);
+  background: rgba(0, 0, 0, 0.28);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.state-chip:hover {
+  transform: translateY(-3px);
+  background: rgba(30, 111, 255, 0.16);
+}
+
+.youth-stats-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+}
+
+@media (min-width: 700px) {
+  .youth-stats-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.youth-stat {
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid rgba(197, 204, 214, 0.25);
+}
+
+.league-filters {
+  gap: 0.5rem;
+}
+
+.league-filter {
+  min-height: 2.2rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 160ms ease;
+}
+
+.league-filter:hover {
+  color: white;
+  border-color: var(--blue-bright);
+}
+
+.league-filter.is-active {
+  color: white;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue));
+  box-shadow: var(--shadow-lift);
+}
+
+@media (max-width: 700px) {
+  .youth-photo-stack {
+    grid-template-columns: 1fr;
+    grid-template-rows: 220px 160px 160px;
+  }
+
+  .youth-photo-1 {
+    grid-row: auto;
   }
 }
 

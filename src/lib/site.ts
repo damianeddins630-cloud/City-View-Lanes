@@ -43,6 +43,54 @@ export const REVIEWS = [
   },
 ];
 
+/** Youth program copy for the Leagues page — edit anytime. */
+export const YOUTH_LEAGUE = {
+  kicker: "Youth League",
+  title: "CityView Youth Bowling",
+  blurb:
+    "Kids and teens learn the game, build team spirit, and compete with coaches who care — right here on Oakmont Blvd in Fort Worth.",
+  ages: "Ages 5–17",
+  season: "Fall Season 2026-2027",
+  format: "Weekly league play · USBC youth format · Fun + fundamentals",
+  phoneNote: "Ask for the youth / league desk",
+  photos: [
+    {
+      src: "/images/yelp-lanes-kids.jpg",
+      alt: "Kids bowling at CityView Lanes",
+    },
+    {
+      src: "/images/cityview-lanes.webp",
+      alt: "CityView Lanes bowling lanes",
+    },
+    {
+      src: "/images/yelp-interior-1.jpg",
+      alt: "Inside CityView Lanes",
+    },
+  ],
+  highlights: [
+    { label: "Age range", value: "5–17" },
+    { label: "Season", value: "Fall 2026" },
+    { label: "Home center", value: "Fort Worth, TX" },
+    { label: "Coaching", value: "On-site academy" },
+  ],
+  /** States CityView youth players come from / compete representing */
+  playerStates: [
+    { code: "TX", name: "Texas", note: "Home state — most of our youth roster" },
+    { code: "OK", name: "Oklahoma", note: "Travel & tournament partners" },
+    { code: "LA", name: "Louisiana", note: "Regional competition" },
+    { code: "AR", name: "Arkansas", note: "Regional competition" },
+    { code: "NM", name: "New Mexico", note: "Travel events" },
+    { code: "KS", name: "Kansas", note: "Travel events" },
+  ],
+  /** Quick program stats shown next to the states board */
+  playerStats: [
+    { label: "Youth bowlers", value: "Growing roster" },
+    { label: "Divisions", value: "Bantam · Prep · Junior · Major" },
+    { label: "Focus", value: "Fun, form, and fair play" },
+    { label: "Next step", value: "Apply on this page" },
+  ],
+};
+
 export const WHY_CARDS = [
   {
     title: "League Bowling",

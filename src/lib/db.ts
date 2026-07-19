@@ -1,6 +1,7 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
 import { ensureMasterAdmin } from "./masterAdmin";
 import { ensureRoles } from "./roles";
 import type { Store } from "./types";
@@ -444,7 +445,14 @@ function finalizeStore(store: Store): Store {
   if (!Array.isArray(store.chatMessages)) store.chatMessages = [];
   if (!Array.isArray(store.hours)) store.hours = [];
   if (!Array.isArray(store.users)) store.users = [];
-  // Do NOT re-seed leagues when empty — deleting all leagues must stay empty.
+  // Do NOT re-seed when empty — deleting all leagues must stay empty.
+  // If leagues exist, merge any missing seed rows (e.g. new Youth lines).
+  if (store.leagues.length > 0) {
+    const have = new Set(store.leagues.map((l) => l.id));
+    for (const seed of FALL_LEAGUES_SEED) {
+      if (!have.has(seed.id)) store.leagues.push({ ...seed });
+    }
+  }
   ensureRoles(store);
   ensureMasterAdmin(store);
   return store;

@@ -17,6 +17,7 @@ export default function LeaguesClient({
   const [user, setUser] = useState<PublicUser | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -69,14 +70,15 @@ export default function LeaguesClient({
 
   const leagues = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return initialLeagues;
-    return initialLeagues.filter((l) =>
-      [l.name, l.day, l.type, l.time, l.teamSize]
+    return initialLeagues.filter((l) => {
+      if (typeFilter !== "All" && l.type !== typeFilter) return false;
+      if (!q) return true;
+      return [l.name, l.day, l.type, l.time, l.teamSize]
         .join(" ")
         .toLowerCase()
-        .includes(q),
-    );
-  }, [initialLeagues, query]);
+        .includes(q);
+    });
+  }, [initialLeagues, query, typeFilter]);
 
   function openApplication(leagueId: string) {
     setError("");
@@ -168,9 +170,22 @@ export default function LeaguesClient({
         <button type="button" className="btn btn-primary" onClick={() => void startJoin()}>
           League application
         </button>
-        <a href={`tel:${SITE.phoneTel}`} className="btn btn-ghost">
-          Call {SITE.phoneDisplay}
+        <a href={`tel:${SITE.leaguePhoneTel}`} className="btn btn-ghost">
+          League desk {SITE.leaguePhoneDisplay}
         </a>
+      </div>
+
+      <div className="league-filters mt-6 flex flex-wrap gap-2">
+        {["All", "Youth", "Adult", "Senior", "IGBO"].map((type) => (
+          <button
+            key={type}
+            type="button"
+            className={`league-filter ${typeFilter === type ? "is-active" : ""}`}
+            onClick={() => setTypeFilter(type)}
+          >
+            {type}
+          </button>
+        ))}
       </div>
 
       {message ? (
