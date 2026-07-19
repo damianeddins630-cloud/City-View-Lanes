@@ -15,6 +15,8 @@ export const SITE = {
   proShopName: "Ballard's Bowling Academy",
   proShopUrl: "https://ballardsbowlingacademy.com/",
   proShopUrlLabel: "ballardsbowlingacademy.com",
+  delBallardPhoto: "/images/del-ballard-jr.jpg",
+  carolynDorinBallardPhoto: "/images/carolyn-dorin-ballard.jpg",
 };
 
 export const NAV = [

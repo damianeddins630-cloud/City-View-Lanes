@@ -1077,6 +1077,18 @@ a {
   background: rgba(201, 162, 39, 0.12);
 }
 
+.hof-theme .hof-legend-photo {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.hof-theme .hof-legend-photo img {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hof-theme .hof-legend-photo:hover img {
+  transform: scale(1.04);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
   .fade-up-delay,

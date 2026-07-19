@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 
@@ -149,8 +150,14 @@ export default function ProShopPage() {
             <li>PBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-white/55">
-            Owner: upload official photo of Del Ballard Jr.
+          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden border border-[rgba(201,162,39,0.45)] bg-black/40">
+            <Image
+              src={SITE.delBallardPhoto}
+              alt="Del Ballard Jr."
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
         </article>
 
@@ -174,8 +181,14 @@ export default function ProShopPage() {
             <li>PWBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-white/55">
-            Owner: upload official photo of Carolyn Dorin-Ballard
+          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden border border-[rgba(201,162,39,0.45)] bg-black/40">
+            <Image
+              src={SITE.carolynDorinBallardPhoto}
+              alt="Carolyn Dorin-Ballard"
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
         </article>
       </section>
