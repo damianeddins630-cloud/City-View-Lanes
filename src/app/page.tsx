@@ -281,7 +281,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-white/50 bg-[#a8c4e0]/85 text-[var(--ink)]">
+      <section className="reviews-band relative overflow-hidden">
         <div className="reviews-glow pointer-events-none absolute inset-0" />
         <div className="section relative z-10">
           <EditableText
@@ -343,23 +343,23 @@ export default async function HomePage() {
             sizes="100vw"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(175,182,192,0.92)_0%,rgba(139,148,158,0.9)_55%,rgba(122,132,145,0.88)_100%)]" />
-        <div className="section relative z-10">
+        <div className="visit-veil absolute inset-0" />
+        <div className="section relative z-10 text-[#e8f7ff]">
           <EditableText
             path="home.visitKicker"
             value={h.visitKicker}
             as="p"
-            className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase"
+            className="text-sm font-bold tracking-[0.18em] text-[#9ee4ff] uppercase"
           />
           <div className="mt-4 grid gap-8 md:grid-cols-[1.25fr_1fr] md:items-end">
             <div>
-              <h2 className="font-display text-5xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
+              <h2 className="font-display text-5xl tracking-[0.05em] text-white sm:text-6xl">
                 {SITE.addressLine1}
               </h2>
-              <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
+              <p className="mt-2 text-lg text-white/75">{SITE.addressLine2}</p>
               <a
                 href={`tel:${SITE.phoneTel}`}
-                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue)]"
+                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[#9ee4ff]"
               >
                 {SITE.phoneDisplay}
               </a>
@@ -367,13 +367,13 @@ export default async function HomePage() {
                 path="home.visitHoursNote"
                 value={h.visitHoursNote}
                 as="p"
-                className="mt-4 text-sm text-[var(--ink)]"
+                className="mt-4 text-sm text-white/90"
               />
               <EditableText
                 path="home.visitParkingNote"
                 value={h.visitParkingNote}
                 as="p"
-                className="mt-1 text-sm text-[var(--muted)]"
+                className="mt-1 text-sm text-white/70"
               />
             </div>
             <div className="flex flex-wrap content-start gap-3">

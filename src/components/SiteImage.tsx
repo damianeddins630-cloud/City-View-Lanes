@@ -28,7 +28,7 @@ export default function SiteImage({
   width,
   height,
 }: Props) {
-  const safeSrc = src || "/images/yelp-lanes-extra.jpg";
+  const safeSrc = src || "/images/cityview-lanes.webp";
   const classes = `img-smooth ${className || ""}`.trim();
 
   if (isRemote(safeSrc)) {
