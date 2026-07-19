@@ -5,9 +5,9 @@ export function defaultSiteContent(): SiteContent {
   return {
     edits: {},
     home: {
-      heroImage: "/images/yelp-lanes-extra.jpg",
-      heroImageAlt: "Bowling lanes at CityView Lanes Fort Worth",
-      heroTitleLine1: "CityView",
+      heroImage: "/images/hero-lanes-glow.jpg",
+      heroImageAlt: "Glowing bowling lanes at CityView Lanes Fort Worth",
+      heroTitleLine1: "City View",
       heroTitleLine2: "Lanes",
       heroSubtitle:
         "Fort Worth bowling, leagues, and Hall of Fame coaching — under one roof.",
@@ -143,9 +143,13 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       heroImage: refreshBundledPhoto(homeIn.heroImage, d.home.heroImage, [
         "/images/cityview-lanes.webp",
         "/images/cityview-interior.webp",
+        "/images/yelp-lanes-extra.jpg",
       ]),
       heroImageAlt: mergeString(homeIn.heroImageAlt, d.home.heroImageAlt),
-      heroTitleLine1: mergeString(homeIn.heroTitleLine1, d.home.heroTitleLine1),
+      heroTitleLine1:
+        homeIn.heroTitleLine1 === "CityView"
+          ? "City View"
+          : mergeString(homeIn.heroTitleLine1, d.home.heroTitleLine1),
       heroTitleLine2: mergeString(homeIn.heroTitleLine2, d.home.heroTitleLine2),
       heroSubtitle: mergeString(homeIn.heroSubtitle, d.home.heroSubtitle),
       marquee:

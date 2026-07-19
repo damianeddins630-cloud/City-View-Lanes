@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       Array.isArray(body.permissions) ? (body.permissions as Permission[]) : [],
     );
     const actorRank = user.roleRank ?? 999;
-    let rank =
+    const rank =
       typeof body.rank === "number" ? Number(body.rank) : nextRankBelow(actorRank, []);
 
     if (!name) {

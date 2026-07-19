@@ -116,6 +116,24 @@ function isWebsiteOwnerRole(role: Role) {
   return role.name === "Website Owner" || role.id === "role_master_admin";
 }
 
+function DetailRow({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | number | null;
+}) {
+  if (value === undefined || value === null || value === "") return null;
+  return (
+    <div className="border-b border-[var(--line)] py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
+      <p className="text-xs font-semibold tracking-wide text-[var(--blue)] uppercase">
+        {label}
+      </p>
+      <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{String(value)}</p>
+    </div>
+  );
+}
+
 export default function AdminClient() {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [tab, setTab] = useState<Tab>("users");
@@ -526,18 +544,6 @@ export default function AdminClient() {
     setNotice("Employment application deleted.");
     setDetail(null);
     await loadAll();
-  }
-
-  function DetailRow({ label, value }: { label: string; value?: string | number | null }) {
-    if (value === undefined || value === null || value === "") return null;
-    return (
-      <div className="border-b border-[var(--line)] py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
-        <p className="text-xs font-semibold tracking-wide text-[var(--blue)] uppercase">
-          {label}
-        </p>
-        <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{String(value)}</p>
-      </div>
-    );
   }
 
   async function addLeague(e: FormEvent) {

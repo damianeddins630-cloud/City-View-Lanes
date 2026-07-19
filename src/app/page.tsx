@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[#6f7a89] text-[var(--ink)]">
+      <section className="hero-stage relative isolate overflow-hidden bg-[#1a2a3c] text-white">
         <div className="absolute inset-0">
           <EditableImage
             path="home.heroImage"
@@ -25,31 +25,29 @@ export default async function HomePage() {
             alt={h.heroImageAlt}
             fill
             priority
-            className="object-cover hero-pan"
+            className="object-cover hero-gif-feel"
             sizes="100vw"
           />
         </div>
         <div className="hero-veil absolute inset-0" />
-        <div className="hero-swoosh pointer-events-none absolute inset-0" />
+        <div className="hero-lane-glow pointer-events-none absolute inset-0" />
         <div className="hero-shine pointer-events-none absolute inset-0" />
-        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-44" />
+        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-52" />
 
         <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-20 pt-28 sm:pb-24">
-          <h1 className="font-display brand-title fade-up text-[clamp(4.8rem,14vw,9.5rem)] font-semibold leading-[0.82] tracking-[0.02em] text-[var(--ink)]">
-            <EditableText path="home.heroTitleLine1" value={h.heroTitleLine1} />
-            <EditableText
-              path="home.heroTitleLine2"
-              value={h.heroTitleLine2}
-              as="span"
-              className="brand-title-accent block"
-            />
+          <h1 className="font-display brand-title-row fade-up text-[clamp(2.6rem,8vw,5.8rem)] font-semibold leading-none tracking-[0.04em] uppercase">
+            <span className="lane-neon-text">
+              <EditableText path="home.heroTitleLine1" value={h.heroTitleLine1} />
+              {" "}
+              <EditableText path="home.heroTitleLine2" value={h.heroTitleLine2} />
+            </span>
           </h1>
           <EditableText
             path="home.heroSubtitle"
             value={h.heroSubtitle}
             as="p"
             multiline
-            className="fade-up-delay mt-7 max-w-xl text-lg leading-relaxed text-[var(--muted)] sm:text-xl"
+            className="fade-up-delay mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl"
           />
           <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
             <Link href="/book" className="btn btn-hero-primary btn-pulse btn-xl">
