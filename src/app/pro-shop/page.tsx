@@ -39,6 +39,7 @@ const services = [
 export default function ProShopPage() {
   return (
     <div className="hof-theme min-h-full">
+      <div className="silver-bar" />
       <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pt-16 pb-10">
         <p className="text-sm font-bold tracking-[0.2em] text-[var(--hof-gold)] uppercase">
           Hall of Fame Pro Shop
@@ -83,7 +84,7 @@ export default function ProShopPage() {
       </section>
 
       <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pb-10">
-        <article className="border border-[rgba(201,162,39,0.45)] bg-black/50 p-6 sm:p-8">
+        <article className="panel p-6 sm:p-8">
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-gold)] uppercase">
             Pro Shop Manager · Cityview Lanes
           </p>
@@ -121,7 +122,7 @@ export default function ProShopPage() {
         {services.map((item) => (
           <article
             key={item.title}
-            className="border border-[rgba(201,162,39,0.35)] bg-black/40 p-5"
+            className="panel p-5"
           >
             <h2 className="font-display text-2xl tracking-[0.04em] text-[var(--hof-gold)]">
               {item.title}
@@ -132,7 +133,7 @@ export default function ProShopPage() {
       </section>
 
       <section className="mx-auto grid w-[min(1140px,calc(100%-1.5rem))] gap-8 pb-12 lg:grid-cols-2">
-        <article className="border border-[rgba(155,27,30,0.55)] bg-black/50 p-6">
+        <article className="panel p-6">
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-red)] uppercase">
             Legend
           </p>
@@ -161,7 +162,7 @@ export default function ProShopPage() {
           </div>
         </article>
 
-        <article className="border border-[rgba(155,27,30,0.55)] bg-black/50 p-6">
+        <article className="panel p-6">
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-red)] uppercase">
             Legend
           </p>

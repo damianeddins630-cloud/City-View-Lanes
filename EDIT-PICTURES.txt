@@ -35,11 +35,12 @@ so photos and text stick after refresh.
 
 Newest lane photos included
 ----------------------------
-The site ships with real CityView Lanes photos only
-(branded pin deck, current lanes, youth bowling).
-No AI-generated pictures. You can still replace any of
-them in Admin → Pictures & Text.
+Defaults use real CityView Lanes photos that match the
+current center look (branded pin deck, modern lane screens,
+youth bowling with CityView wall art). Prefer fresh guest
+or staff photos from 2024–2026 when you replace them in
+Admin → Pictures & Text. No AI-generated pictures.
 
-Non-photo chrome (page background, tabs, panels, bands,
+Non-photo chrome (page backgrounds, tabs, panels, bands,
 header, footer) uses a cool ice-cyan look — edit colors
 in src/app/globals.css if you want them cooler/darker.

@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[#0d2438] text-white">
+      <section className="hero-stage relative isolate overflow-hidden bg-[var(--ink)] text-white">
         <div className="absolute inset-0">
           <EditableImage
             path="home.heroImage"
@@ -344,12 +344,12 @@ export default async function HomePage() {
           />
         </div>
         <div className="visit-veil absolute inset-0" />
-        <div className="section relative z-10 text-[#e8f7ff]">
+        <div className="section relative z-10 text-[var(--ice)]">
           <EditableText
             path="home.visitKicker"
             value={h.visitKicker}
             as="p"
-            className="text-sm font-bold tracking-[0.18em] text-[#9ee4ff] uppercase"
+            className="text-sm font-bold tracking-[0.18em] text-[var(--ice-accent)] uppercase"
           />
           <div className="mt-4 grid gap-8 md:grid-cols-[1.25fr_1fr] md:items-end">
             <div>
@@ -359,7 +359,7 @@ export default async function HomePage() {
               <p className="mt-2 text-lg text-white/75">{SITE.addressLine2}</p>
               <a
                 href={`tel:${SITE.phoneTel}`}
-                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[#9ee4ff]"
+                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--ice-accent)]"
               >
                 {SITE.phoneDisplay}
               </a>

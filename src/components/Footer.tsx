@@ -36,7 +36,7 @@ export default function Footer() {
           </p>
           <a
             href={`tel:${SITE.phoneTel}`}
-            className="phone-link mt-4 inline-block text-base font-semibold text-[#9ee4ff]"
+            className="phone-link mt-4 inline-block text-base font-semibold text-[var(--ice-accent)]"
           >
             {SITE.phoneDisplay}
           </a>

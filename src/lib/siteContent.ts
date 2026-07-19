@@ -78,7 +78,7 @@ export function defaultSiteContent(): SiteContent {
       season: YOUTH_LEAGUE.season,
       format: YOUTH_LEAGUE.format,
       phoneNote: YOUTH_LEAGUE.phoneNote,
-      heroImage: "/images/yelp-lanes-dragon.jpg",
+      heroImage: "/images/yelp-lanes-extra.jpg",
       photos: [
         {
           src: "/images/yelp-lanes-wide.jpg",
@@ -270,6 +270,8 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       heroImage: refreshBundledPhoto(youthIn.heroImage, d.youth.heroImage, [
         "/images/cityview-lanes.webp",
         "/images/yelp-lanes-kids.jpg",
+        "/images/yelp-lanes-dragon.jpg",
+        "/images/cityview-interior.webp",
       ]),
       photos:
         Array.isArray(youthIn.photos) && youthIn.photos.length

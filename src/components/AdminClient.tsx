@@ -699,8 +699,8 @@ export default function AdminClient() {
       <div
         className={`mb-4 border px-4 py-3 text-sm ${
           storage.durable
-            ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-200"
-            : "border-amber-400/40 bg-amber-500/10 text-amber-100"
+            ? "ice-success"
+            : "ice-warn"
         }`}
       >
         {storage.durable ? (
@@ -886,7 +886,7 @@ export default function AdminClient() {
         ))}
       </div>
 
-      {error ? <p className="mt-4 text-sm font-semibold text-red-700">{error}</p> : null}
+      {error ? <p className="mt-4 text-sm font-semibold ice-error">{error}</p> : null}
       {notice ? <p className="mt-4 text-sm font-semibold text-[var(--blue)]">{notice}</p> : null}
 
       {activeTab === "users" && can("manage_users") ? (
@@ -912,7 +912,7 @@ export default function AdminClient() {
                   >
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-white/35 text-xs font-bold text-[var(--blue)]">
+                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)] text-xs font-bold text-[var(--blue)]">
                           {u.avatarUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={u.avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -1032,7 +1032,7 @@ export default function AdminClient() {
                         {selectedUser.bookings.map((b) => (
                           <li
                             key={b.id}
-                            className="border border-[var(--line)] bg-white/35/5 px-3 py-2"
+                            className="border border-[var(--line)] bg-[var(--blue-soft)]/40 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {b.eventType} · {b.status}
@@ -1061,7 +1061,7 @@ export default function AdminClient() {
                         {selectedUser.leagueSignups.map((s) => (
                           <li
                             key={s.id}
-                            className="border border-[var(--line)] bg-white/35/5 px-3 py-2"
+                            className="border border-[var(--line)] bg-[var(--blue-soft)]/40 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {s.leagueName || s.leagueId} · {s.status}
@@ -1170,7 +1170,7 @@ export default function AdminClient() {
                   {!role.locked && !isWebsiteOwnerRole(role) ? (
                     <button
                       type="button"
-                      className="text-xs font-bold text-red-700 uppercase"
+                      className="text-xs font-bold ice-error uppercase"
                       onClick={() => deleteRole(role.id)}
                     >
                       Delete
@@ -1232,7 +1232,7 @@ export default function AdminClient() {
               <p className="text-sm text-[var(--muted)]">No messages yet.</p>
             ) : (
               messages.map((m) => (
-                <div key={m.id} className="border border-[var(--line)] bg-white/35 p-3">
+                <div key={m.id} className="panel p-3">
                   <p className="text-xs font-bold tracking-wide text-[var(--blue)] uppercase">
                     {m.displayName} · {m.roleName} ·{" "}
                     {new Date(m.createdAt).toLocaleString()}
@@ -1262,7 +1262,7 @@ export default function AdminClient() {
           {can("manage_bookings") ? (
             <div>
               <h2 className="font-display text-2xl text-[var(--ink)]">Party applications</h2>
-              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
+              <div className="ice-table-wrap mt-3">
                 <table className="min-w-full text-left text-sm">
                   <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                     <tr>
@@ -1327,7 +1327,7 @@ export default function AdminClient() {
                               ) : null}
                               <button
                                 type="button"
-                                className="btn btn-ghost text-[10px] text-red-700"
+                                className="btn btn-ghost text-[10px] ice-error"
                                 onClick={() => deleteBooking(b.id)}
                               >
                                 Delete
@@ -1348,7 +1348,7 @@ export default function AdminClient() {
               <h2 className="font-display text-2xl text-[var(--ink)]">
                 League applications
               </h2>
-              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
+              <div className="ice-table-wrap mt-3">
                 <table className="min-w-full text-left text-sm">
                   <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                     <tr>
@@ -1426,7 +1426,7 @@ export default function AdminClient() {
                               ) : null}
                               <button
                                 type="button"
-                                className="btn btn-ghost text-[10px] text-red-700"
+                                className="btn btn-ghost text-[10px] ice-error"
                                 onClick={() => deleteSignup(s.id)}
                               >
                                 Delete
@@ -1449,7 +1449,7 @@ export default function AdminClient() {
           <h2 className="font-display text-2xl text-[var(--ink)]">
             Employment applications
           </h2>
-          <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
+          <div className="ice-table-wrap mt-3">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                 <tr>
@@ -1544,7 +1544,7 @@ export default function AdminClient() {
                           ) : null}
                           <button
                             type="button"
-                            className="btn btn-ghost text-[10px] text-red-700"
+                            className="btn btn-ghost text-[10px] ice-error"
                             onClick={() => deleteEmployment(a.id)}
                           >
                             Delete
@@ -1561,7 +1561,7 @@ export default function AdminClient() {
       ) : null}
 
       {activeTab === "admins" && can("view_admins") ? (
-        <div className="mt-6 overflow-x-auto border border-[var(--line)] bg-white/35">
+        <div className="ice-table-wrap mt-6">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
               <tr>
@@ -1679,7 +1679,7 @@ export default function AdminClient() {
                   </div>
                   <button
                     type="button"
-                    className="text-xs font-bold text-red-700 uppercase"
+                    className="text-xs font-bold ice-error uppercase"
                     onClick={() => removeLeague(l.id, l.name)}
                   >
                     Remove
@@ -1953,7 +1953,7 @@ export default function AdminClient() {
               ) : null}
               <button
                 type="button"
-                className="btn btn-ghost text-[10px] text-red-700"
+                className="btn btn-ghost text-[10px] ice-error"
                 onClick={() => {
                   if (detail.kind === "party") deleteBooking(detail.data.id);
                   if (detail.kind === "league") deleteSignup(detail.data.id);

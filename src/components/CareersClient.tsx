@@ -130,7 +130,7 @@ export default function CareersClient() {
 
   if (!user) {
     return (
-      <div className="mt-8 border border-[var(--line)] bg-white/35 p-6">
+      <div className="panel mt-8 p-6">
         <p className="text-[var(--ink)]">
           Please sign in or create an account to submit an employment
           application.
@@ -538,7 +538,7 @@ export default function CareersClient() {
         <p className="text-sm font-semibold text-red-400">{error}</p>
       ) : null}
       {message ? (
-        <div className="border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+        <div className="ice-success px-4 py-3 text-sm">
           {message}{" "}
           <Link href="/profile" className="underline">
             View Profile

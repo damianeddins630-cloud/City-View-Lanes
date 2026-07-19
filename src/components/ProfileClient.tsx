@@ -33,8 +33,8 @@ function statusLabel(status: string) {
 }
 
 function statusClass(status: string) {
-  if (status === "pending") return "text-amber-200";
-  if (status === "approved") return "text-emerald-300";
+  if (status === "pending") return "text-[var(--ice-accent)]";
+  if (status === "approved") return "text-[#7dffc8]";
   if (status === "denied") return "text-red-300";
   return "text-[var(--muted)]";
 }
@@ -229,7 +229,7 @@ export default function ProfileClient() {
               {applications.map((app) => (
                 <li
                   key={`${app.kind}-${app.id}`}
-                  className="border border-[var(--line)] bg-black/30 px-4 py-3"
+                  className="border border-[var(--line)] bg-[var(--blue-soft)] px-4 py-3"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
@@ -248,12 +248,12 @@ export default function ProfileClient() {
                         </p>
                       ) : null}
                       {app.status === "pending" ? (
-                        <p className="mt-2 text-xs text-amber-100/80">
+                        <p className="mt-2 text-xs text-[var(--muted)]">
                           {APPROVED_NOTE}
                         </p>
                       ) : null}
                       {app.status === "approved" ? (
-                        <p className="mt-2 text-xs text-emerald-100/90">
+                        <p className="mt-2 text-xs text-[#1a7a55]">
                           {APPROVED_NOTE}
                         </p>
                       ) : null}
@@ -301,7 +301,7 @@ export default function ProfileClient() {
                   key={n.id}
                   className={`border px-4 py-3 ${
                     n.read
-                      ? "border-[var(--line)] bg-black/20"
+                      ? "border-[var(--line)] bg-[var(--blue-soft)]/60"
                       : "border-[var(--blue)]/40 bg-[var(--blue-soft)]"
                   }`}
                 >
@@ -323,12 +323,12 @@ export default function ProfileClient() {
             Account details
           </p>
           {error ? (
-            <div className="border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-              <p className="font-semibold text-amber-50">
+            <div className="ice-warn px-4 py-3 text-sm">
+              <p className="font-semibold text-white">
                 Profile is not saving permanently yet
               </p>
               <p className="mt-2 opacity-95">{error}</p>
-              <ol className="mt-3 list-decimal space-y-1 pl-5 text-amber-50/95">
+              <ol className="mt-3 list-decimal space-y-1 pl-5 text-white/90">
                 <li>
                   Download the latest FULL zip from GitHub Releases
                 </li>
@@ -429,7 +429,7 @@ export default function ProfileClient() {
             </div>
           </div>
           {message ? (
-            <p className="text-sm font-semibold text-emerald-300">{message}</p>
+            <p className="text-sm font-semibold text-[#1a7a55]">{message}</p>
           ) : null}
           <button type="submit" className="btn btn-primary w-fit">
             Save changes
