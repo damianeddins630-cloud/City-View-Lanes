@@ -62,6 +62,12 @@ export function defaultSiteContent(): SiteContent {
       visitImage: "/images/cityview-lanes.webp",
       visitHoursNote: "Open daily 12:00 PM – 12:00 AM",
       visitParkingNote: "Free parking on-site",
+      lanesAvailable: true,
+      lanesStatusLabel: "Lane availability",
+      lanesAvailableText: "Lanes available now",
+      lanesUnavailableText: "No lanes available right now",
+      pricingLabel: "Pricing",
+      pricingValue: "N/A",
     },
     youth: {
       kicker: YOUTH_LEAGUE.kicker,
@@ -178,6 +184,24 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
         homeIn.visitParkingNote,
         d.home.visitParkingNote,
       ),
+      lanesAvailable:
+        typeof homeIn.lanesAvailable === "boolean"
+          ? homeIn.lanesAvailable
+          : d.home.lanesAvailable,
+      lanesStatusLabel: mergeString(
+        homeIn.lanesStatusLabel,
+        d.home.lanesStatusLabel,
+      ),
+      lanesAvailableText: mergeString(
+        homeIn.lanesAvailableText,
+        d.home.lanesAvailableText,
+      ),
+      lanesUnavailableText: mergeString(
+        homeIn.lanesUnavailableText,
+        d.home.lanesUnavailableText,
+      ),
+      pricingLabel: mergeString(homeIn.pricingLabel, d.home.pricingLabel),
+      pricingValue: mergeString(homeIn.pricingValue, d.home.pricingValue),
     },
     youth: {
       kicker: mergeString(youthIn.kicker, d.youth.kicker),

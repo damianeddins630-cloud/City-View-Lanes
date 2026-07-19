@@ -22,6 +22,7 @@ EDIT HOMEPAGE PICTURES & DESCRIPTIONS (no code)
 What you can edit
 -----------------
 - Homepage hero picture + titles + description
+- Lane availability (Yes / No) + pricing (N/A for now)
 - Why CityView feature titles/descriptions
 - Academy picture + text + stats
 - Gallery photos (3)

@@ -71,6 +71,41 @@ export default async function HomePage() {
         </div>
       </div>
 
+      <section className="lanes-status-band" aria-label="Lane availability and pricing">
+        <div className="section py-8 sm:py-10">
+          <div className="lanes-status-grid">
+            <div
+              className={`lanes-status-block ${
+                h.lanesAvailable ? "is-open" : "is-full"
+              }`}
+            >
+              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
+                {h.lanesStatusLabel}
+              </p>
+              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-white sm:text-4xl">
+                {h.lanesAvailable ? h.lanesAvailableText : h.lanesUnavailableText}
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                {h.lanesAvailable
+                  ? "Come bowl — open bowling lanes are open."
+                  : "Check back soon or call the center for the next opening."}
+              </p>
+            </div>
+            <div className="lanes-status-block pricing">
+              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--silver)] uppercase">
+                {h.pricingLabel}
+              </p>
+              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-white sm:text-4xl">
+                {h.pricingValue || "N/A"}
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Pricing details coming soon.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section">
         <p className="section-kicker">{h.whyKicker}</p>
         <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">

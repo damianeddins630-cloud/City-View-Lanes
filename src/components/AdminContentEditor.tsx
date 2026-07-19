@@ -226,6 +226,71 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
+        <h3 className="font-display text-3xl text-white">
+          Homepage — Lanes available &amp; pricing
+        </h3>
+        <p className="text-sm text-[var(--muted)]">
+          Toggle whether lanes are available. Pricing is set to N/A for now —
+          change it anytime.
+        </p>
+        <div className="panel grid gap-4 p-4 sm:grid-cols-2">
+          <div className="field">
+            <label>Lanes available right now?</label>
+            <select
+              value={h.lanesAvailable ? "yes" : "no"}
+              onChange={(e) =>
+                setContent({
+                  ...content,
+                  home: { ...h, lanesAvailable: e.target.value === "yes" },
+                })
+              }
+            >
+              <option value="yes">Yes — lanes available</option>
+              <option value="no">No — no lanes available</option>
+            </select>
+          </div>
+          <Field
+            label="Section label"
+            value={h.lanesStatusLabel}
+            onChange={(v) =>
+              setContent({ ...content, home: { ...h, lanesStatusLabel: v } })
+            }
+          />
+          <Field
+            label="Text when lanes ARE available"
+            value={h.lanesAvailableText}
+            onChange={(v) =>
+              setContent({ ...content, home: { ...h, lanesAvailableText: v } })
+            }
+          />
+          <Field
+            label="Text when lanes are NOT available"
+            value={h.lanesUnavailableText}
+            onChange={(v) =>
+              setContent({
+                ...content,
+                home: { ...h, lanesUnavailableText: v },
+              })
+            }
+          />
+          <Field
+            label="Pricing label"
+            value={h.pricingLabel}
+            onChange={(v) =>
+              setContent({ ...content, home: { ...h, pricingLabel: v } })
+            }
+          />
+          <Field
+            label="Pricing (use N/A for now)"
+            value={h.pricingValue}
+            onChange={(v) =>
+              setContent({ ...content, home: { ...h, pricingValue: v } })
+            }
+          />
+        </div>
+      </section>
+
+      <section className="space-y-4">
         <h3 className="font-display text-3xl text-white">Homepage — Why section</h3>
         <div className="grid gap-3">
           <Field

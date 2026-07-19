@@ -48,6 +48,14 @@ export type SiteContent = {
     visitImage: string;
     visitHoursNote: string;
     visitParkingNote: string;
+    /** Show on homepage whether open bowling lanes are free. */
+    lanesAvailable: boolean;
+    lanesStatusLabel: string;
+    lanesAvailableText: string;
+    lanesUnavailableText: string;
+    /** Pricing line on homepage — use "N/A" until set. */
+    pricingLabel: string;
+    pricingValue: string;
   };
   youth: {
     kicker: string;
