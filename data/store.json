@@ -1,0 +1,172 @@
+{
+  "users": [
+    {
+      "id": "usr_master_admin",
+      "username": "cityview_damian",
+      "email": "damianeddins630@gmail.com",
+      "passwordHash": "$2b$10$WxI7GfJe6RKfn96XT6tEeexExG5QeYZh4AlLR6aHtLqQXRD6Vs3WW",
+      "firstName": "Damian",
+      "lastName": "Eddins",
+      "phone": "",
+      "birthDate": "",
+      "avatarUrl": "",
+      "roleId": "role_master_admin",
+      "createdAt": "2026-07-18T00:00:00.000Z",
+      "updatedAt": "2026-07-18T00:00:00.000Z"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role_master_admin",
+      "name": "Website Owner",
+      "description": "Full website access \u2014 cannot be deleted or outranked",
+      "permissions": [
+        "manage_users",
+        "manage_roles",
+        "admin_chat",
+        "manage_bookings",
+        "manage_league_signups",
+        "manage_leagues",
+        "manage_hours",
+        "view_admins",
+        "manage_employment",
+        "manage_content"
+      ],
+      "locked": true,
+      "rank": 0
+    },
+    {
+      "id": "role_admin",
+      "name": "Admin",
+      "description": "Staff admin — no application review access",
+      "permissions": [
+        "manage_users",
+        "admin_chat",
+        "manage_leagues",
+        "manage_hours",
+        "view_admins",
+        "manage_content"
+      ],
+      "locked": false,
+      "rank": 10
+    },
+    {
+      "id": "role_member",
+      "name": "Member",
+      "description": "Default member account",
+      "permissions": [],
+      "locked": true,
+      "rank": 100
+    }
+  ],
+  "leagues": [
+    {
+      "id": "lg_fall_young_at_heart",
+      "day": "Mon",
+      "time": "1:00 PM",
+      "name": "Young At Heart",
+      "type": "Senior",
+      "teamSize": "4",
+      "startDate": "09/14/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_monday_nite_mixers",
+      "day": "Mon",
+      "time": "6:30 PM",
+      "name": "Monday Nite Mixers",
+      "type": "Adult",
+      "teamSize": "4",
+      "startDate": "09/14/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_cecil_baker",
+      "day": "Tues",
+      "time": "6:30 PM",
+      "name": "Cecil Baker",
+      "type": "Adult",
+      "teamSize": "4",
+      "startDate": "09/15/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_happy_rollers",
+      "day": "Tues",
+      "time": "1:00 PM",
+      "name": "Happy Rollers",
+      "type": "Senior",
+      "teamSize": "3",
+      "startDate": "09/15/26",
+      "meetingInfo": "See center for meeting",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_youth_saturday",
+      "day": "Sat",
+      "time": "10:00 AM",
+      "name": "CityView Youth League",
+      "type": "Youth",
+      "teamSize": "4",
+      "startDate": "09/12/26",
+      "meetingInfo": "Parents meeting — see front desk",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    },
+    {
+      "id": "lg_fall_youth_sunday",
+      "day": "Sun",
+      "time": "1:00 PM",
+      "name": "Junior Scratch Practice",
+      "type": "Youth",
+      "teamSize": "Open",
+      "startDate": "09/13/26",
+      "meetingInfo": "Ask for youth coach",
+      "createdAt": "2026-07-18T00:00:00.000Z"
+    }
+  ],
+  "leagueSignups": [],
+  "bookings": [],
+  "hours": [
+    {
+      "day": "Monday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Tuesday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Wednesday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Thursday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Friday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Saturday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    },
+    {
+      "day": "Sunday",
+      "open": "12:00 PM",
+      "close": "12:00 AM"
+    }
+  ],
+  "chatMessages": [],
+  "notifications": [],
+  "employmentApplications": []
+}
