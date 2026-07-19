@@ -61,7 +61,7 @@ export default function BookClient() {
     }
     setMessage(
       data.message ||
-        "Party application submitted — it is under review. Check your Profile for status updates.",
+        "Party application submitted — under review on your Profile. If approved, it can take up to 7 days for us to get in contact with you.",
     );
   }
 

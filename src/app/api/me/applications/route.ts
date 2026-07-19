@@ -34,11 +34,22 @@ export async function GET() {
         s.leagueId === "waitlist"
           ? "League interest / waitlist"
           : league?.name || "League application";
+      const address = [s.street, s.apt, s.city, s.state, s.zip]
+        .filter(Boolean)
+        .join(", ");
       return {
         id: s.id,
         kind: "league" as const,
         title,
-        detail: [league?.day, league?.time, s.note].filter(Boolean).join(" · "),
+        detail: [
+          s.applicantName,
+          address,
+          league?.day,
+          league?.time,
+          s.note,
+        ]
+          .filter(Boolean)
+          .join(" · "),
         status: s.status,
         adminNote: s.adminNote || "",
         createdAt: s.createdAt,

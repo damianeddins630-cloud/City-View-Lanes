@@ -3,9 +3,37 @@ import { getCurrentUser } from "@/lib/auth";
 import { PersistenceError, readStore, updateStore } from "@/lib/db";
 import { employmentReceivedEmail, sendEmail } from "@/lib/email";
 import { makeId } from "@/lib/ids";
-import type { EmploymentApplication } from "@/lib/types";
+import type {
+  EducationEntry,
+  EmploymentApplication,
+  WorkExperienceEntry,
+} from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+function edu(raw: unknown): EducationEntry {
+  const o = (raw || {}) as Record<string, unknown>;
+  return {
+    nameLocation: String(o.nameLocation || "").trim(),
+    graduateDegree: String(o.graduateDegree || "").trim(),
+    majorSubjects: String(o.majorSubjects || "").trim(),
+  };
+}
+
+function job(raw: unknown): WorkExperienceEntry {
+  const o = (raw || {}) as Record<string, unknown>;
+  return {
+    dateEmployed: String(o.dateEmployed || "").trim(),
+    companyName: String(o.companyName || "").trim(),
+    location: String(o.location || "").trim(),
+    roleTitle: String(o.roleTitle || "").trim(),
+    notes: String(o.notes || "").trim(),
+  };
+}
+
+function eduComplete(e: EducationEntry) {
+  return Boolean(e.nameLocation && e.graduateDegree && e.majorSubjects);
+}
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -31,6 +59,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const now = new Date().toISOString();
+    const education = {
+      highSchool: edu(body.education?.highSchool),
+      college: edu(body.education?.college),
+      specialized: edu(body.education?.specialized),
+      other: edu(body.education?.other),
+    };
+    const experienceRaw = Array.isArray(body.experience) ? body.experience : [];
+    const experience = [0, 1, 2, 3].map((i) => job(experienceRaw[i]));
+
     const application: EmploymentApplication = {
       id: makeId("emp"),
       userId: user.id,
@@ -53,24 +90,50 @@ export async function POST(request: Request) {
       email: String(body.email || user.email || "").trim().toLowerCase(),
       howHeard: String(body.howHeard || "").trim(),
       position: String(body.position || "").trim(),
+      availableStartDate: String(body.availableStartDate || "").trim(),
+      desiredPay: String(body.desiredPay || "").trim(),
+      currentlyEmployed: String(body.currentlyEmployed || "").trim(),
+      education,
+      specialSkills: String(body.specialSkills || "").trim(),
+      experience,
       status: "pending",
       createdAt: now,
       updatedAt: now,
     };
 
-    if (
+    const missingRequired =
+      !application.applicationDate ||
       !application.firstName ||
       !application.lastName ||
+      !application.middleName ||
       !application.street ||
       !application.city ||
       !application.state ||
       !application.zip ||
+      !application.altStreet ||
+      !application.altCity ||
+      !application.altState ||
+      !application.altZip ||
+      !application.homePhone ||
       !application.mobilePhone ||
       !application.email ||
-      !application.position
-    ) {
+      !application.howHeard ||
+      !application.position ||
+      !application.availableStartDate ||
+      !application.desiredPay ||
+      !application.currentlyEmployed ||
+      !application.specialSkills ||
+      !eduComplete(education.highSchool) ||
+      !eduComplete(education.college) ||
+      !eduComplete(education.specialized) ||
+      !eduComplete(education.other);
+
+    if (missingRequired) {
       return NextResponse.json(
-        { error: "Please fill in all required personal information fields." },
+        {
+          error:
+            "Please fill out every required field. Previous experience is optional.",
+        },
         { status: 400 },
       );
     }
@@ -95,7 +158,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       application,
       message:
-        "Application submitted. It is under review — check your Profile for updates.",
+        "Application submitted — under review on your Profile. If approved, it can take up to 7 days for us to get in contact with you.",
     });
   } catch (error) {
     if (error instanceof PersistenceError) {

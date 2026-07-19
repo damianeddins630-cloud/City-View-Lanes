@@ -16,10 +16,13 @@ export async function GET() {
     return {
       ...s,
       username: member?.username || "",
-      memberName: member
-        ? `${member.firstName} ${member.lastName}`.trim()
-        : "",
+      memberName: s.applicantName
+        ? s.applicantName
+        : member
+          ? `${member.firstName} ${member.lastName}`.trim()
+          : "",
       memberEmail: member?.email || "",
+      address: [s.street, s.apt, s.city, s.state, s.zip].filter(Boolean).join(", "),
       leagueName: isWaitlist
         ? "General interest / waitlist"
         : league?.name || "Unknown league",
@@ -61,7 +64,7 @@ export async function PATCH(request: Request) {
       const member = s.users.find((u) => u.id === signup.userId);
       const league = s.leagues.find((l) => l.id === signup.leagueId);
       email = member?.email || "";
-      name = member?.firstName || member?.username || "Bowler";
+      name = signup.applicantName || member?.firstName || member?.username || "Bowler";
       userId = signup.userId;
       leagueName =
         signup.leagueId === "waitlist"

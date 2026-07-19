@@ -21,6 +21,19 @@ export async function POST(request: Request) {
     const note = String(body.note || "").trim();
     const preferredDay = String(body.preferredDay || "").trim();
     const preferredType = String(body.preferredType || "").trim();
+    const applicantName = String(body.applicantName || "").trim();
+    const street = String(body.street || "").trim();
+    const apt = String(body.apt || "").trim();
+    const city = String(body.city || "").trim();
+    const state = String(body.state || "").trim();
+    const zip = String(body.zip || "").trim();
+
+    if (!applicantName || !street || !city || !state || !zip) {
+      return NextResponse.json(
+        { error: "Name and full address are required for a league application." },
+        { status: 400 },
+      );
+    }
 
     const store = await readStore();
 
@@ -43,7 +56,7 @@ export async function POST(request: Request) {
           error:
             leagueId === "waitlist"
               ? "You already have a pending league interest request."
-              : "You already have a signup for this league.",
+              : "You already have an application for this league.",
         },
         { status: 400 },
       );
@@ -64,6 +77,12 @@ export async function POST(request: Request) {
       leagueId,
       status: "pending" as const,
       note: combinedNote,
+      applicantName,
+      street,
+      apt,
+      city,
+      state,
+      zip,
       createdAt: now,
       updatedAt: now,
     };
@@ -77,7 +96,7 @@ export async function POST(request: Request) {
         ? "Fall league interest / waitlist"
         : store.leagues.find((l) => l.id === leagueId)?.name || "League";
 
-    const mail = leagueReceivedEmail(user.firstName || user.username, leagueName);
+    const mail = leagueReceivedEmail(applicantName.split(" ")[0] || user.firstName || user.username, leagueName);
     await sendEmail({
       userId: user.id,
       email: user.email,
@@ -89,14 +108,14 @@ export async function POST(request: Request) {
     return NextResponse.json({
       signup,
       message:
-        "Application submitted — it is under review. Check your Profile for updates.",
+        "League application submitted — under review on your Profile. If approved, it can take up to 7 days for us to get in contact with you.",
     });
   } catch (error) {
     if (error instanceof PersistenceError) {
       return NextResponse.json({ error: error.message, durable: false }, { status: 503 });
     }
     return NextResponse.json(
-      { error: "Could not submit league signup." },
+      { error: "Could not submit league application." },
       { status: 500 },
     );
   }

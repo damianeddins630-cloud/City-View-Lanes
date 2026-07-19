@@ -38,6 +38,9 @@ function statusClass(status: string) {
   return "text-white/70";
 }
 
+const APPROVED_NOTE =
+  "If approved, it can take up to 7 days for us to get in contact with you.";
+
 export default function ProfileClient() {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -241,6 +244,16 @@ export default function ProfileClient() {
                       {app.adminNote ? (
                         <p className="mt-2 text-sm text-white/80">
                           Note: {app.adminNote}
+                        </p>
+                      ) : null}
+                      {app.status === "pending" ? (
+                        <p className="mt-2 text-xs text-amber-100/80">
+                          {APPROVED_NOTE}
+                        </p>
+                      ) : null}
+                      {app.status === "approved" ? (
+                        <p className="mt-2 text-xs text-emerald-100/90">
+                          {APPROVED_NOTE}
                         </p>
                       ) : null}
                     </div>

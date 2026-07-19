@@ -20,8 +20,15 @@ export default function LeaguesClient({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [showInterest, setShowInterest] = useState(false);
-  const [interest, setInterest] = useState({
+  const [showForm, setShowForm] = useState(false);
+  const [selectedLeagueId, setSelectedLeagueId] = useState<string>("waitlist");
+  const [form, setForm] = useState({
+    applicantName: "",
+    street: "",
+    apt: "",
+    city: "",
+    state: "TX",
+    zip: "",
     preferredDay: "Monday",
     preferredType: "Adult",
     note: "",
@@ -30,7 +37,17 @@ export default function LeaguesClient({
   useEffect(() => {
     fetch("/api/auth/me")
       .then((r) => r.json())
-      .then((d) => setUser(d.user || null))
+      .then((d) => {
+        const u = d.user as PublicUser | null;
+        setUser(u);
+        if (u) {
+          setForm((f) => ({
+            ...f,
+            applicantName:
+              `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.username,
+          }));
+        }
+      })
       .finally(() => setAuthChecked(true));
   }, []);
 
@@ -53,37 +70,58 @@ export default function LeaguesClient({
     );
   }, [initialLeagues, query]);
 
-  async function startJoin() {
+  function openApplication(leagueId: string) {
     setError("");
     setMessage("");
-
     if (!authChecked) return;
-
     if (!user) {
       router.push(`/login?next=${encodeURIComponent("/leagues?join=1")}`);
       return;
     }
+    setSelectedLeagueId(leagueId);
+    setShowForm(true);
+    setMessage(
+      leagueId === "waitlist"
+        ? "Fill out the league application below."
+        : "Complete your name and address to apply for this league.",
+    );
+  }
 
-    if (initialLeagues.length === 0) {
-      setShowInterest(true);
-      setMessage("No leagues are posted yet — send your interest and we’ll place you.");
+  async function startJoin() {
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent("/leagues?join=1")}`);
       return;
     }
-
-    setShowInterest(false);
-    setMessage("Pick a league below and hit Join.");
+    if (initialLeagues.length === 0) {
+      openApplication("waitlist");
+      return;
+    }
+    setShowForm(false);
+    setMessage("Pick a league below and click Apply.");
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  async function joinLeague(leagueId: string, extra?: Record<string, string>) {
-    setBusyId(leagueId);
+  async function submitApplication(e: FormEvent) {
+    e.preventDefault();
+    setBusyId(selectedLeagueId);
     setError("");
     setMessage("");
 
     const res = await fetch("/api/leagues/join", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ leagueId, ...extra }),
+      body: JSON.stringify({
+        leagueId: selectedLeagueId,
+        applicantName: form.applicantName,
+        street: form.street,
+        apt: form.apt,
+        city: form.city,
+        state: form.state,
+        zip: form.zip,
+        preferredDay: form.preferredDay,
+        preferredType: form.preferredType,
+        note: form.note,
+      }),
     });
     const data = await res.json();
     setBusyId(null);
@@ -93,24 +131,27 @@ export default function LeaguesClient({
         router.push(`/login?next=${encodeURIComponent("/leagues?join=1")}`);
         return;
       }
-      setError(data.error || "Could not join league.");
+      setError(data.error || "Could not submit league application.");
       return;
     }
 
-    setMessage(data.message || "Application submitted — it is under review on your Profile.");
-    setShowInterest(false);
+    setMessage(
+      data.message ||
+        "Application submitted — under review on your Profile.",
+    );
+    setShowForm(false);
   }
 
-  async function submitInterest(e: FormEvent) {
-    e.preventDefault();
-    await joinLeague("waitlist", interest);
-  }
+  const selectedLeague =
+    selectedLeagueId === "waitlist"
+      ? null
+      : initialLeagues.find((l) => l.id === selectedLeagueId);
 
   return (
     <div className="mt-8">
       <div className="flex flex-wrap gap-3">
         <button type="button" className="btn btn-primary" onClick={() => void startJoin()}>
-          Join a League
+          League application
         </button>
         <a href={`tel:${SITE.phoneTel}`} className="btn btn-ghost">
           Call {SITE.phoneDisplay}
@@ -121,65 +162,131 @@ export default function LeaguesClient({
         <p className="mt-4 text-sm font-semibold text-[var(--blue)]">{message}</p>
       ) : null}
       {error ? (
-        <p className="mt-4 text-sm font-semibold text-red-700">{error}</p>
+        <p className="mt-4 text-sm font-semibold text-red-400">{error}</p>
       ) : null}
 
-      {showInterest ? (
-        <form onSubmit={submitInterest} className="panel mt-6 grid max-w-xl gap-3 p-5">
-          <h2 className="font-display text-2xl text-white">
-            League interest signup
-          </h2>
+      {showForm ? (
+        <form onSubmit={submitApplication} className="panel mt-6 grid max-w-2xl gap-4 p-5">
+          <h2 className="font-display text-2xl text-white">League application</h2>
           <p className="text-sm text-[var(--muted)]">
-            Signed in as <strong>{user?.email}</strong>. Tell us what you’re looking
-            for and we’ll follow up.
+            {selectedLeague
+              ? `Applying for: ${selectedLeague.name} (${selectedLeague.day} ${selectedLeague.time})`
+              : "General league interest / waitlist"}
+            . Track status on your Profile. If approved, it can take up to 7 days
+            for us to get in contact with you.
+          </p>
+
+          <div className="field">
+            <label htmlFor="applicantName">Name *</label>
+            <input
+              id="applicantName"
+              required
+              value={form.applicantName}
+              onChange={(e) => setForm({ ...form, applicantName: e.target.value })}
+            />
+          </div>
+
+          <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
+            Address
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="field">
-              <label htmlFor="preferredDay">Preferred day</label>
-              <select
-                id="preferredDay"
-                value={interest.preferredDay}
-                onChange={(e) =>
-                  setInterest({ ...interest, preferredDay: e.target.value })
-                }
-              >
-                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
-                  (d) => (
-                    <option key={d}>{d}</option>
-                  ),
-                )}
-              </select>
+            <div className="field sm:col-span-2">
+              <label htmlFor="street">Street *</label>
+              <input
+                id="street"
+                required
+                value={form.street}
+                onChange={(e) => setForm({ ...form, street: e.target.value })}
+              />
             </div>
             <div className="field">
-              <label htmlFor="preferredType">League type</label>
-              <select
-                id="preferredType"
-                value={interest.preferredType}
-                onChange={(e) =>
-                  setInterest({ ...interest, preferredType: e.target.value })
-                }
-              >
-                {["Adult", "Senior", "Youth", "IGBO", "Mixed", "Other"].map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
+              <label htmlFor="apt">Apt</label>
+              <input
+                id="apt"
+                value={form.apt}
+                onChange={(e) => setForm({ ...form, apt: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="city">City *</label>
+              <input
+                id="city"
+                required
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="state">State *</label>
+              <input
+                id="state"
+                required
+                value={form.state}
+                onChange={(e) => setForm({ ...form, state: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="zip">ZIP *</label>
+              <input
+                id="zip"
+                required
+                value={form.zip}
+                onChange={(e) => setForm({ ...form, zip: e.target.value })}
+              />
             </div>
           </div>
+
+          {selectedLeagueId === "waitlist" ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="field">
+                <label htmlFor="preferredDay">Preferred day</label>
+                <select
+                  id="preferredDay"
+                  value={form.preferredDay}
+                  onChange={(e) =>
+                    setForm({ ...form, preferredDay: e.target.value })
+                  }
+                >
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
+                    (d) => (
+                      <option key={d}>{d}</option>
+                    ),
+                  )}
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="preferredType">League type</label>
+                <select
+                  id="preferredType"
+                  value={form.preferredType}
+                  onChange={(e) =>
+                    setForm({ ...form, preferredType: e.target.value })
+                  }
+                >
+                  {["Adult", "Senior", "Youth", "IGBO", "Mixed", "Other"].map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : null}
+
           <div className="field">
             <label htmlFor="note">Notes</label>
             <textarea
               id="note"
-              value={interest.note}
-              onChange={(e) => setInterest({ ...interest, note: e.target.value })}
-              placeholder="Team size, experience level, friends joining, etc."
+              value={form.note}
+              onChange={(e) => setForm({ ...form, note: e.target.value })}
+              placeholder="Team size, experience, friends joining, etc."
             />
           </div>
+
           <button
             type="submit"
             className="btn btn-primary w-fit"
-            disabled={busyId === "waitlist"}
+            disabled={busyId === selectedLeagueId}
           >
-            {busyId === "waitlist" ? "Submitting…" : "Submit join request"}
+            {busyId === selectedLeagueId ? "Submitting…" : "Submit application"}
           </button>
         </form>
       ) : null}
@@ -208,15 +315,15 @@ export default function LeaguesClient({
                 <th className="px-4 py-3">Team</th>
                 <th className="px-4 py-3">Start</th>
                 <th className="px-4 py-3">Meeting</th>
-                <th className="px-4 py-3">Join</th>
+                <th className="px-4 py-3">Apply</th>
               </tr>
             </thead>
             <tbody>
               {leagues.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-10 text-center text-[var(--muted)]">
-                    No leagues listed yet. Use <strong>Join a League</strong> above
-                    to send an interest request (login required).
+                    No leagues listed yet. Use <strong>League application</strong>{" "}
+                    above to send interest (login required).
                   </td>
                 </tr>
               ) : (
@@ -240,18 +347,9 @@ export default function LeaguesClient({
                       <button
                         type="button"
                         className="btn btn-primary text-[10px]"
-                        disabled={busyId === league.id}
-                        onClick={() => {
-                          if (!user) {
-                            router.push(
-                              `/login?next=${encodeURIComponent("/leagues?join=1")}`,
-                            );
-                            return;
-                          }
-                          void joinLeague(league.id);
-                        }}
+                        onClick={() => openApplication(league.id)}
                       >
-                        {busyId === league.id ? "…" : "Join"}
+                        Apply
                       </button>
                     </td>
                   </tr>

@@ -77,6 +77,7 @@ type SignupRow = {
   leagueName: string;
   leagueDay: string;
   leagueTime: string;
+  address?: string;
   adminNote?: string;
 };
 
@@ -1315,7 +1316,14 @@ export default function AdminClient() {
                           </p>
                         ) : null}
                       </td>
-                      <td className="px-3 py-3">{a.position || "—"}</td>
+                      <td className="px-3 py-3">
+                        <p className="font-semibold">{a.position || "—"}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          Start {a.availableStartDate || "—"} · Pay{" "}
+                          {a.desiredPay || "—"} · Employed{" "}
+                          {a.currentlyEmployed || "—"}
+                        </p>
+                      </td>
                       <td className="px-3 py-3">
                         <p className="text-xs">{a.email}</p>
                         <p className="text-xs text-[var(--muted)]">

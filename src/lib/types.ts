@@ -61,6 +61,12 @@ export type LeagueSignup = {
   leagueId: string;
   status: ApplicationStatus;
   note: string;
+  applicantName: string;
+  street: string;
+  apt: string;
+  city: string;
+  state: string;
+  zip: string;
   createdAt: string;
   updatedAt: string;
   adminNote?: string;
@@ -82,6 +88,20 @@ export type Booking = {
   createdAt: string;
   updatedAt: string;
   adminNote?: string;
+};
+
+export type EducationEntry = {
+  nameLocation: string;
+  graduateDegree: string;
+  majorSubjects: string;
+};
+
+export type WorkExperienceEntry = {
+  dateEmployed: string;
+  companyName: string;
+  location: string;
+  roleTitle: string;
+  notes: string;
 };
 
 export type EmploymentApplication = {
@@ -106,6 +126,17 @@ export type EmploymentApplication = {
   email: string;
   howHeard: string;
   position: string;
+  availableStartDate: string;
+  desiredPay: string;
+  currentlyEmployed: string;
+  education: {
+    highSchool: EducationEntry;
+    college: EducationEntry;
+    specialized: EducationEntry;
+    other: EducationEntry;
+  };
+  specialSkills: string;
+  experience: WorkExperienceEntry[];
   status: ApplicationStatus;
   adminNote?: string;
   createdAt: string;

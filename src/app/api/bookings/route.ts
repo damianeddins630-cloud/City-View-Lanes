@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       booking,
       message:
-        "Party application submitted — it is under review. Check your Profile for updates.",
+        "Party application submitted — under review on your Profile. If approved, it can take up to 7 days for us to get in contact with you.",
     });
   } catch (error) {
     if (error instanceof PersistenceError) {
