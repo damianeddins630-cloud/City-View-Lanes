@@ -5,8 +5,8 @@ export function defaultSiteContent(): SiteContent {
   return {
     edits: {},
     home: {
-      heroImage: "/images/yelp-lanes-wide.jpg",
-      heroImageAlt: "Real bowling lanes at CityView Lanes Fort Worth",
+      heroImage: "/images/cityview-lanes.webp",
+      heroImageAlt: "CityView Lanes pin deck — lanes 59 and 60 in Fort Worth",
       heroTitleLine1: "City View",
       heroTitleLine2: "Lanes",
       heroSubtitle:
@@ -28,8 +28,8 @@ export function defaultSiteContent(): SiteContent {
       academyTitle: "Ballard's Bowling Academy",
       academyCopy:
         "Owned by Del Ballard Jr. and Carolyn Dorin-Ballard — 33 combined PBA & PWBA titles, four Hall of Fame inductions, and one pro shop inside CityView Lanes.",
-      academyImage: "/images/cityview-lanes.webp",
-      academyImageAlt: "CityView Lanes lanes 59 and 60",
+      academyImage: "/images/cityview-pins-official.jpg",
+      academyImageAlt: "Bowling pins on a polished lane at CityView Lanes",
       academyStat1Value: "33",
       academyStat1Label: "Combined PBA + PWBA titles",
       academyStat2Value: "4",
@@ -37,19 +37,19 @@ export function defaultSiteContent(): SiteContent {
       galleryKicker: "Inside the Center",
       galleryTitle: "The lanes in real life",
       galleryCopy:
-        "Real photos from CityView Lanes — more official gallery shots coming soon.",
+        "Real photos from CityView Lanes — lanes, youth bowling, and the center as it looks today.",
       galleryImages: [
         {
-          src: "/images/yelp-interior-fresh.jpg",
-          alt: "Youth bowler on the lanes at CityView Lanes",
+          src: "/images/yelp-lanes-extra.jpg",
+          alt: "Bowlers on lanes 33–35 at CityView Lanes",
         },
         {
           src: "/images/cityview-lanes.webp",
-          alt: "CityView Lanes branded pin deck",
+          alt: "CityView Lanes branded pin deck on lanes 59 and 60",
         },
         {
-          src: "/images/yelp-lanes-dragon.jpg",
-          alt: "Kids bowling with ramp at CityView Lanes",
+          src: "/images/yelp-interior-fresh.jpg",
+          alt: "Youth bowler using a lane ramp at CityView Lanes",
         },
       ],
       reviewsKicker: "Loved locally",
@@ -60,7 +60,7 @@ export function defaultSiteContent(): SiteContent {
         role: r.role,
       })),
       visitKicker: "Come visit",
-      visitImage: "/images/yelp-lanes-extra.jpg",
+      visitImage: "/images/yelp-party.jpg",
       visitHoursNote: "Open daily 12:00 PM – 12:00 AM",
       visitParkingNote: "Free parking on-site",
       lanesAvailable: true,
@@ -82,11 +82,11 @@ export function defaultSiteContent(): SiteContent {
       photos: [
         {
           src: "/images/yelp-lanes-wide.jpg",
-          alt: "Kids having fun at CityView Lanes",
+          alt: "Young bowler with popcorn on the ball return at CityView Lanes",
         },
         {
           src: "/images/yelp-lanes-dragon.jpg",
-          alt: "Youth bowling with ramp at CityView Lanes",
+          alt: "Youth bowling with a dragon ramp at CityView Lanes",
         },
         {
           src: "/images/yelp-interior-fresh.jpg",
@@ -141,10 +141,11 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
     ) as Record<string, string>,
     home: {
       heroImage: refreshBundledPhoto(homeIn.heroImage, d.home.heroImage, [
-        "/images/cityview-lanes.webp",
         "/images/cityview-interior.webp",
         "/images/yelp-lanes-extra.jpg",
         "/images/hero-lanes-glow.jpg",
+        "/images/yelp-lanes-wide.jpg",
+        "/images/cityview-official-hero.webp",
       ]),
       heroImageAlt: mergeString(homeIn.heroImageAlt, d.home.heroImageAlt),
       heroTitleLine1:
@@ -172,6 +173,8 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       academyCopy: mergeString(homeIn.academyCopy, d.home.academyCopy),
       academyImage: refreshBundledPhoto(homeIn.academyImage, d.home.academyImage, [
         "/images/cityview-interior.webp",
+        "/images/cityview-lanes.webp",
+        "/images/cityview-official-hero.webp",
       ]),
       academyImageAlt: mergeString(homeIn.academyImageAlt, d.home.academyImageAlt),
       academyStat1Value: mergeString(
@@ -203,6 +206,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
                   "/images/yelp-lanes-kids.jpg",
                   "/images/yelp-interior-1.jpg",
                   "/images/yelp-interior-2.jpg",
+                  "/images/yelp-interior-fresh.jpg",
+                  "/images/yelp-lanes-dragon.jpg",
+                  "/images/cityview-interior.webp",
                 ],
               ),
               alt: mergeString(
@@ -224,6 +230,8 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       visitKicker: mergeString(homeIn.visitKicker, d.home.visitKicker),
       visitImage: refreshBundledPhoto(homeIn.visitImage, d.home.visitImage, [
         "/images/cityview-lanes.webp",
+        "/images/yelp-lanes-extra.jpg",
+        "/images/yelp-center.jpg",
       ]),
       visitHoursNote: mergeString(homeIn.visitHoursNote, d.home.visitHoursNote),
       visitParkingNote: mergeString(
@@ -259,6 +267,7 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       phoneNote: mergeString(youthIn.phoneNote, d.youth.phoneNote),
       heroImage: refreshBundledPhoto(youthIn.heroImage, d.youth.heroImage, [
         "/images/cityview-lanes.webp",
+        "/images/yelp-lanes-kids.jpg",
       ]),
       photos:
         Array.isArray(youthIn.photos) && youthIn.photos.length
@@ -270,6 +279,7 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
                   "/images/yelp-lanes-kids.jpg",
                   "/images/cityview-lanes.webp",
                   "/images/yelp-interior-1.jpg",
+                  "/images/yelp-interior-2.jpg",
                 ],
               ),
               alt: mergeString(

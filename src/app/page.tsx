@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[#1a2a3c] text-white">
+      <section className="hero-stage relative isolate overflow-hidden bg-[#0d2438] text-white">
         <div className="absolute inset-0">
           <EditableImage
             path="home.heroImage"

@@ -35,6 +35,7 @@ so photos and text stick after refresh.
 
 Newest lane photos included
 ----------------------------
-The zip ships with fresher CityView Lanes photos
-(lanes, youth bowling, center shots). You can still
-replace any of them in Admin → Pictures & Text.
+The site ships with real CityView Lanes photos only
+(official pin deck, current lanes, youth bowling, events).
+No AI-generated pictures. You can still replace any of
+them in Admin → Pictures & Text.
