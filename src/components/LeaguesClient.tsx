@@ -399,7 +399,7 @@ export default function LeaguesClient({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search leagues, days, or types…"
-            className="min-h-11 w-full border border-[var(--line)] bg-white/35 px-3 sm:max-w-md"
+            className="min-h-11 w-full border border-[var(--line)] bg-[rgba(232,248,255,0.72)] px-3 text-[var(--ink)] sm:max-w-md"
           />
           <p className="text-sm font-semibold text-[var(--muted)]">
             {leagues.length} league{leagues.length === 1 ? "" : "s"}
@@ -433,7 +433,7 @@ export default function LeaguesClient({
                   <tr
                     key={league.id}
                     className={`border-t border-[var(--line)] ${
-                      index % 2 === 0 ? "bg-black/20" : "bg-[var(--blue)]/10"
+                      index % 2 === 0 ? "bg-[var(--blue-soft)]/50" : "bg-white/25"
                     }`}
                   >
                     <td className="px-4 py-3">{league.day}</td>

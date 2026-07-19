@@ -56,8 +56,12 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-[min(480px,calc(100%-1.5rem))] flex-col justify-center py-16">
+      <div className="silver-bar mx-auto mb-5 max-w-[120px]" />
+      <p className="text-center text-xs font-bold tracking-[0.2em] text-[var(--blue)] uppercase">
+        Member access
+      </p>
       <h1 className="font-display text-center text-5xl tracking-[0.06em] text-[var(--ink)]">
-        CityView Lanes
+        City View Lanes
       </h1>
 
       <div className="tab-rail mt-8">
@@ -107,7 +111,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
             />
           </div>
           <p className="text-xs text-[var(--muted)]">Forgot password?</p>
-          {error ? <p className="text-sm font-semibold text-red-700">{error}</p> : null}
+          {error ? <p className="ice-error text-sm">{error}</p> : null}
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -178,7 +182,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
               }
             />
           </div>
-          {error ? <p className="text-sm font-semibold text-red-700">{error}</p> : null}
+          {error ? <p className="ice-error text-sm">{error}</p> : null}
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? "Creating…" : "Create account"}
           </button>

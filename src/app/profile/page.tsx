@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageBanner from "@/components/PageBanner";
 import ProfileClient from "@/components/ProfileClient";
 
 export const metadata: Metadata = {
@@ -7,14 +8,17 @@ export const metadata: Metadata = {
 
 export default function ProfilePage() {
   return (
-    <div className="section pt-16">
-      <h1 className="font-display text-5xl tracking-[0.05em] text-[var(--ink)]">
-        Your profile
-      </h1>
-      <p className="mt-3 text-sm text-[var(--muted)]">
-        Update your photo, contact info, birth date, username, and password.
-      </p>
-      <ProfileClient />
-    </div>
+    <>
+      <PageBanner
+        kicker="Member account"
+        title="Your profile"
+        subtitle="Update your photo, contact info, birth date, username, and password. Track party, league, and employment applications here."
+        image="/images/yelp-lanes-dragon.jpg"
+        imageAlt="Youth bowling at CityView Lanes"
+      />
+      <div className="section pt-10 pb-20">
+        <ProfileClient />
+      </div>
+    </>
   );
 }

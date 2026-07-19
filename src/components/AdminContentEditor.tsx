@@ -81,7 +81,7 @@ function PhotoSlot({
       <p className="text-xs font-bold tracking-wide text-[var(--blue)] uppercase">
         {label}
       </p>
-      <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-white/35">
+      <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt || label} className="h-full w-full object-cover" />
       </div>

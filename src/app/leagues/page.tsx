@@ -41,14 +41,16 @@ export default async function LeaguesPage() {
         <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-40" />
 
         <div className="relative z-10 mx-auto flex min-h-[78svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-24">
-          <p className="fade-up section-kicker">
+          <p className="fade-up section-kicker text-[var(--ice-accent)]">
             CityView Lanes · {SITE.fallSeasonLabel}
           </p>
-          <h1 className="font-display brand-title fade-up mt-3 max-w-3xl text-[clamp(3.6rem,11vw,7rem)] font-semibold leading-[0.86] tracking-[0.02em] text-[var(--ink)]">
-            <EditableText
-              path="edits.leagues.heroTitle"
-              value={resolveEditValue(content, "edits.leagues.heroTitle", "Leagues")}
-            />
+          <h1 className="font-display fade-up mt-3 max-w-3xl text-[clamp(3.2rem,10vw,6.5rem)] font-semibold leading-[0.9] tracking-[0.03em] text-white uppercase">
+            <span className="lane-neon-text">
+              <EditableText
+                path="edits.leagues.heroTitle"
+                value={resolveEditValue(content, "edits.leagues.heroTitle", "Leagues")}
+              />
+            </span>
             <EditableText
               path="edits.leagues.heroAccent"
               value={resolveEditValue(
@@ -57,7 +59,7 @@ export default async function LeaguesPage() {
                 "that hit harder",
               )}
               as="span"
-              className="brand-title-accent block"
+              className="mt-2 block text-[clamp(1.4rem,4vw,2.4rem)] font-semibold tracking-[0.08em] text-[var(--ice-accent)] normal-case"
             />
           </h1>
           <EditableText
@@ -69,7 +71,7 @@ export default async function LeaguesPage() {
             )}
             as="p"
             multiline
-            className="fade-up-delay mt-5 max-w-xl text-lg text-[var(--muted)]"
+            className="fade-up-delay mt-5 max-w-xl text-lg text-white/80"
           />
           <div className="fade-up-delay-2 mt-8 flex flex-wrap gap-3">
             <a href="#schedule" className="btn btn-hero-primary">
