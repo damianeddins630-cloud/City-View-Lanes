@@ -4,6 +4,9 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import type { PublicUser } from "@/lib/types";
 
+const HOURS = Array.from({ length: 12 }, (_, i) => String(i + 1));
+const MINUTES = ["00", "15", "30", "45"];
+
 export default function BookClient() {
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +20,9 @@ export default function BookClient() {
     email: "",
     phone: "",
     eventDate: "",
-    eventTime: "",
+    timeHour: "7",
+    timeMinute: "00",
+    timeMeridiem: "PM",
     partySize: "10",
     eventType: "Birthday",
     notes: "",
@@ -47,10 +52,21 @@ export default function BookClient() {
     setSubmitting(true);
     setError("");
     setMessage("");
+    const eventTime = `${form.timeHour}:${form.timeMinute} ${form.timeMeridiem}`;
     const res = await fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, partySize: Number(form.partySize) }),
+      body: JSON.stringify({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone,
+        eventDate: form.eventDate,
+        eventTime,
+        partySize: Number(form.partySize),
+        eventType: form.eventType,
+        notes: form.notes,
+      }),
     });
     const data = await res.json();
     setSubmitting(false);
@@ -125,7 +141,7 @@ export default function BookClient() {
           />
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="field">
           <label htmlFor="eventDate">Date *</label>
           <input
@@ -134,16 +150,6 @@ export default function BookClient() {
             required
             value={form.eventDate}
             onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="eventTime">Time *</label>
-          <input
-            id="eventTime"
-            type="time"
-            required
-            value={form.eventTime}
-            onChange={(e) => setForm({ ...form, eventTime: e.target.value })}
           />
         </div>
         <div className="field">
@@ -158,6 +164,57 @@ export default function BookClient() {
           />
         </div>
       </div>
+
+      <div>
+        <p className="mb-2 text-xs font-semibold tracking-wide text-white/70 uppercase">
+          Time *
+        </p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="field">
+            <label htmlFor="timeHour">Hour</label>
+            <select
+              id="timeHour"
+              required
+              value={form.timeHour}
+              onChange={(e) => setForm({ ...form, timeHour: e.target.value })}
+            >
+              {HOURS.map((h) => (
+                <option key={h} value={h}>
+                  {h}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="timeMinute">Minute</label>
+            <select
+              id="timeMinute"
+              required
+              value={form.timeMinute}
+              onChange={(e) => setForm({ ...form, timeMinute: e.target.value })}
+            >
+              {MINUTES.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="timeMeridiem">AM / PM</label>
+            <select
+              id="timeMeridiem"
+              required
+              value={form.timeMeridiem}
+              onChange={(e) => setForm({ ...form, timeMeridiem: e.target.value })}
+            >
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div className="field">
         <label htmlFor="eventType">Event type</label>
         <select
@@ -181,13 +238,13 @@ export default function BookClient() {
         />
       </div>
 
-      {error ? <p className="text-sm font-semibold text-red-700">{error}</p> : null}
+      {error ? <p className="text-sm font-semibold text-red-400">{error}</p> : null}
       {message ? (
-        <p className="text-sm font-semibold text-[var(--blue)]">{message}</p>
+        <p className="text-sm font-semibold text-[var(--blue-bright)]">{message}</p>
       ) : null}
 
       <button type="submit" className="btn btn-primary w-fit" disabled={submitting}>
-        {submitting ? "Sending…" : "Submit booking request"}
+        {submitting ? "Sending…" : "Submit party application"}
       </button>
     </form>
   );

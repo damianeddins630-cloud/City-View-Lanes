@@ -61,12 +61,20 @@ export type LeagueSignup = {
   leagueId: string;
   status: ApplicationStatus;
   note: string;
+  /** Team / league application name */
+  teamName: string;
+  firstName: string;
+  lastName: string;
   applicantName: string;
   street: string;
   apt: string;
   city: string;
   state: string;
   zip: string;
+  phone: string;
+  email: string;
+  fullTeam: string;
+  teamCount: string;
   createdAt: string;
   updatedAt: string;
   adminNote?: string;

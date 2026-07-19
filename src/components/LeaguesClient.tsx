@@ -23,12 +23,18 @@ export default function LeaguesClient({
   const [showForm, setShowForm] = useState(false);
   const [selectedLeagueId, setSelectedLeagueId] = useState<string>("waitlist");
   const [form, setForm] = useState({
-    applicantName: "",
+    teamName: "",
+    firstName: "",
+    lastName: "",
     street: "",
     apt: "",
     city: "",
     state: "TX",
     zip: "",
+    phone: "",
+    email: "",
+    fullTeam: "",
+    teamCount: "",
     preferredDay: "Monday",
     preferredType: "Adult",
     note: "",
@@ -43,8 +49,10 @@ export default function LeaguesClient({
         if (u) {
           setForm((f) => ({
             ...f,
-            applicantName:
-              `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.username,
+            firstName: u.firstName || "",
+            lastName: u.lastName || "",
+            email: u.email || "",
+            phone: u.phone || "",
           }));
         }
       })
@@ -112,12 +120,19 @@ export default function LeaguesClient({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         leagueId: selectedLeagueId,
-        applicantName: form.applicantName,
+        teamName: form.teamName,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        applicantName: `${form.firstName} ${form.lastName}`.trim(),
         street: form.street,
         apt: form.apt,
         city: form.city,
         state: form.state,
         zip: form.zip,
+        phone: form.phone,
+        email: form.email,
+        fullTeam: form.fullTeam,
+        teamCount: form.teamCount,
         preferredDay: form.preferredDay,
         preferredType: form.preferredType,
         note: form.note,
@@ -177,13 +192,34 @@ export default function LeaguesClient({
           </p>
 
           <div className="field">
-            <label htmlFor="applicantName">Name *</label>
+            <label htmlFor="teamName">Name (team / league name) *</label>
             <input
-              id="applicantName"
+              id="teamName"
               required
-              value={form.applicantName}
-              onChange={(e) => setForm({ ...form, applicantName: e.target.value })}
+              value={form.teamName}
+              onChange={(e) => setForm({ ...form, teamName: e.target.value })}
             />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="field">
+              <label htmlFor="firstName">First name *</label>
+              <input
+                id="firstName"
+                required
+                value={form.firstName}
+                onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="lastName">Last name *</label>
+              <input
+                id="lastName"
+                required
+                value={form.lastName}
+                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+              />
+            </div>
           </div>
 
           <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
@@ -236,6 +272,57 @@ export default function LeaguesClient({
             </div>
           </div>
 
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="field">
+              <label htmlFor="phone">Phone number *</label>
+              <input
+                id="phone"
+                required
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="email">E-mail *</label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="field">
+              <label htmlFor="fullTeam">Do you have a full team? *</label>
+              <select
+                id="fullTeam"
+                required
+                value={form.fullTeam}
+                onChange={(e) => setForm({ ...form, fullTeam: e.target.value })}
+              >
+                <option value="">Select…</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            {form.fullTeam === "No" ? (
+              <div className="field">
+                <label htmlFor="teamCount">If not, how many people do you have? *</label>
+                <input
+                  id="teamCount"
+                  required
+                  type="number"
+                  min={1}
+                  value={form.teamCount}
+                  onChange={(e) => setForm({ ...form, teamCount: e.target.value })}
+                />
+              </div>
+            ) : null}
+          </div>
+
           {selectedLeagueId === "waitlist" ? (
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="field">
@@ -277,7 +364,7 @@ export default function LeaguesClient({
               id="note"
               value={form.note}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
-              placeholder="Team size, experience, friends joining, etc."
+              placeholder="Experience, friends joining, etc."
             />
           </div>
 

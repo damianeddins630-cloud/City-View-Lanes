@@ -78,6 +78,11 @@ type SignupRow = {
   leagueDay: string;
   leagueTime: string;
   address?: string;
+  phone?: string;
+  email?: string;
+  teamName?: string;
+  fullTeam?: string;
+  teamCount?: string;
   adminNote?: string;
 };
 
@@ -1232,6 +1237,24 @@ export default function AdminClient() {
                         <tr key={s.id} className="border-t border-[var(--line)]">
                           <td className="px-3 py-3">
                             <p className="font-semibold">{s.memberName || s.username}</p>
+                            <p className="text-xs text-[var(--muted)]">
+                              {s.teamName ? `Team: ${s.teamName}` : null}
+                            </p>
+                            <p className="text-xs text-[var(--muted)]">
+                              {s.email || s.memberEmail}
+                              {s.phone ? ` · ${s.phone}` : ""}
+                            </p>
+                            {s.address ? (
+                              <p className="text-xs text-[var(--muted)]">{s.address}</p>
+                            ) : null}
+                            {s.fullTeam ? (
+                              <p className="text-xs text-[var(--muted)]">
+                                Full team: {s.fullTeam}
+                                {s.fullTeam === "No" && s.teamCount
+                                  ? ` (${s.teamCount} people)`
+                                  : ""}
+                              </p>
+                            ) : null}
                             <p className="text-xs text-[var(--muted)]">{s.memberEmail}</p>
                           </td>
                           <td className="px-3 py-3">

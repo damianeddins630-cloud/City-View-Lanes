@@ -22,7 +22,7 @@ export default function Header() {
   const isAdmin = Boolean(user?.permissions?.includes("view_admin"));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 shadow-[0_10px_34px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1a1e25]/90 shadow-[0_10px_34px_rgba(0,0,0,0.4)] backdrop-blur-2xl">
       <div className="silver-bar" />
       <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
         <Link href="/" className="group flex items-center gap-3">

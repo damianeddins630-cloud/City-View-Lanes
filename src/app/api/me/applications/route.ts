@@ -40,10 +40,17 @@ export async function GET() {
       return {
         id: s.id,
         kind: "league" as const,
-        title,
+        title: s.teamName || title,
         detail: [
-          s.applicantName,
+          `${s.firstName || ""} ${s.lastName || ""}`.trim() || s.applicantName,
           address,
+          s.phone,
+          s.email,
+          s.fullTeam === "No"
+            ? `Roster: ${s.teamCount}`
+            : s.fullTeam
+              ? "Full team"
+              : "",
           league?.day,
           league?.time,
           s.note,

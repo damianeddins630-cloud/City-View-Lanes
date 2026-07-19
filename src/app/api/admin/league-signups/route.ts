@@ -23,6 +23,11 @@ export async function GET() {
           : "",
       memberEmail: member?.email || "",
       address: [s.street, s.apt, s.city, s.state, s.zip].filter(Boolean).join(", "),
+      phone: s.phone || "",
+      email: s.email || member?.email || "",
+      teamName: s.teamName || "",
+      fullTeam: s.fullTeam || "",
+      teamCount: s.teamCount || "",
       leagueName: isWaitlist
         ? "General interest / waitlist"
         : league?.name || "Unknown league",
