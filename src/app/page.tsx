@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-black text-white">
+      <section className="hero-stage relative isolate overflow-hidden bg-[#7a8491] text-white">
         <div className="absolute inset-0">
           <SiteImage
             src={h.heroImage}
@@ -60,7 +60,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="marquee-wrap border-y border-[var(--line)] bg-[var(--navy)] text-white">
+      <div className="marquee-wrap border-y border-[var(--line)]">
         <div className="marquee-track">
           {marquee.map((item, i) => (
             <span key={`${item}-${i}`} className="marquee-item">
@@ -82,7 +82,7 @@ export default async function HomePage() {
               <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
                 {h.lanesStatusLabel}
               </p>
-              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-white sm:text-4xl">
+              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-[var(--ink)] sm:text-4xl">
                 {h.lanesAvailable ? h.lanesAvailableText : h.lanesUnavailableText}
               </p>
               <p className="mt-2 text-sm text-[var(--muted)]">
@@ -92,10 +92,10 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="lanes-status-block pricing">
-              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--silver)] uppercase">
+              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
                 {h.pricingLabel}
               </p>
-              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-white sm:text-4xl">
+              <p className="font-display mt-2 text-3xl tracking-[0.04em] text-[var(--ink)] sm:text-4xl">
                 {h.pricingValue || "N/A"}
               </p>
               <p className="mt-2 text-sm text-[var(--muted)]">
@@ -108,7 +108,7 @@ export default async function HomePage() {
 
       <section className="section">
         <p className="section-kicker">{h.whyKicker}</p>
-        <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+        <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
           {h.whyTitle}
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
@@ -121,7 +121,7 @@ export default async function HomePage() {
         <div className="section grid items-center gap-10 md:grid-cols-2">
           <div>
             <p className="section-kicker">{h.academyKicker}</p>
-            <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+            <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
               {h.academyTitle}
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[var(--muted)]">
@@ -165,7 +165,7 @@ export default async function HomePage() {
         <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           {h.galleryKicker}
         </p>
-        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+        <h2 className="font-display mt-2 text-4xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
           {h.galleryTitle}
         </h2>
         <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">{h.galleryCopy}</p>
@@ -188,10 +188,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-[var(--line)] bg-[var(--navy)] text-white">
+      <section className="relative overflow-hidden border-y border-[var(--line)] bg-[#aeb6c0] text-[var(--ink)]">
         <div className="reviews-glow pointer-events-none absolute inset-0" />
         <div className="section relative z-10">
-          <p className="text-sm font-bold tracking-[0.18em] text-[var(--silver)] uppercase">
+          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
             {h.reviewsKicker}
           </p>
           <h2 className="font-display mt-2 text-4xl tracking-[0.05em] sm:text-6xl">
@@ -204,12 +204,12 @@ export default async function HomePage() {
                 className="fade-up quote-block"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <p className="text-base leading-relaxed text-white/90">
+                <p className="text-base leading-relaxed text-[var(--ink)]">
                   &ldquo;{review.quote}&rdquo;
                 </p>
                 <footer className="mt-5">
-                  <p className="font-bold text-white">{review.name}</p>
-                  <p className="text-xs tracking-wide text-[var(--silver)] uppercase">
+                  <p className="font-bold text-[var(--ink)]">{review.name}</p>
+                  <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
                     {review.role}
                   </p>
                 </footer>
@@ -229,14 +229,14 @@ export default async function HomePage() {
             sizes="100vw"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,7,12,0.94)_0%,rgba(10,18,32,0.9)_55%,rgba(5,7,12,0.86)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(175,182,192,0.92)_0%,rgba(139,148,158,0.9)_55%,rgba(122,132,145,0.88)_100%)]" />
         <div className="section relative z-10">
-          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
+          <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
             {h.visitKicker}
           </p>
           <div className="mt-4 grid gap-8 md:grid-cols-[1.25fr_1fr] md:items-end">
             <div>
-              <h2 className="font-display text-5xl tracking-[0.05em] text-white sm:text-6xl">
+              <h2 className="font-display text-5xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
                 {SITE.addressLine1}
               </h2>
               <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
@@ -246,7 +246,7 @@ export default async function HomePage() {
               >
                 {SITE.phoneDisplay}
               </a>
-              <p className="mt-4 text-sm text-white">{h.visitHoursNote}</p>
+              <p className="mt-4 text-sm text-[var(--ink)]">{h.visitHoursNote}</p>
               <p className="mt-1 text-sm text-[var(--muted)]">{h.visitParkingNote}</p>
             </div>
             <div className="flex flex-wrap content-start gap-3">

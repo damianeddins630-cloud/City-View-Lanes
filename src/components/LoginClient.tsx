@@ -60,7 +60,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
         CityView Lanes
       </h1>
 
-      <div className="mt-8 flex border border-[var(--line)] bg-black/40">
+      <div className="mt-8 flex border border-[var(--line)] bg-white/35">
         <button
           type="button"
           className={`flex-1 py-3 text-sm font-bold tracking-wide uppercase ${
@@ -86,7 +86,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
       </div>
 
       {mode === "signin" ? (
-        <form onSubmit={submitSignIn} className="mt-6 grid gap-4 border border-[var(--line)] bg-black/40 p-6">
+        <form onSubmit={submitSignIn} className="mt-6 grid gap-4 border border-[var(--line)] bg-white/35 p-6">
           <div className="field">
             <label htmlFor="identifier">Username or email *</label>
             <input
@@ -117,7 +117,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
           </button>
         </form>
       ) : (
-        <form onSubmit={submitCreate} className="mt-6 grid gap-4 border border-[var(--line)] bg-black/40 p-6">
+        <form onSubmit={submitCreate} className="mt-6 grid gap-4 border border-[var(--line)] bg-white/35 p-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="field">
               <label htmlFor="firstName">First name</label>

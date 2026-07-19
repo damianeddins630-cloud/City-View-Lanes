@@ -476,7 +476,7 @@ export default function AdminClient() {
         <p className="text-xs font-semibold tracking-wide text-[var(--blue-bright)] uppercase">
           {label}
         </p>
-        <p className="text-sm whitespace-pre-wrap text-white">{String(value)}</p>
+        <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{String(value)}</p>
       </div>
     );
   }
@@ -723,7 +723,7 @@ export default function AdminClient() {
             <p className="text-xs font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
               Signed-in admin profile
             </p>
-            <h2 className="font-display mt-1 text-3xl tracking-[0.04em] text-white">
+            <h2 className="font-display mt-1 text-3xl tracking-[0.04em] text-[var(--ink)]">
               {user.firstName} {user.lastName}
             </h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
@@ -731,30 +731,30 @@ export default function AdminClient() {
             </p>
             <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
               <p>
-                <span className="font-semibold text-white">Email:</span> {user.email}
+                <span className="font-semibold text-[var(--ink)]">Email:</span> {user.email}
               </p>
               <p>
-                <span className="font-semibold text-white">Phone:</span>{" "}
+                <span className="font-semibold text-[var(--ink)]">Phone:</span>{" "}
                 {user.phone || "—"}
               </p>
               <p>
-                <span className="font-semibold text-white">Birth date:</span>{" "}
+                <span className="font-semibold text-[var(--ink)]">Birth date:</span>{" "}
                 {user.birthDate || "—"}
               </p>
               <p>
-                <span className="font-semibold text-white">Member since:</span>{" "}
+                <span className="font-semibold text-[var(--ink)]">Member since:</span>{" "}
                 {user.createdAt
                   ? new Date(user.createdAt).toLocaleDateString()
                   : "—"}
               </p>
               <p>
-                <span className="font-semibold text-white">Last updated:</span>{" "}
+                <span className="font-semibold text-[var(--ink)]">Last updated:</span>{" "}
                 {user.updatedAt
                   ? new Date(user.updatedAt).toLocaleString()
                   : "—"}
               </p>
               <p>
-                <span className="font-semibold text-white">Permissions:</span>{" "}
+                <span className="font-semibold text-[var(--ink)]">Permissions:</span>{" "}
                 {user.permissions.length}
               </p>
             </div>
@@ -777,7 +777,7 @@ export default function AdminClient() {
               </p>
             </div>
             <div className="stat-chip col-span-2">
-              <p className="font-display text-2xl text-white">{users.length}</p>
+              <p className="font-display text-2xl text-[var(--ink)]">{users.length}</p>
               <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
                 Total accounts
               </p>
@@ -831,7 +831,7 @@ export default function AdminClient() {
                   >
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-black/40 text-xs font-bold text-[var(--blue)]">
+                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-white/35 text-xs font-bold text-[var(--blue)]">
                           {u.avatarUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={u.avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -840,7 +840,7 @@ export default function AdminClient() {
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-white">
+                          <p className="font-semibold text-[var(--ink)]">
                             {u.firstName} {u.lastName}
                           </p>
                           <p className="text-xs text-[var(--muted)]">
@@ -883,7 +883,7 @@ export default function AdminClient() {
           <div className="panel overflow-hidden">
             <div className="silver-bar" />
             <div className="p-5">
-              <h2 className="font-display text-2xl text-white">Member profile</h2>
+              <h2 className="font-display text-2xl text-[var(--ink)]">Member profile</h2>
               {selectedUser ? (
                 <div className="mt-4 space-y-4 text-sm">
                   <div className="flex items-center gap-3">
@@ -904,7 +904,7 @@ export default function AdminClient() {
                       )}
                     </div>
                     <div>
-                      <p className="font-display text-xl text-white">
+                      <p className="font-display text-xl text-[var(--ink)]">
                         {selectedUser.firstName} {selectedUser.lastName}
                       </p>
                       <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
@@ -941,7 +941,7 @@ export default function AdminClient() {
                   </div>
 
                   <div>
-                    <p className="font-semibold text-white">
+                    <p className="font-semibold text-[var(--ink)]">
                       Bookings ({selectedUser.bookingCount})
                     </p>
                     {selectedUser.bookings.length === 0 ? (
@@ -951,7 +951,7 @@ export default function AdminClient() {
                         {selectedUser.bookings.map((b) => (
                           <li
                             key={b.id}
-                            className="border border-[var(--line)] bg-black/40/5 px-3 py-2"
+                            className="border border-[var(--line)] bg-white/35/5 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {b.eventType} · {b.status}
@@ -970,7 +970,7 @@ export default function AdminClient() {
                   </div>
 
                   <div>
-                    <p className="font-semibold text-white">
+                    <p className="font-semibold text-[var(--ink)]">
                       League signups ({selectedUser.leagueSignupCount})
                     </p>
                     {selectedUser.leagueSignups.length === 0 ? (
@@ -980,7 +980,7 @@ export default function AdminClient() {
                         {selectedUser.leagueSignups.map((s) => (
                           <li
                             key={s.id}
-                            className="border border-[var(--line)] bg-black/40/5 px-3 py-2"
+                            className="border border-[var(--line)] bg-white/35/5 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {s.leagueName || s.leagueId} · {s.status}
@@ -1011,7 +1011,7 @@ export default function AdminClient() {
       {activeTab === "roles" && can("manage_roles") ? (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <form onSubmit={createRole} className="panel grid gap-3 p-5">
-            <h2 className="font-display text-2xl text-white">Add role</h2>
+            <h2 className="font-display text-2xl text-[var(--ink)]">Add role</h2>
             <div className="field">
               <label>Role name</label>
               <input
@@ -1075,7 +1075,7 @@ export default function AdminClient() {
               <div key={role.id} className="panel p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="font-display text-xl text-white">
+                    <h3 className="font-display text-xl text-[var(--ink)]">
                       {role.name}{" "}
                       <span className="text-sm font-sans text-[var(--muted)]">
                         (rank {role.rank ?? "—"})
@@ -1139,13 +1139,13 @@ export default function AdminClient() {
 
       {activeTab === "chat" && can("admin_chat") ? (
         <div className="mt-6 panel p-5">
-          <h2 className="font-display text-2xl text-white">Admin chat</h2>
+          <h2 className="font-display text-2xl text-[var(--ink)]">Admin chat</h2>
           <div className="mt-4 max-h-[420px] space-y-3 overflow-y-auto border border-[var(--line)] bg-[var(--bg)] p-4">
             {messages.length === 0 ? (
               <p className="text-sm text-[var(--muted)]">No messages yet.</p>
             ) : (
               messages.map((m) => (
-                <div key={m.id} className="border border-[var(--line)] bg-black/40 p-3">
+                <div key={m.id} className="border border-[var(--line)] bg-white/35 p-3">
                   <p className="text-xs font-bold tracking-wide text-[var(--blue)] uppercase">
                     {m.displayName} · {m.roleName} ·{" "}
                     {new Date(m.createdAt).toLocaleString()}
@@ -1174,8 +1174,8 @@ export default function AdminClient() {
         <div className="mt-6 space-y-8">
           {can("manage_bookings") ? (
             <div>
-              <h2 className="font-display text-2xl text-white">Party applications</h2>
-              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
+              <h2 className="font-display text-2xl text-[var(--ink)]">Party applications</h2>
+              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
                 <table className="min-w-full text-left text-sm">
                   <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
                     <tr>
@@ -1253,10 +1253,10 @@ export default function AdminClient() {
 
           {can("manage_league_signups") ? (
             <div>
-              <h2 className="font-display text-2xl text-white">
+              <h2 className="font-display text-2xl text-[var(--ink)]">
                 League applications
               </h2>
-              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
+              <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
                 <table className="min-w-full text-left text-sm">
                   <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
                     <tr>
@@ -1349,10 +1349,10 @@ export default function AdminClient() {
 
       {activeTab === "employment" && can("manage_employment") ? (
         <div className="mt-6">
-          <h2 className="font-display text-2xl text-white">
+          <h2 className="font-display text-2xl text-[var(--ink)]">
             Employment applications
           </h2>
-          <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
+          <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
                 <tr>
@@ -1461,7 +1461,7 @@ export default function AdminClient() {
       ) : null}
 
       {activeTab === "admins" && can("view_admins") ? (
-        <div className="mt-6 overflow-x-auto border border-[var(--line)] bg-black/40">
+        <div className="mt-6 overflow-x-auto border border-[var(--line)] bg-white/35">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
               <tr>
@@ -1474,7 +1474,7 @@ export default function AdminClient() {
             <tbody>
               {admins.map((a) => (
                 <tr key={a.id} className="border-t border-[var(--line)]">
-                  <td className="px-3 py-3 font-semibold text-white">
+                  <td className="px-3 py-3 font-semibold text-[var(--ink)]">
                     {a.roleName}
                   </td>
                   <td className="px-3 py-3">{a.username}</td>
@@ -1492,7 +1492,7 @@ export default function AdminClient() {
       {activeTab === "leagues" && can("manage_leagues") ? (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <form onSubmit={addLeague} className="panel grid gap-3 p-5">
-            <h2 className="font-display text-2xl text-white">Add league</h2>
+            <h2 className="font-display text-2xl text-[var(--ink)]">Add league</h2>
             <div className="field">
               <label>Name</label>
               <input
@@ -1572,7 +1572,7 @@ export default function AdminClient() {
               leagues.map((l) => (
                 <div key={l.id} className="panel flex items-start justify-between gap-3 p-4">
                   <div>
-                    <p className="font-semibold text-white">{l.name}</p>
+                    <p className="font-semibold text-[var(--ink)]">{l.name}</p>
                     <p className="text-sm text-[var(--muted)]">
                       {l.day} · {l.time} · {l.type} · Team {l.teamSize}
                     </p>
@@ -1606,10 +1606,10 @@ export default function AdminClient() {
 
       {activeTab === "hours" && can("manage_hours") ? (
         <form onSubmit={saveHours} className="mt-6 panel max-w-2xl space-y-3 p-5">
-          <h2 className="font-display text-2xl text-white">Edit open hours</h2>
+          <h2 className="font-display text-2xl text-[var(--ink)]">Edit open hours</h2>
           {hours.map((h, idx) => (
             <div key={h.day} className="grid grid-cols-[1fr_1fr_1fr] items-center gap-3">
-              <p className="font-semibold text-white">{h.day}</p>
+              <p className="font-semibold text-[var(--ink)]">{h.day}</p>
               <input
                 value={h.open}
                 onChange={(e) => {
@@ -1638,7 +1638,7 @@ export default function AdminClient() {
 
       {detail ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-3 sm:items-center sm:p-6"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-[var(--black)]/60 p-3 sm:items-center sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-label="Application details"
@@ -1657,7 +1657,7 @@ export default function AdminClient() {
                       ? "League application"
                       : "Employment application"}
                 </p>
-                <h2 className="font-display text-2xl text-white">
+                <h2 className="font-display text-2xl text-[var(--ink)]">
                   {detail.kind === "employment"
                     ? `${detail.data.firstName} ${detail.data.lastName}`.trim()
                     : detail.kind === "party"

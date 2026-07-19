@@ -22,7 +22,7 @@ export default function Header() {
   const isAdmin = Boolean(user?.permissions?.includes("view_admin"));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#12161d]/92 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-white/40 bg-[#aeb6c0]/92 shadow-[0_12px_40px_rgba(60,70,85,0.28)] backdrop-blur-2xl">
       <div className="silver-bar" />
       <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
         <Link href="/" className="group flex items-center gap-3">
@@ -34,8 +34,8 @@ export default function Header() {
             className="h-11 w-11 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(91,155,255,0.55)]"
             priority
           />
-          <span className="font-display text-xl tracking-[0.1em] text-white uppercase sm:text-2xl">
-            CityView <span className="text-[var(--blue-bright)]">Lanes</span>
+          <span className="font-display text-xl tracking-[0.1em] text-[var(--ink)] uppercase sm:text-2xl">
+            CityView <span className="text-[var(--blue)]">Lanes</span>
           </span>
         </Link>
 
@@ -48,8 +48,8 @@ export default function Header() {
                 href={link.href}
                 className={`text-sm font-semibold tracking-wide uppercase transition-colors ${
                   active
-                    ? "text-[var(--blue-bright)]"
-                    : "text-white/70 hover:text-white"
+                    ? "text-[var(--blue)]"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
                 }`}
               >
                 {link.label}
@@ -60,14 +60,14 @@ export default function Header() {
             <>
               <Link
                 href="/profile"
-                className="text-sm font-semibold tracking-wide text-white/70 uppercase hover:text-white"
+                className="text-sm font-semibold tracking-wide text-[var(--muted)] uppercase hover:text-[var(--ink)]"
               >
                 Profile
               </Link>
               {isAdmin ? (
                 <Link
                   href="/admin"
-                  className="text-sm font-semibold tracking-wide text-[var(--blue-bright)] uppercase"
+                  className="text-sm font-semibold tracking-wide text-[var(--blue)] uppercase"
                 >
                   Admin
                 </Link>
@@ -82,7 +82,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center border border-white/20 text-white lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center border border-[var(--ink)]/25 text-[var(--ink)] lg:hidden"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -95,13 +95,13 @@ export default function Header() {
       </div>
 
       {open ? (
-        <div className="border-t border-white/10 bg-black/95 px-4 py-4 lg:hidden">
+        <div className="border-t border-white/40 bg-[#c5ccd6] px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-3">
             {NAV.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="py-1 text-sm font-semibold tracking-wide text-white uppercase"
+                className="py-1 text-sm font-semibold tracking-wide text-[var(--ink)] uppercase"
                 onClick={() => setOpen(false)}
               >
                 {link.label}

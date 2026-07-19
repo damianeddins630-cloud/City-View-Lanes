@@ -81,7 +81,7 @@ function PhotoSlot({
       <p className="text-xs font-bold tracking-wide text-[var(--blue-bright)] uppercase">
         {label}
       </p>
-      <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-black/40">
+      <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-white/35">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt || label} className="h-full w-full object-cover" />
       </div>
@@ -160,16 +160,16 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
   return (
     <form onSubmit={save} className="mt-6 space-y-8">
       <div className="panel p-5">
-        <h2 className="font-display text-2xl text-white">Edit website pictures & text</h2>
+        <h2 className="font-display text-2xl text-[var(--ink)]">Edit website pictures & text</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
           Change photos and descriptions for the main homepage and the Youth
           section on Leagues — no code needed. Upload a photo, edit the words,
-          then click <strong className="text-white">Save all changes</strong>.
+          then click <strong className="text-[var(--ink)]">Save all changes</strong>.
         </p>
       </div>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Hero</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Hero</h3>
         <div className="grid gap-4 lg:grid-cols-2">
           <PhotoSlot
             label="Main hero picture"
@@ -226,7 +226,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">
+        <h3 className="font-display text-3xl text-[var(--ink)]">
           Homepage — Lanes available &amp; pricing
         </h3>
         <p className="text-sm text-[var(--muted)]">
@@ -291,7 +291,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Why section</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Why section</h3>
         <div className="grid gap-3">
           <Field
             label="Small label"
@@ -341,7 +341,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Academy</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Academy</h3>
         <div className="grid gap-4 lg:grid-cols-2">
           <PhotoSlot
             label="Academy picture"
@@ -414,7 +414,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Gallery</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Gallery</h3>
         <Field
           label="Small label"
           value={h.galleryKicker}
@@ -462,7 +462,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Reviews</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Reviews</h3>
         <Field
           label="Small label"
           value={h.reviewsKicker}
@@ -517,7 +517,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4">
-        <h3 className="font-display text-3xl text-white">Homepage — Visit band</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Homepage — Visit band</h3>
         <div className="grid gap-4 lg:grid-cols-2">
           <PhotoSlot
             label="Visit background picture"
@@ -555,7 +555,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
       </section>
 
       <section className="space-y-4 border-t border-[var(--line)] pt-8">
-        <h3 className="font-display text-3xl text-white">Leagues — Youth section</h3>
+        <h3 className="font-display text-3xl text-[var(--ink)]">Leagues — Youth section</h3>
         <div className="grid gap-4 lg:grid-cols-2">
           <PhotoSlot
             label="Youth / leagues hero picture"

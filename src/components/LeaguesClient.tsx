@@ -399,7 +399,7 @@ export default function LeaguesClient({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search leagues, days, or types…"
-            className="min-h-11 w-full border border-[var(--line)] bg-black/40 px-3 sm:max-w-md"
+            className="min-h-11 w-full border border-[var(--line)] bg-white/35 px-3 sm:max-w-md"
           />
           <p className="text-sm font-semibold text-[var(--muted)]">
             {leagues.length} league{leagues.length === 1 ? "" : "s"}

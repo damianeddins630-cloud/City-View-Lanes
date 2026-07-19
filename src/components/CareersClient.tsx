@@ -130,7 +130,7 @@ export default function CareersClient() {
 
   if (!user) {
     return (
-      <div className="mt-8 border border-[var(--line)] bg-black/40 p-6">
+      <div className="mt-8 border border-[var(--line)] bg-white/35 p-6">
         <p className="text-[var(--ink)]">
           Please sign in or create an account to submit an employment
           application.

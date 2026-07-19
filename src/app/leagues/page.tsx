@@ -21,7 +21,7 @@ export default async function LeaguesPage() {
 
   return (
     <>
-      <section className="league-hero relative isolate overflow-hidden text-white">
+      <section className="league-hero relative isolate overflow-hidden text-[var(--ink)]">
         <div className="absolute inset-0">
           <SiteImage
             src={youth.heroImage}
@@ -44,7 +44,7 @@ export default async function LeaguesPage() {
           <p className="fade-up section-kicker text-white/90">
             CityView Lanes · {SITE.fallSeasonLabel}
           </p>
-          <h1 className="font-display fade-up mt-2 max-w-3xl text-[clamp(3.4rem,10vw,6.5rem)] leading-[0.88] tracking-[0.03em]">
+          <h1 className="font-display fade-up mt-2 max-w-3xl text-[clamp(3.4rem,10vw,6.5rem)] leading-[0.88] tracking-[0.03em] text-white">
             Leagues
             <span className="brand-title-accent block">that hit harder</span>
           </h1>
@@ -99,13 +99,13 @@ export default async function LeaguesPage() {
         <div className="section grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="fade-up">
             <p className="section-kicker">{youth.kicker}</p>
-            <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
+            <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-[var(--ink)] sm:text-6xl">
               {youth.title}
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--muted)]">
               {youth.blurb}
             </p>
-            <p className="mt-4 text-sm font-semibold tracking-wide text-white">
+            <p className="mt-4 text-sm font-semibold tracking-wide text-[var(--ink)]">
               {youth.ages} · {youth.season}
             </p>
             <p className="mt-2 text-sm text-[var(--muted)]">{youth.format}</p>
@@ -116,7 +116,7 @@ export default async function LeaguesPage() {
                   <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
                     {item.label}
                   </p>
-                  <p className="mt-1 font-display text-2xl tracking-wide text-white">
+                  <p className="mt-1 font-display text-2xl tracking-wide text-[var(--ink)]">
                     {item.value}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default async function LeaguesPage() {
           <div className="youth-states-board fade-up">
             <div className="mb-6 max-w-2xl">
               <p className="section-kicker">Player states</p>
-              <h3 className="font-display mt-2 text-3xl tracking-[0.05em] text-white sm:text-4xl">
+              <h3 className="font-display mt-2 text-3xl tracking-[0.05em] text-[var(--ink)] sm:text-4xl">
                 Where our youth players come from
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
@@ -170,7 +170,7 @@ export default async function LeaguesPage() {
                   <p className="font-display text-4xl tracking-wide text-[var(--blue-bright)]">
                     {state.code}
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
+                  <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
                     {state.name}
                   </p>
                   <p className="mt-1 text-xs leading-snug text-[var(--muted)]">
@@ -186,7 +186,7 @@ export default async function LeaguesPage() {
                   <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
                     {stat.label}
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
+                  <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
                     {stat.value}
                   </p>
                 </div>
@@ -198,7 +198,7 @@ export default async function LeaguesPage() {
 
       <section id="schedule" className="section pt-10">
         <p className="section-kicker">Fall schedule</p>
-        <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-5xl">
+        <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-[var(--ink)] sm:text-5xl">
           Pick a league. Apply in minutes.
         </h2>
         <p className="mt-4 max-w-2xl text-sm text-[var(--muted)]">
