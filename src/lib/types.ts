@@ -8,7 +8,62 @@ export type Permission =
   | "manage_leagues"
   | "manage_hours"
   | "view_admins"
-  | "manage_employment";
+  | "manage_employment"
+  | "manage_content";
+
+export type SiteImageSlot = {
+  src: string;
+  alt: string;
+};
+
+export type SiteContent = {
+  home: {
+    heroImage: string;
+    heroImageAlt: string;
+    heroTitleLine1: string;
+    heroTitleLine2: string;
+    heroSubtitle: string;
+    marquee: string[];
+    whyKicker: string;
+    whyTitle: string;
+    whyCopy: string;
+    whyCards: Array<{ title: string; copy: string }>;
+    academyKicker: string;
+    academyTitle: string;
+    academyCopy: string;
+    academyImage: string;
+    academyImageAlt: string;
+    academyStat1Value: string;
+    academyStat1Label: string;
+    academyStat2Value: string;
+    academyStat2Label: string;
+    galleryKicker: string;
+    galleryTitle: string;
+    galleryCopy: string;
+    galleryImages: SiteImageSlot[];
+    reviewsKicker: string;
+    reviewsTitle: string;
+    reviews: Array<{ quote: string; name: string; role: string }>;
+    visitKicker: string;
+    visitImage: string;
+    visitHoursNote: string;
+    visitParkingNote: string;
+  };
+  youth: {
+    kicker: string;
+    title: string;
+    blurb: string;
+    ages: string;
+    season: string;
+    format: string;
+    phoneNote: string;
+    heroImage: string;
+    photos: SiteImageSlot[];
+    highlights: Array<{ label: string; value: string }>;
+    playerStates: Array<{ code: string; name: string; note: string }>;
+    playerStats: Array<{ label: string; value: string }>;
+  };
+};
 
 export type Role = {
   id: string;
@@ -185,6 +240,7 @@ export type Store = {
   hours: DayHours[];
   chatMessages: ChatMessage[];
   notifications: Notification[];
+  siteContent: SiteContent;
 };
 
 export type SessionPayload = {

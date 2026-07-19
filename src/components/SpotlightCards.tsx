@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
-import { WHY_CARDS } from "@/lib/site";
 
-export default function SpotlightCards() {
+type Card = { title: string; copy: string };
+
+export default function SpotlightCards({ cards }: { cards: Card[] }) {
   const gridRef = useRef<HTMLDivElement>(null);
 
   function onMove(e: MouseEvent<HTMLDivElement>) {
@@ -24,9 +25,9 @@ export default function SpotlightCards() {
       onMouseMove={onMove}
       className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {WHY_CARDS.map((card, index) => (
+      {cards.map((card, index) => (
         <article
-          key={card.title}
+          key={`${card.title}-${index}`}
           data-spot
           className="spotlight-card feature-card panel p-5"
           style={{ animationDelay: `${index * 80}ms` }}

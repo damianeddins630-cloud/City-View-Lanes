@@ -4,6 +4,7 @@ import path from "path";
 import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
 import { ensureMasterAdmin } from "./masterAdmin";
 import { ensureRoles } from "./roles";
+import { ensureSiteContent } from "./siteContent";
 import type { Store } from "./types";
 
 const seedPath = path.join(process.cwd(), "data", "store.json");
@@ -434,6 +435,56 @@ export async function testBlobRoundTrip(): Promise<{
   }
 }
 
+/** Upload a site photo to Blob (prefer public URL). Falls back to /public/uploads. */
+export async function uploadSiteImage(
+  file: File | Buffer,
+  filename: string,
+  contentType: string,
+): Promise<{ url: string; mode: "blob" | "local" }> {
+  const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+  const pathname = `cityview/uploads/${Date.now()}-${safeName}`;
+  let body: Buffer;
+  if (Buffer.isBuffer(file)) {
+    body = file;
+  } else {
+    body = Buffer.from(await (file as File).arrayBuffer());
+  }
+
+  if (hasBlobCredentials()) {
+    const errors: string[] = [];
+    // Prefer public so the homepage can show the image without auth.
+    for (const auth of blobAuthAttempts()) {
+      for (const access of ["public", "private"] as BlobAccess[]) {
+        try {
+          const result = await put(pathname, body, {
+            access,
+            contentType,
+            addRandomSuffix: false,
+            allowOverwrite: true,
+            cacheControlMaxAge: 60 * 60 * 24 * 30,
+            ...(auth.token ? { token: auth.token } : {}),
+            ...(auth.storeId ? { storeId: auth.storeId } : {}),
+          });
+          rememberBlobAccess(access);
+          if (result?.url) {
+            return { url: result.url, mode: "blob" };
+          }
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          errors.push(`${auth.label}/${access}: ${message}`);
+        }
+      }
+    }
+    console.error("[CityView] image upload blob failed", errors.join(" | "));
+  }
+
+  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  await fs.mkdir(uploadsDir, { recursive: true });
+  const localName = `${Date.now()}-${safeName}`;
+  await fs.writeFile(path.join(uploadsDir, localName), body);
+  return { url: `/uploads/${localName}`, mode: "local" };
+}
+
 function finalizeStore(store: Store): Store {
   if (!Array.isArray(store.leagues)) store.leagues = [];
   if (!Array.isArray(store.leagueSignups)) store.leagueSignups = [];
@@ -453,6 +504,7 @@ function finalizeStore(store: Store): Store {
       if (!have.has(seed.id)) store.leagues.push({ ...seed });
     }
   }
+  store.siteContent = ensureSiteContent(store.siteContent);
   ensureRoles(store);
   ensureMasterAdmin(store);
   return store;

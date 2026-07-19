@@ -14,6 +14,7 @@ const OWNER_PERMISSIONS: Permission[] = [
   "manage_hours",
   "view_admins",
   "manage_employment",
+  "manage_content",
 ];
 
 const ADMIN_PERMISSIONS: Permission[] = [
@@ -26,6 +27,7 @@ const ADMIN_PERMISSIONS: Permission[] = [
   "manage_hours",
   "view_admins",
   "manage_employment",
+  "manage_content",
 ];
 
 export function roleRank(role: Role | undefined | null): number {
@@ -82,8 +84,11 @@ export function ensureRoles(store: Store): Store {
       role.rank = roleRank(role);
     }
     if (role.id === "role_admin" || role.name === "Admin") {
-      if (!role.permissions.includes("manage_employment")) {
-        role.permissions = [...role.permissions, "manage_employment"];
+      const extras: Permission[] = ["manage_employment", "manage_content"];
+      for (const p of extras) {
+        if (!role.permissions.includes(p)) {
+          role.permissions = [...role.permissions, p];
+        }
       }
       if (typeof role.rank !== "number" || role.rank < 1) role.rank = 10;
     }

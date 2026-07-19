@@ -129,4 +129,8 @@ export const ALL_PERMISSIONS = [
   { id: "manage_hours", label: "Edit open hours" },
   { id: "view_admins", label: "View admin list" },
   { id: "manage_employment", label: "Approve / deny employment applications" },
+  {
+    id: "manage_content",
+    label: "Edit homepage / youth photos & descriptions",
+  },
 ] as const;

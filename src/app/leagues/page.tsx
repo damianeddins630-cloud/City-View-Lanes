@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import LeaguesClient from "@/components/LeaguesClient";
+import SiteImage from "@/components/SiteImage";
 import { readStore } from "@/lib/db";
-import { SITE, YOUTH_LEAGUE } from "@/lib/site";
+import { ensureSiteContent } from "@/lib/siteContent";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Leagues",
@@ -16,13 +17,14 @@ export const dynamic = "force-dynamic";
 
 export default async function LeaguesPage() {
   const store = await readStore();
+  const youth = ensureSiteContent(store.siteContent).youth;
 
   return (
     <>
       <section className="league-hero relative isolate overflow-hidden text-white">
         <div className="absolute inset-0">
-          <Image
-            src="/images/cityview-lanes.webp"
+          <SiteImage
+            src={youth.heroImage}
             alt="Bowling lanes at CityView Lanes"
             fill
             priority
@@ -96,20 +98,20 @@ export default async function LeaguesPage() {
       <section id="youth" className="youth-band relative overflow-hidden">
         <div className="section grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="fade-up">
-            <p className="section-kicker">{YOUTH_LEAGUE.kicker}</p>
+            <p className="section-kicker">{youth.kicker}</p>
             <h2 className="font-display section-title mt-2 text-4xl tracking-[0.05em] text-white sm:text-6xl">
-              {YOUTH_LEAGUE.title}
+              {youth.title}
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--muted)]">
-              {YOUTH_LEAGUE.blurb}
+              {youth.blurb}
             </p>
             <p className="mt-4 text-sm font-semibold tracking-wide text-white">
-              {YOUTH_LEAGUE.ages} · {YOUTH_LEAGUE.season}
+              {youth.ages} · {youth.season}
             </p>
-            <p className="mt-2 text-sm text-[var(--muted)]">{YOUTH_LEAGUE.format}</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">{youth.format}</p>
 
             <div className="youth-highlights mt-8">
-              {YOUTH_LEAGUE.highlights.map((item) => (
+              {youth.highlights.map((item) => (
                 <div key={item.label} className="youth-highlight">
                   <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
                     {item.label}
@@ -126,18 +128,18 @@ export default async function LeaguesPage() {
                 Apply for youth
               </Link>
               <a href={`tel:${SITE.leaguePhoneTel}`} className="btn btn-ghost">
-                {YOUTH_LEAGUE.phoneNote}
+                {youth.phoneNote}
               </a>
             </div>
           </div>
 
           <div className="youth-photo-stack fade-up-delay">
-            {YOUTH_LEAGUE.photos.map((photo, index) => (
+            {youth.photos.map((photo, index) => (
               <div
-                key={photo.src}
+                key={`${photo.src}-${index}`}
                 className={`youth-photo youth-photo-${index + 1} relative overflow-hidden`}
               >
-                <Image
+                <SiteImage
                   src={photo.src}
                   alt={photo.alt}
                   fill
@@ -163,8 +165,8 @@ export default async function LeaguesPage() {
             </div>
 
             <div className="state-strip">
-              {YOUTH_LEAGUE.playerStates.map((state) => (
-                <div key={state.code} className="state-chip">
+              {youth.playerStates.map((state) => (
+                <div key={`${state.code}-${state.name}`} className="state-chip">
                   <p className="font-display text-4xl tracking-wide text-[var(--blue-bright)]">
                     {state.code}
                   </p>
@@ -179,7 +181,7 @@ export default async function LeaguesPage() {
             </div>
 
             <div className="youth-stats-row mt-8">
-              {YOUTH_LEAGUE.playerStats.map((stat) => (
+              {youth.playerStats.map((stat) => (
                 <div key={stat.label} className="youth-stat">
                   <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
                     {stat.label}

@@ -1,0 +1,33 @@
+EDIT HOMEPAGE PICTURES & DESCRIPTIONS (no code)
+==============================================
+
+1) Log in as Website Owner
+   username: cityview_damian
+   password: Archer6!9_20
+
+2) Go to Admin
+
+3) Open the tab: Pictures & Text
+
+4) For any photo slot:
+   - Click "Upload new photo" (JPG / PNG / WEBP)
+   - Or paste an image URL
+   - Edit the description / headline text next to it
+
+5) Scroll to the bottom → click "Save all changes"
+
+6) Open Home (or Leagues → Youth) and refresh the page
+   (Ctrl+Shift+R / Cmd+Shift+R)
+
+What you can edit
+-----------------
+- Homepage hero picture + titles + description
+- Why CityView feature titles/descriptions
+- Academy picture + text + stats
+- Gallery photos (3)
+- Reviews
+- Visit band picture + notes
+- Youth league photos, description, and player states
+
+Needs Blob connected (same as Profile/Hours saves)
+so photos and text stick after refresh.

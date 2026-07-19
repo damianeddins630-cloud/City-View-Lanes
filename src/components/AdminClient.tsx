@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import AdminContentEditor from "@/components/AdminContentEditor";
 import { ALL_PERMISSIONS } from "@/lib/site";
 import type {
   DayHours,
@@ -19,7 +20,8 @@ type Tab =
   | "employment"
   | "admins"
   | "leagues"
-  | "hours";
+  | "hours"
+  | "content";
 
 type AdminUser = PublicUser & {
   bookingCount: number;
@@ -100,6 +102,7 @@ type ChatRow = {
 const TABS: { id: Tab; label: string; permission?: Permission }[] = [
   { id: "users", label: "Users", permission: "manage_users" },
   { id: "roles", label: "Role Manager", permission: "manage_roles" },
+  { id: "content", label: "Pictures & Text", permission: "manage_content" },
   { id: "chat", label: "Admin Chat", permission: "admin_chat" },
   { id: "bookings", label: "Party & League Apps", permission: "manage_bookings" },
   { id: "employment", label: "Employment", permission: "manage_employment" },
@@ -1586,6 +1589,19 @@ export default function AdminClient() {
             )}
           </div>
         </div>
+      ) : null}
+
+      {activeTab === "content" && can("manage_content") ? (
+        <AdminContentEditor
+          onNotice={(msg) => {
+            setNotice(msg);
+            setError("");
+          }}
+          onError={(msg) => {
+            setError(msg);
+            if (msg) setNotice("");
+          }}
+        />
       ) : null}
 
       {activeTab === "hours" && can("manage_hours") ? (
