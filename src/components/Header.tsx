@@ -35,8 +35,8 @@ export default function Header() {
             className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105"
             priority
           />
-          <span className="font-display text-2xl font-semibold tracking-[0.08em] text-[var(--ink)] uppercase sm:text-[1.7rem]">
-            CityView <span className="text-[var(--blue)]">Lanes</span>
+          <span className="font-display text-2xl font-semibold tracking-[0.08em] text-white uppercase sm:text-[1.7rem]">
+            City View <span className="site-header-brand-accent">Lanes</span>
           </span>
         </Link>
 
@@ -79,7 +79,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center border border-[var(--ink)]/20 bg-white/35 text-[var(--ink)] lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center border border-white/30 bg-white/10 text-white lg:hidden"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -92,23 +92,27 @@ export default function Header() {
       </div>
 
       {open ? (
-        <div className="site-header-mobile border-t border-white/45 px-4 py-4 lg:hidden">
+        <div className="site-header-mobile border-t border-white/20 px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-3">
             {NAV.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="py-1 text-sm font-semibold tracking-[0.12em] text-[var(--ink)] uppercase"
+                className="py-1 text-sm font-semibold tracking-[0.12em] text-white uppercase"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <Link href={user ? "/profile" : "/login"} onClick={() => setOpen(false)}>
+            <Link
+              href={user ? "/profile" : "/login"}
+              className="text-white"
+              onClick={() => setOpen(false)}
+            >
               {user ? "Profile" : "Member Login"}
             </Link>
             {isAdmin ? (
-              <Link href="/admin" onClick={() => setOpen(false)}>
+              <Link href="/admin" className="text-white" onClick={() => setOpen(false)}>
                 Admin
               </Link>
             ) : null}
