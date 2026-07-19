@@ -50,7 +50,7 @@ export default async function HomePage() {
             className="fade-up-delay mt-7 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl"
           />
           <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
-            <Link href="/book" className="btn btn-hero-primary btn-pulse btn-xl">
+            <Link href="/book" className="btn btn-hero-primary btn-xl">
               Book a Party
             </Link>
             <Link href="/leagues" className="btn btn-hero-light btn-xl">
