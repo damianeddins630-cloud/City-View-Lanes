@@ -283,7 +283,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-white/45 bg-[#b8c1ce] text-[var(--ink)]">
+      <section className="relative overflow-hidden border-y border-white/50 bg-[#a8c4e0]/85 text-[var(--ink)]">
         <div className="reviews-glow pointer-events-none absolute inset-0" />
         <div className="section relative z-10">
           <EditableText
