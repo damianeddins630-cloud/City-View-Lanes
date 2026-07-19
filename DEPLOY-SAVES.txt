@@ -9,9 +9,12 @@ Do NOT click "Create New Project" every time, or Blob settings get lost.
 
 Step-by-step (about 2 minutes)
 ------------------------------
-1. Download the newest zip from GitHub Releases (cityview-v3 or newer).
+1. Download the newest FULL zip:
+   https://github.com/damianeddins630-cloud/City-View-Lanes/releases/download/cityview-full/City-View-Lanes-FULL.zip
+   (Also see UPDATE-VERCEL.txt for the short checklist.)
 
 2. Open https://vercel.com → open the project that runs your LIVE CityView URL.
+   Do NOT create a new project.
 
 3. Upload / deploy that zip into that SAME project.
 
