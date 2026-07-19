@@ -13,7 +13,10 @@ const ALLOWED = new Set([
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_content")) {
+  if (
+    !hasPermission(user, "manage_content") &&
+    !hasPermission(user, "edit_site")
+  ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

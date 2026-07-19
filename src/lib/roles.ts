@@ -14,6 +14,7 @@ const OWNER_PERMISSIONS: Permission[] = [
   "view_admins",
   "manage_employment",
   "manage_content",
+  "edit_site",
 ];
 
 export function roleRank(role: Role | undefined | null): number {
@@ -72,7 +73,11 @@ export function ensureRoles(store: Store): Store {
     // Drop legacy "Access admin panel" flag — access is granted by capabilities.
     role.permissions = role.permissions.filter((p) => p !== "view_admin");
     if (role.id === "role_admin" || role.name === "Admin") {
-      const extras: Permission[] = ["manage_employment", "manage_content"];
+      const extras: Permission[] = [
+        "manage_employment",
+        "manage_content",
+        "edit_site",
+      ];
       for (const p of extras) {
         if (!role.permissions.includes(p)) {
           role.permissions = [...role.permissions, p];

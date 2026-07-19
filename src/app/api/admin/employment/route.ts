@@ -88,3 +88,34 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
+
+export async function DELETE(request: Request) {
+  const user = await getCurrentUser();
+  if (!hasPermission(user, "manage_employment")) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "Application id required." }, { status: 400 });
+  }
+
+  try {
+    const { store } = await updateStore((s) => {
+      if (!Array.isArray(s.employmentApplications)) s.employmentApplications = [];
+      const before = s.employmentApplications.length;
+      s.employmentApplications = s.employmentApplications.filter((a) => a.id !== id);
+      if (s.employmentApplications.length === before) {
+        throw new Error("Application not found");
+      }
+    });
+    return NextResponse.json({
+      ok: true,
+      applications: store.employmentApplications,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Delete failed";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}

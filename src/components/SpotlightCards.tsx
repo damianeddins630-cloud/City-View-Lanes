@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
+import EditableText from "@/components/EditableText";
 
 type Card = { title: string; copy: string };
 
@@ -36,12 +37,19 @@ export default function SpotlightCards({ cards }: { cards: Card[] }) {
           <p className="relative z-10 text-[0.7rem] font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
             0{index + 1}
           </p>
-          <h3 className="font-display relative z-10 mt-2 text-2xl tracking-[0.04em] text-[var(--ink)]">
-            {card.title}
-          </h3>
-          <p className="relative z-10 mt-3 text-sm leading-relaxed text-[var(--muted)]">
-            {card.copy}
-          </p>
+          <EditableText
+            path={`home.whyCards.${index}.title`}
+            value={card.title}
+            as="h3"
+            className="font-display relative z-10 mt-2 text-2xl tracking-[0.04em] text-[var(--ink)]"
+          />
+          <EditableText
+            path={`home.whyCards.${index}.copy`}
+            value={card.copy}
+            as="p"
+            multiline
+            className="relative z-10 mt-3 text-sm leading-relaxed text-[var(--muted)]"
+          />
         </article>
       ))}
     </div>

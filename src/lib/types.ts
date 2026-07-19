@@ -9,7 +9,8 @@ export type Permission =
   | "manage_hours"
   | "view_admins"
   | "manage_employment"
-  | "manage_content";
+  | "manage_content"
+  | "edit_site";
 
 export type SiteImageSlot = {
   src: string;
@@ -17,6 +18,8 @@ export type SiteImageSlot = {
 };
 
 export type SiteContent = {
+  /** Freeform page text overrides (double-click edit paths under edits.*). */
+  edits?: Record<string, string>;
   home: {
     heroImage: string;
     heroImageAlt: string;

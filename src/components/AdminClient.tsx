@@ -475,6 +475,59 @@ export default function AdminClient() {
     await loadAll();
   }
 
+  async function deleteBooking(id: string) {
+    if (!window.confirm("Delete this party application permanently?")) return;
+    setError("");
+    setNotice("");
+    const res = await fetch(`/api/admin/bookings?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Could not delete application");
+      return;
+    }
+    setNotice("Party application deleted.");
+    setDetail(null);
+    await loadAll();
+  }
+
+  async function deleteSignup(id: string) {
+    if (!window.confirm("Delete this league application permanently?")) return;
+    setError("");
+    setNotice("");
+    const res = await fetch(
+      `/api/admin/league-signups?id=${encodeURIComponent(id)}`,
+      { method: "DELETE" },
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Could not delete application");
+      return;
+    }
+    setNotice("League application deleted.");
+    setDetail(null);
+    await loadAll();
+  }
+
+  async function deleteEmployment(id: string) {
+    if (!window.confirm("Delete this employment application permanently?")) return;
+    setError("");
+    setNotice("");
+    const res = await fetch(
+      `/api/admin/employment?id=${encodeURIComponent(id)}`,
+      { method: "DELETE" },
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Could not delete application");
+      return;
+    }
+    setNotice("Employment application deleted.");
+    setDetail(null);
+    await loadAll();
+  }
+
   function DetailRow({ label, value }: { label: string; value?: string | number | null }) {
     if (value === undefined || value === null || value === "") return null;
     return (
@@ -1265,9 +1318,14 @@ export default function AdminClient() {
                                     Deny
                                   </button>
                                 </>
-                              ) : (
-                                <span className="text-xs text-[var(--muted)]">Done</span>
-                              )}
+                              ) : null}
+                              <button
+                                type="button"
+                                className="btn btn-ghost text-[10px] text-red-700"
+                                onClick={() => deleteBooking(b.id)}
+                              >
+                                Delete
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -1359,9 +1417,14 @@ export default function AdminClient() {
                                     Deny
                                   </button>
                                 </>
-                              ) : (
-                                <span className="text-xs text-[var(--muted)]">Done</span>
-                              )}
+                              ) : null}
+                              <button
+                                type="button"
+                                className="btn btn-ghost text-[10px] text-red-700"
+                                onClick={() => deleteSignup(s.id)}
+                              >
+                                Delete
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -1472,11 +1535,14 @@ export default function AdminClient() {
                                 Deny
                               </button>
                             </>
-                          ) : (
-                            <span className="text-xs text-[var(--muted)]">
-                              Done
-                            </span>
-                          )}
+                          ) : null}
+                          <button
+                            type="button"
+                            className="btn btn-ghost text-[10px] text-red-700"
+                            onClick={() => deleteEmployment(a.id)}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -1846,34 +1912,52 @@ export default function AdminClient() {
               </div>
             ) : null}
 
-            {detail.data.status === "pending" ? (
-              <div className="mt-5 flex flex-wrap gap-2 border-t border-[var(--line)] pt-4">
-                <button
-                  type="button"
-                  className="btn btn-primary text-[10px]"
-                  onClick={() => {
-                    if (detail.kind === "party") decideBooking(detail.data.id, "approved");
-                    if (detail.kind === "league") decideSignup(detail.data.id, "approved");
-                    if (detail.kind === "employment")
-                      decideEmployment(detail.data.id, "approved");
-                  }}
-                >
-                  Approve
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-ghost text-[10px]"
-                  onClick={() => {
-                    if (detail.kind === "party") decideBooking(detail.data.id, "denied");
-                    if (detail.kind === "league") decideSignup(detail.data.id, "denied");
-                    if (detail.kind === "employment")
-                      decideEmployment(detail.data.id, "denied");
-                  }}
-                >
-                  Deny
-                </button>
-              </div>
-            ) : null}
+            <div className="mt-5 flex flex-wrap gap-2 border-t border-[var(--line)] pt-4">
+              {detail.data.status === "pending" ? (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-primary text-[10px]"
+                    onClick={() => {
+                      if (detail.kind === "party")
+                        decideBooking(detail.data.id, "approved");
+                      if (detail.kind === "league")
+                        decideSignup(detail.data.id, "approved");
+                      if (detail.kind === "employment")
+                        decideEmployment(detail.data.id, "approved");
+                    }}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost text-[10px]"
+                    onClick={() => {
+                      if (detail.kind === "party")
+                        decideBooking(detail.data.id, "denied");
+                      if (detail.kind === "league")
+                        decideSignup(detail.data.id, "denied");
+                      if (detail.kind === "employment")
+                        decideEmployment(detail.data.id, "denied");
+                    }}
+                  >
+                    Deny
+                  </button>
+                </>
+              ) : null}
+              <button
+                type="button"
+                className="btn btn-ghost text-[10px] text-red-700"
+                onClick={() => {
+                  if (detail.kind === "party") deleteBooking(detail.data.id);
+                  if (detail.kind === "league") deleteSignup(detail.data.id);
+                  if (detail.kind === "employment")
+                    deleteEmployment(detail.data.id);
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

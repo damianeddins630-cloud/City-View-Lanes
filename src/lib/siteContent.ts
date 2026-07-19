@@ -3,6 +3,7 @@ import type { SiteContent } from "./types";
 
 export function defaultSiteContent(): SiteContent {
   return {
+    edits: {},
     home: {
       heroImage: "/images/yelp-lanes-extra.jpg",
       heroImageAlt: "Bowling lanes at CityView Lanes Fort Worth",
@@ -129,7 +130,15 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
   const youthIn = content.youth || ({} as SiteContent["youth"]);
   const d = defaults;
 
+  const editsIn =
+    content.edits && typeof content.edits === "object" ? content.edits : {};
+
   return {
+    edits: Object.fromEntries(
+      Object.entries(editsIn).filter(
+        ([, v]) => typeof v === "string" && v.trim(),
+      ),
+    ) as Record<string, string>,
     home: {
       heroImage: refreshBundledPhoto(homeIn.heroImage, d.home.heroImage, [
         "/images/cityview-lanes.webp",

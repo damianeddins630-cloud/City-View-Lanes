@@ -1116,3 +1116,99 @@ a {
     transform: none;
   }
 }
+
+/* —— On-page edit mode (edit_site permission) —— */
+.site-edit-bar {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.site-edit-bar > * {
+  pointer-events: auto;
+}
+
+.site-edit-toggle {
+  border: 1px solid rgba(40, 70, 120, 0.35);
+  background: linear-gradient(180deg, #dfe5ec 0%, #b7c0cb 100%);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.15rem;
+  box-shadow: 0 14px 34px rgba(60, 70, 85, 0.28);
+  cursor: pointer;
+}
+
+.site-edit-toggle.is-on {
+  background: linear-gradient(180deg, #5b9bff 0%, #2f6fd6 100%);
+  color: #fff;
+  border-color: rgba(20, 60, 120, 0.45);
+}
+
+.site-edit-status {
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  background: rgba(232, 236, 242, 0.96);
+  border: 1px solid rgba(40, 70, 120, 0.2);
+  color: var(--ink);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  box-shadow: 0 10px 24px rgba(60, 70, 85, 0.18);
+}
+
+body.site-edit-mode [data-site-edit].is-editable {
+  outline: 2px dashed rgba(47, 111, 214, 0.55);
+  outline-offset: 3px;
+  cursor: text;
+}
+
+body.site-edit-mode [data-site-edit].is-editing {
+  outline-color: rgba(47, 111, 214, 0.95);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.site-editable-image {
+  display: block;
+  position: relative;
+}
+
+.site-editable-image.is-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+body.site-edit-mode .site-editable-image.is-editable::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  outline: 2px dashed rgba(47, 111, 214, 0.7);
+  outline-offset: -4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.site-editable-image-btn {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 3;
+  border: 1px solid rgba(40, 70, 120, 0.35);
+  background: rgba(232, 236, 242, 0.95);
+  color: var(--ink);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+}
