@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Source_Sans_3 } from "next/font/google";
+import { Figtree, Oswald } from "next/font/google";
 import EditModeProvider from "@/components/EditModeProvider";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -7,13 +7,13 @@ import SiteEditBar from "@/components/SiteEditBar";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
-const display = Bebas_Neue({
-  weight: "400",
+const display = Oswald({
+  weight: ["500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-display",
 });
 
-const body = Source_Sans_3({
+const body = Figtree({
   subsets: ["latin"],
   variable: "--font-body",
 });

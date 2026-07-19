@@ -23,35 +23,31 @@ export default function Header() {
   const isAdmin = canAccessAdminPanel(user);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/40 bg-[#aeb6c0]/92 shadow-[0_12px_40px_rgba(60,70,85,0.28)] backdrop-blur-2xl">
+    <header className="site-header sticky top-0 z-50">
       <div className="silver-bar" />
-      <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3">
+      <div className="mx-auto flex w-[min(1160px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3.5">
         <Link href="/" className="group flex items-center gap-3">
           <Image
             src="/images/cityview-logo.webp"
             alt="CityView Lanes logo"
-            width={44}
-            height={44}
-            className="h-11 w-11 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(91,155,255,0.55)]"
+            width={48}
+            height={48}
+            className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105"
             priority
           />
-          <span className="font-display text-xl tracking-[0.1em] text-[var(--ink)] uppercase sm:text-2xl">
+          <span className="font-display text-2xl font-semibold tracking-[0.08em] text-[var(--ink)] uppercase sm:text-[1.7rem]">
             CityView <span className="text-[var(--blue)]">Lanes</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV.map((link) => {
             const active = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-semibold tracking-wide uppercase transition-colors ${
-                  active
-                    ? "text-[var(--blue)]"
-                    : "text-[var(--muted)] hover:text-[var(--ink)]"
-                }`}
+                className={`site-nav-link ${active ? "is-active" : ""}`}
               >
                 {link.label}
               </Link>
@@ -61,14 +57,14 @@ export default function Header() {
             <>
               <Link
                 href="/profile"
-                className="text-sm font-semibold tracking-wide text-[var(--muted)] uppercase hover:text-[var(--ink)]"
+                className={`site-nav-link ${pathname === "/profile" ? "is-active" : ""}`}
               >
                 Profile
               </Link>
               {isAdmin ? (
                 <Link
                   href="/admin"
-                  className="text-sm font-semibold tracking-wide text-[var(--blue)] uppercase"
+                  className={`site-nav-link ${pathname === "/admin" ? "is-active" : ""}`}
                 >
                   Admin
                 </Link>
@@ -83,7 +79,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center border border-[var(--ink)]/25 text-[var(--ink)] lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center border border-[var(--ink)]/20 bg-white/35 text-[var(--ink)] lg:hidden"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -96,13 +92,13 @@ export default function Header() {
       </div>
 
       {open ? (
-        <div className="border-t border-white/40 bg-[#c5ccd6] px-4 py-4 lg:hidden">
+        <div className="site-header-mobile border-t border-white/45 px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-3">
             {NAV.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="py-1 text-sm font-semibold tracking-wide text-[var(--ink)] uppercase"
+                className="py-1 text-sm font-semibold tracking-[0.12em] text-[var(--ink)] uppercase"
                 onClick={() => setOpen(false)}
               >
                 {link.label}

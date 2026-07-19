@@ -40,15 +40,11 @@ export default async function LeaguesPage() {
         <div className="hero-beam pointer-events-none absolute inset-0" />
         <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-40" />
 
-        <div className="relative z-10 mx-auto flex min-h-[72svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-14 pt-24">
-          <div className="fade-up mb-4 flex items-center gap-3">
-            <span className="brand-star" aria-hidden />
-            <div className="silver-bar max-w-[140px]" />
-          </div>
+        <div className="relative z-10 mx-auto flex min-h-[78svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-24">
           <p className="fade-up section-kicker">
             CityView Lanes · {SITE.fallSeasonLabel}
           </p>
-          <h1 className="font-display fade-up mt-2 max-w-3xl text-[clamp(3.4rem,10vw,6.5rem)] leading-[0.88] tracking-[0.03em] text-[var(--ink)]">
+          <h1 className="font-display brand-title fade-up mt-3 max-w-3xl text-[clamp(3.6rem,11vw,7rem)] font-semibold leading-[0.86] tracking-[0.02em] text-[var(--ink)]">
             <EditableText
               path="edits.leagues.heroTitle"
               value={resolveEditValue(content, "edits.leagues.heroTitle", "Leagues")}

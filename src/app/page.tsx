@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[#7a8491] text-[var(--ink)]">
+      <section className="hero-stage relative isolate overflow-hidden bg-[#6f7a89] text-[var(--ink)]">
         <div className="absolute inset-0">
           <EditableImage
             path="home.heroImage"
@@ -30,19 +30,12 @@ export default async function HomePage() {
           />
         </div>
         <div className="hero-veil absolute inset-0" />
-        <div className="hero-dots pointer-events-none absolute inset-0" />
         <div className="hero-swoosh pointer-events-none absolute inset-0" />
-        <div className="hero-beam pointer-events-none absolute inset-0" />
         <div className="hero-shine pointer-events-none absolute inset-0" />
-        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-52" />
-        <div className="neon-ring pointer-events-none absolute -right-24 top-1/4 h-80 w-80" />
+        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-44" />
 
-        <div className="relative z-10 mx-auto flex min-h-[96svh] w-[min(1140px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-28 sm:pb-20">
-          <div className="fade-up mb-6 flex items-center gap-3">
-            <span className="brand-star brand-star-lg" aria-hidden />
-            <div className="silver-bar max-w-[180px]" />
-          </div>
-          <h1 className="font-display brand-title fade-up text-[clamp(5.2rem,15vw,10rem)] leading-[0.8] tracking-[0.03em] text-[var(--ink)]">
+        <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-20 pt-28 sm:pb-24">
+          <h1 className="font-display brand-title fade-up text-[clamp(4.8rem,14vw,9.5rem)] font-semibold leading-[0.82] tracking-[0.02em] text-[var(--ink)]">
             <EditableText path="home.heroTitleLine1" value={h.heroTitleLine1} />
             <EditableText
               path="home.heroTitleLine2"
@@ -56,17 +49,14 @@ export default async function HomePage() {
             value={h.heroSubtitle}
             as="p"
             multiline
-            className="fade-up-delay mt-6 max-w-xl text-xl text-[var(--muted)] sm:text-2xl"
+            className="fade-up-delay mt-7 max-w-xl text-lg leading-relaxed text-[var(--muted)] sm:text-xl"
           />
           <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
-            <Link href="/hours" className="btn btn-hero-primary btn-pulse btn-xl">
-              See Hours
-            </Link>
-            <Link href="/pro-shop" className="btn btn-hero-light btn-xl">
-              Visit the Pro Shop
-            </Link>
-            <Link href="/book" className="btn btn-hero-outline btn-xl">
+            <Link href="/book" className="btn btn-hero-primary btn-pulse btn-xl">
               Book a Party
+            </Link>
+            <Link href="/leagues" className="btn btn-hero-light btn-xl">
+              Join a League
             </Link>
           </div>
         </div>
@@ -293,7 +283,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-[var(--line)] bg-[#aeb6c0] text-[var(--ink)]">
+      <section className="relative overflow-hidden border-y border-white/45 bg-[#b8c1ce] text-[var(--ink)]">
         <div className="reviews-glow pointer-events-none absolute inset-0" />
         <div className="section relative z-10">
           <EditableText
