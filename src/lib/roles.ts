@@ -4,22 +4,8 @@ export const WEBSITE_OWNER_ROLE_ID = "role_master_admin";
 export const WEBSITE_OWNER_ROLE_NAME = "Website Owner";
 
 const OWNER_PERMISSIONS: Permission[] = [
-  "view_admin",
   "manage_users",
   "manage_roles",
-  "admin_chat",
-  "manage_bookings",
-  "manage_league_signups",
-  "manage_leagues",
-  "manage_hours",
-  "view_admins",
-  "manage_employment",
-  "manage_content",
-];
-
-const ADMIN_PERMISSIONS: Permission[] = [
-  "view_admin",
-  "manage_users",
   "admin_chat",
   "manage_bookings",
   "manage_league_signups",
@@ -83,6 +69,8 @@ export function ensureRoles(store: Store): Store {
     if (typeof role.rank !== "number") {
       role.rank = roleRank(role);
     }
+    // Drop legacy "Access admin panel" flag — access is granted by capabilities.
+    role.permissions = role.permissions.filter((p) => p !== "view_admin");
     if (role.id === "role_admin" || role.name === "Admin") {
       const extras: Permission[] = ["manage_employment", "manage_content"];
       for (const p of extras) {

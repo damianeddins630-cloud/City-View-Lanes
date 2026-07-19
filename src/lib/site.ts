@@ -124,8 +124,9 @@ export const WHY_CARDS = [
   },
 ];
 
+/** Assignable admin capabilities shown in Role Manager.
+ *  "Access admin panel" is NOT a permission — any of these grants Admin. */
 export const ALL_PERMISSIONS = [
-  { id: "view_admin", label: "Access admin panel" },
   { id: "manage_users", label: "Manage users & roles assignment" },
   { id: "manage_roles", label: "Create and edit roles" },
   { id: "admin_chat", label: "Admin chat" },
@@ -140,3 +141,5 @@ export const ALL_PERMISSIONS = [
     label: "Edit homepage / youth photos & descriptions",
   },
 ] as const;
+
+export const ASSIGNABLE_PERMISSION_IDS = ALL_PERMISSIONS.map((p) => p.id);

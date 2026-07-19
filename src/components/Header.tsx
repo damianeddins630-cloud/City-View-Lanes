@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { canAccessAdminPanel } from "@/lib/permissions";
 import { NAV } from "@/lib/site";
 import type { PublicUser } from "@/lib/types";
 
@@ -19,7 +20,7 @@ export default function Header() {
       .catch(() => setUser(null));
   }, [pathname]);
 
-  const isAdmin = Boolean(user?.permissions?.includes("view_admin"));
+  const isAdmin = canAccessAdminPanel(user);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/40 bg-[#aeb6c0]/92 shadow-[0_12px_40px_rgba(60,70,85,0.28)] backdrop-blur-2xl">

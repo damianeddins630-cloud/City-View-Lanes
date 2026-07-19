@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
   getCurrentUser,
   hasPermission,
-  toPublicUser,
+  sanitizeAssignablePermissions,
 } from "@/lib/auth";
 import { readStore, updateStore } from "@/lib/db";
 import {
@@ -40,15 +40,21 @@ export async function POST(request: Request) {
     const body = await request.json();
     const name = String(body.name || "").trim();
     const description = String(body.description || "").trim();
-    const permissions = Array.isArray(body.permissions)
-      ? (body.permissions as Permission[])
-      : [];
+    const permissions = sanitizeAssignablePermissions(
+      Array.isArray(body.permissions) ? (body.permissions as Permission[]) : [],
+    );
     const actorRank = user.roleRank ?? 999;
     let rank =
       typeof body.rank === "number" ? Number(body.rank) : nextRankBelow(actorRank, []);
 
     if (!name) {
       return NextResponse.json({ error: "Role name is required." }, { status: 400 });
+    }
+    if (permissions.length === 0) {
+      return NextResponse.json(
+        { error: "Select at least one permission for this role." },
+        { status: 400 },
+      );
     }
     if (rank <= actorRank) {
       return NextResponse.json(
@@ -113,7 +119,11 @@ export async function PUT(request: Request) {
         if (actorRank !== 0) {
           throw new Error("Only the Website Owner can change that role.");
         }
-        if (body.permissions) role.permissions = body.permissions as Permission[];
+        if (body.permissions) {
+          role.permissions = sanitizeAssignablePermissions(
+            body.permissions as Permission[],
+          );
+        }
         if (body.description !== undefined) {
           role.description = String(body.description);
         }
@@ -126,7 +136,9 @@ export async function PUT(request: Request) {
       if (body.name !== undefined && !role.locked) role.name = String(body.name);
       if (body.description !== undefined) role.description = String(body.description);
       if (body.permissions !== undefined) {
-        role.permissions = body.permissions as Permission[];
+        role.permissions = sanitizeAssignablePermissions(
+          body.permissions as Permission[],
+        );
       }
       if (typeof body.rank === "number") {
         const next = Number(body.rank);

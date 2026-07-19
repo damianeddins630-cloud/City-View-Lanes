@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasPermission } from "@/lib/auth";
+import { canAccessAdminPanel, getCurrentUser } from "@/lib/auth";
 import {
   getBlobAuthInfo,
   getLastBlobAccess,
@@ -31,7 +31,7 @@ export async function GET() {
     help: durable ? null : storageSetupHelp(),
   };
 
-  if (user && hasPermission(user, "view_admin")) {
+  if (user && canAccessAdminPanel(user)) {
     return NextResponse.json(payload);
   }
 
@@ -44,7 +44,7 @@ export async function GET() {
 /** Admin-only: write a tiny probe blob and read it back. */
 export async function POST() {
   const user = await getCurrentUser();
-  if (!user || !hasPermission(user, "view_admin")) {
+  if (!user || !canAccessAdminPanel(user)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

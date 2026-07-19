@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import AdminContentEditor from "@/components/AdminContentEditor";
+import { canAccessAdminPanel } from "@/lib/permissions";
 import { ALL_PERMISSIONS } from "@/lib/site";
 import type {
   DayHours,
@@ -194,21 +195,26 @@ export default function AdminClient() {
     [user],
   );
 
-  const visibleTabs = useMemo(
-    () =>
-      TABS.filter(
-        (t) =>
-          !t.permission ||
-          can(t.permission) ||
-          (t.id === "bookings" && can("manage_league_signups")),
-      ),
-    [can],
-  );
+  const visibleTabs = useMemo(() => {
+    return TABS.filter(
+      (t) =>
+        !t.permission ||
+        can(t.permission) ||
+        (t.id === "bookings" && can("manage_league_signups")),
+    ).map((t) => {
+      if (t.id !== "bookings") return t;
+      const party = can("manage_bookings");
+      const league = can("manage_league_signups");
+      if (party && !league) return { ...t, label: "Party Apps" };
+      if (!party && league) return { ...t, label: "League Apps" };
+      return t;
+    });
+  }, [can]);
 
   const loadAll = useCallback(async () => {
     const meRes = await fetch("/api/auth/me");
     const me = await meRes.json();
-    if (!me.user?.permissions?.includes("view_admin")) {
+    if (!canAccessAdminPanel(me.user)) {
       window.location.href = "/login?next=/admin";
       return;
     }
@@ -506,14 +512,22 @@ export default function AdminClient() {
     setNotice("League added.");
   }
 
-  async function removeLeague(id: string) {
-    const res = await fetch(`/api/leagues?id=${id}`, { method: "DELETE" });
+  async function removeLeague(id: string, name: string) {
+    if (!window.confirm(`Remove league “${name}”? This cannot be undone.`)) {
+      return;
+    }
+    setError("");
+    setNotice("");
+    const res = await fetch(`/api/leagues?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
     const data = await res.json();
     if (!res.ok) {
       setError(data.error || "Could not remove league");
       return;
     }
-    setLeagues(data.leagues);
+    setLeagues(data.leagues || []);
+    setNotice(`Removed “${name}”.`);
   }
 
   async function saveHours(e: FormEvent) {
@@ -776,17 +790,25 @@ export default function AdminClient() {
                 My leagues
               </p>
             </div>
-            <div className="stat-chip col-span-2">
-              <p className="font-display text-2xl text-[var(--ink)]">{users.length}</p>
-              <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
-                Total accounts
-              </p>
-            </div>
+            {can("manage_users") || can("view_admins") ? (
+              <div className="stat-chip col-span-2">
+                <p className="font-display text-2xl text-[var(--ink)]">{users.length}</p>
+                <p className="text-[11px] font-bold tracking-wide text-[var(--muted)] uppercase">
+                  Total accounts
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2 border-b border-[var(--line)] pb-3">
+        {visibleTabs.length === 0 ? (
+          <p className="text-sm text-[var(--muted)]">
+            Your role has no admin tools assigned yet. Ask the Website Owner to
+            add permissions.
+          </p>
+        ) : null}
         {visibleTabs.map((t) => (
           <button
             key={t.id}
@@ -1045,23 +1067,26 @@ export default function AdminClient() {
               />
             </div>
             <div className="grid gap-2">
-              {ALL_PERMISSIONS.map((p) => (
-                <label key={p.id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={roleForm.permissions.includes(p.id)}
-                    onChange={(e) => {
-                      setRoleForm((f) => ({
-                        ...f,
-                        permissions: e.target.checked
-                          ? [...f.permissions, p.id]
-                          : f.permissions.filter((x) => x !== p.id),
-                      }));
-                    }}
-                  />
-                  {p.label}
-                </label>
-              ))}
+              {ALL_PERMISSIONS.map((p) => {
+                const pid = p.id as Permission;
+                return (
+                  <label key={p.id} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={roleForm.permissions.includes(pid)}
+                      onChange={(e) => {
+                        setRoleForm((f) => ({
+                          ...f,
+                          permissions: e.target.checked
+                            ? [...f.permissions, pid]
+                            : f.permissions.filter((x) => x !== pid),
+                        }));
+                      }}
+                    />
+                    {p.label}
+                  </label>
+                );
+              })}
             </div>
             <button type="submit" className="btn btn-primary w-fit">
               Create role
@@ -1117,19 +1142,22 @@ export default function AdminClient() {
                   />
                 </div>
                 <div className="mt-3 grid gap-1">
-                  {ALL_PERMISSIONS.map((p) => (
-                    <label key={p.id} className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={role.permissions.includes(p.id)}
-                        disabled={isWebsiteOwnerRole(role)}
-                        onChange={(e) =>
-                          updateRolePermissions(role, p.id, e.target.checked)
-                        }
-                      />
-                      {p.label}
-                    </label>
-                  ))}
+                  {ALL_PERMISSIONS.map((p) => {
+                    const pid = p.id as Permission;
+                    return (
+                      <label key={p.id} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={role.permissions.includes(pid)}
+                          disabled={isWebsiteOwnerRole(role)}
+                          onChange={(e) =>
+                            updateRolePermissions(role, pid, e.target.checked)
+                          }
+                        />
+                        {p.label}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -1580,7 +1608,7 @@ export default function AdminClient() {
                   <button
                     type="button"
                     className="text-xs font-bold text-red-700 uppercase"
-                    onClick={() => removeLeague(l.id)}
+                    onClick={() => removeLeague(l.id, l.name)}
                   >
                     Remove
                   </button>

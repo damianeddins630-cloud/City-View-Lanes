@@ -2,7 +2,13 @@ import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { readStore } from "./db";
+import {
+  canAccessAdminPanel,
+  sanitizeAssignablePermissions,
+} from "./permissions";
 import type { Permission, PublicUser, SessionPayload, User } from "./types";
+
+export { canAccessAdminPanel, sanitizeAssignablePermissions };
 
 const COOKIE = "cvl_session";
 

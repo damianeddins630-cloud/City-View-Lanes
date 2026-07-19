@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { canAccessAdminPanel } from "@/lib/permissions";
 import type { PublicUser } from "@/lib/types";
 
 type AppRow = {
@@ -185,7 +186,7 @@ export default function ProfileClient() {
         <p className="text-center text-xs tracking-wide text-[var(--muted)] uppercase">
           {user.roleName}
         </p>
-        {user.permissions.includes("view_admin") ? (
+        {canAccessAdminPanel(user) ? (
           <Link href="/admin" className="btn btn-primary mt-4 w-full text-xs">
             Admin panel
           </Link>

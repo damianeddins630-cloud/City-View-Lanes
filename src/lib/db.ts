@@ -1,7 +1,6 @@
 import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
-import { FALL_LEAGUES_SEED } from "./fallLeaguesSeed";
 import { ensureMasterAdmin } from "./masterAdmin";
 import { ensureRoles } from "./roles";
 import { ensureSiteContent } from "./siteContent";
@@ -496,14 +495,8 @@ function finalizeStore(store: Store): Store {
   if (!Array.isArray(store.chatMessages)) store.chatMessages = [];
   if (!Array.isArray(store.hours)) store.hours = [];
   if (!Array.isArray(store.users)) store.users = [];
-  // Do NOT re-seed when empty — deleting all leagues must stay empty.
-  // If leagues exist, merge any missing seed rows (e.g. new Youth lines).
-  if (store.leagues.length > 0) {
-    const have = new Set(store.leagues.map((l) => l.id));
-    for (const seed of FALL_LEAGUES_SEED) {
-      if (!have.has(seed.id)) store.leagues.push({ ...seed });
-    }
-  }
+  // Never re-merge seed leagues here — that made "Remove" undo itself on the
+  // next read. Initial leagues live in data/store.json; admins own the list.
   store.siteContent = ensureSiteContent(store.siteContent);
   ensureRoles(store);
   ensureMasterAdmin(store);
