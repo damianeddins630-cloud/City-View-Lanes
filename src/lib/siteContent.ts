@@ -5,8 +5,8 @@ export function defaultSiteContent(): SiteContent {
   return {
     edits: {},
     home: {
-      heroImage: "/images/hero-lanes-glow.jpg",
-      heroImageAlt: "Glowing bowling lanes at CityView Lanes Fort Worth",
+      heroImage: "/images/yelp-lanes-wide.jpg",
+      heroImageAlt: "Real bowling lanes at CityView Lanes Fort Worth",
       heroTitleLine1: "City View",
       heroTitleLine2: "Lanes",
       heroSubtitle:
@@ -144,6 +144,7 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
         "/images/cityview-lanes.webp",
         "/images/cityview-interior.webp",
         "/images/yelp-lanes-extra.jpg",
+        "/images/hero-lanes-glow.jpg",
       ]),
       heroImageAlt: mergeString(homeIn.heroImageAlt, d.home.heroImageAlt),
       heroTitleLine1:
