@@ -2,13 +2,21 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { ALL_PERMISSIONS } from "@/lib/site";
-import type { DayHours, League, Permission, PublicUser, Role } from "@/lib/types";
+import type {
+  DayHours,
+  EmploymentApplication,
+  League,
+  Permission,
+  PublicUser,
+  Role,
+} from "@/lib/types";
 
 type Tab =
   | "users"
   | "roles"
   | "chat"
   | "bookings"
+  | "employment"
   | "admins"
   | "leagues"
   | "hours";
@@ -85,11 +93,16 @@ const TABS: { id: Tab; label: string; permission?: Permission }[] = [
   { id: "users", label: "Users", permission: "manage_users" },
   { id: "roles", label: "Role Manager", permission: "manage_roles" },
   { id: "chat", label: "Admin Chat", permission: "admin_chat" },
-  { id: "bookings", label: "Bookings & Leagues", permission: "manage_bookings" },
+  { id: "bookings", label: "Party & League Apps", permission: "manage_bookings" },
+  { id: "employment", label: "Employment", permission: "manage_employment" },
   { id: "admins", label: "Admins", permission: "view_admins" },
   { id: "leagues", label: "League Manager", permission: "manage_leagues" },
   { id: "hours", label: "Hours", permission: "manage_hours" },
 ];
+
+function isWebsiteOwnerRole(role: Role) {
+  return role.name === "Website Owner" || role.id === "role_master_admin";
+}
 
 export default function AdminClient() {
   const [user, setUser] = useState<PublicUser | null>(null);
@@ -122,6 +135,14 @@ export default function AdminClient() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [signups, setSignups] = useState<SignupRow[]>([]);
+  const [employmentApps, setEmploymentApps] = useState<
+    Array<
+      EmploymentApplication & {
+        username?: string;
+        memberName?: string;
+      }
+    >
+  >([]);
   const [messages, setMessages] = useState<ChatRow[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
   const [hours, setHours] = useState<DayHours[]>([]);
@@ -132,6 +153,7 @@ export default function AdminClient() {
     name: "",
     description: "",
     permissions: [] as Permission[],
+    rank: 50,
   });
 
   const [leagueForm, setLeagueForm] = useState({
@@ -229,6 +251,13 @@ export default function AdminClient() {
           .then((d) => setSignups(d.signups || [])),
       );
     }
+    if (me.user.permissions.includes("manage_employment")) {
+      tasks.push(
+        fetch("/api/admin/employment")
+          .then((r) => r.json())
+          .then((d) => setEmploymentApps(d.applications || [])),
+      );
+    }
     if (me.user.permissions.includes("admin_chat")) {
       tasks.push(
         fetch("/api/admin/chat")
@@ -300,7 +329,7 @@ export default function AdminClient() {
       return;
     }
     setRoles(data.roles);
-    setRoleForm({ name: "", description: "", permissions: [] });
+    setRoleForm({ name: "", description: "", permissions: [], rank: 50 });
     setNotice("Role created.");
   }
 
@@ -311,11 +340,29 @@ export default function AdminClient() {
     const res = await fetch("/api/admin/roles", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: role.id, permissions }),
+      body: JSON.stringify({ id: role.id, permissions, rank: role.rank }),
     });
     const data = await res.json();
     if (!res.ok) {
       setError(data.error || "Could not update role");
+      return;
+    }
+    setRoles(data.roles);
+  }
+
+  async function updateRoleRank(role: Role, rank: number) {
+    const res = await fetch("/api/admin/roles", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: role.id,
+        permissions: role.permissions,
+        rank,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Could not update role rank");
       return;
     }
     setRoles(data.roles);
@@ -377,6 +424,22 @@ export default function AdminClient() {
       return;
     }
     setNotice(`League signup ${status}. Email queued to member.`);
+    await loadAll();
+  }
+
+  async function decideEmployment(id: string, status: "approved" | "denied") {
+    const adminNote = window.prompt("Optional note for the email to the member:") || "";
+    const res = await fetch("/api/admin/employment", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status, adminNote }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error || "Update failed");
+      return;
+    }
+    setNotice(`Employment application ${status}. Email queued to member.`);
     await loadAll();
   }
 
@@ -751,15 +814,25 @@ export default function AdminClient() {
                     <td className="px-3 py-3">
                       <select
                         value={u.roleId}
+                        disabled={(u.roleRank ?? 999) <= (user?.roleRank ?? 999)}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => assignRole(u.id, e.target.value)}
-                        className="border border-[var(--line)] px-2 py-1"
+                        className="border border-[var(--line)] px-2 py-1 disabled:opacity-60"
                       >
-                        {roles.map((r) => (
-                          <option key={r.id} value={r.id}>
-                            {r.name}
-                          </option>
-                        ))}
+                        {roles
+                          .filter((r) => r.rank > (user?.roleRank ?? 999))
+                          .map((r) => (
+                            <option key={r.id} value={r.id}>
+                              {r.name}
+                            </option>
+                          ))}
+                        {!roles.some(
+                          (r) =>
+                            r.id === u.roleId &&
+                            r.rank > (user?.roleRank ?? 999),
+                        ) ? (
+                          <option value={u.roleId}>{u.roleName}</option>
+                        ) : null}
                       </select>
                     </td>
                     <td className="px-3 py-3">{u.bookingCount}</td>
@@ -918,6 +991,21 @@ export default function AdminClient() {
                 }
               />
             </div>
+            <div className="field">
+              <label>Rank (lower = higher authority)</label>
+              <input
+                type="number"
+                min={1}
+                required
+                value={roleForm.rank}
+                onChange={(e) =>
+                  setRoleForm({
+                    ...roleForm,
+                    rank: Number(e.target.value) || 50,
+                  })
+                }
+              />
+            </div>
             <div className="grid gap-2">
               {ALL_PERMISSIONS.map((p) => (
                 <label key={p.id} className="flex items-center gap-2 text-sm">
@@ -943,14 +1031,21 @@ export default function AdminClient() {
           </form>
 
           <div className="space-y-4">
-            {roles.map((role) => (
+            {[...roles]
+              .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))
+              .map((role) => (
               <div key={role.id} className="panel p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="font-display text-xl text-white">{role.name}</h3>
+                    <h3 className="font-display text-xl text-white">
+                      {role.name}{" "}
+                      <span className="text-sm font-sans text-[var(--muted)]">
+                        (rank {role.rank ?? "—"})
+                      </span>
+                    </h3>
                     <p className="text-sm text-[var(--muted)]">{role.description}</p>
                   </div>
-                  {!role.locked ? (
+                  {!role.locked && !isWebsiteOwnerRole(role) ? (
                     <button
                       type="button"
                       className="text-xs font-bold text-red-700 uppercase"
@@ -960,13 +1055,36 @@ export default function AdminClient() {
                     </button>
                   ) : null}
                 </div>
+                <div className="mt-3 field max-w-[10rem]">
+                  <label>Order / rank</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={role.rank ?? 50}
+                    disabled={isWebsiteOwnerRole(role)}
+                    onChange={(e) => {
+                      const rank = Number(e.target.value);
+                      setRoles((prev) =>
+                        prev.map((r) =>
+                          r.id === role.id ? { ...r, rank } : r,
+                        ),
+                      );
+                    }}
+                    onBlur={(e) => {
+                      if (isWebsiteOwnerRole(role)) return;
+                      const rank = Number(e.target.value);
+                      if (Number.isNaN(rank)) return;
+                      void updateRoleRank(role, rank);
+                    }}
+                  />
+                </div>
                 <div className="mt-3 grid gap-1">
                   {ALL_PERMISSIONS.map((p) => (
                     <label key={p.id} className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
                         checked={role.permissions.includes(p.id)}
-                        disabled={role.name === "Master Admin"}
+                        disabled={isWebsiteOwnerRole(role)}
                         onChange={(e) =>
                           updateRolePermissions(role, p.id, e.target.checked)
                         }
@@ -1018,7 +1136,7 @@ export default function AdminClient() {
         <div className="mt-6 space-y-8">
           {can("manage_bookings") ? (
             <div>
-              <h2 className="font-display text-2xl text-white">Bookings</h2>
+              <h2 className="font-display text-2xl text-white">Party applications</h2>
               <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
                 <table className="min-w-full text-left text-sm">
                   <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
@@ -1034,7 +1152,7 @@ export default function AdminClient() {
                     {bookings.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-3 py-8 text-center text-[var(--muted)]">
-                          No bookings yet.
+                          No party applications yet.
                         </td>
                       </tr>
                     ) : (
@@ -1089,7 +1207,7 @@ export default function AdminClient() {
           {can("manage_league_signups") ? (
             <div>
               <h2 className="font-display text-2xl text-white">
-                League signups
+                League applications
               </h2>
               <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
                 <table className="min-w-full text-left text-sm">
@@ -1105,7 +1223,7 @@ export default function AdminClient() {
                     {signups.length === 0 ? (
                       <tr>
                         <td colSpan={4} className="px-3 py-8 text-center text-[var(--muted)]">
-                          No league signups yet.
+                          No league applications yet.
                         </td>
                       </tr>
                     ) : (
@@ -1153,6 +1271,101 @@ export default function AdminClient() {
               </div>
             </div>
           ) : null}
+        </div>
+      ) : null}
+
+      {activeTab === "employment" && can("manage_employment") ? (
+        <div className="mt-6">
+          <h2 className="font-display text-2xl text-white">
+            Employment applications
+          </h2>
+          <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-black/40">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
+                <tr>
+                  <th className="px-3 py-3">Name</th>
+                  <th className="px-3 py-3">Position</th>
+                  <th className="px-3 py-3">Contact</th>
+                  <th className="px-3 py-3">Address</th>
+                  <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employmentApps.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-3 py-8 text-center text-[var(--muted)]"
+                    >
+                      No employment applications yet.
+                    </td>
+                  </tr>
+                ) : (
+                  employmentApps.map((a) => (
+                    <tr key={a.id} className="border-t border-[var(--line)]">
+                      <td className="px-3 py-3">
+                        <p className="font-semibold">
+                          {a.firstName} {a.middleName ? `${a.middleName} ` : ""}
+                          {a.lastName}
+                        </p>
+                        {a.username ? (
+                          <p className="text-xs text-[var(--muted)]">
+                            @{a.username}
+                          </p>
+                        ) : null}
+                      </td>
+                      <td className="px-3 py-3">{a.position || "—"}</td>
+                      <td className="px-3 py-3">
+                        <p className="text-xs">{a.email}</p>
+                        <p className="text-xs text-[var(--muted)]">
+                          {[a.mobilePhone, a.homePhone]
+                            .filter(Boolean)
+                            .join(" · ") || "—"}
+                        </p>
+                      </td>
+                      <td className="px-3 py-3 text-xs text-[var(--muted)]">
+                        {[
+                          [a.street, a.apt].filter(Boolean).join(" "),
+                          [a.city, a.state].filter(Boolean).join(", "),
+                          a.zip,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ") || "—"}
+                      </td>
+                      <td className="px-3 py-3 uppercase">{a.status}</td>
+                      <td className="px-3 py-3">
+                        {a.status === "pending" ? (
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              className="btn btn-primary text-[10px]"
+                              onClick={() =>
+                                decideEmployment(a.id, "approved")
+                              }
+                            >
+                              Approve
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-ghost text-[10px]"
+                              onClick={() => decideEmployment(a.id, "denied")}
+                            >
+                              Deny
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-[var(--muted)]">
+                            Done
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : null}
 
