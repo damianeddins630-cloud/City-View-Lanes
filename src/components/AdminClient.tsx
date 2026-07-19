@@ -855,9 +855,9 @@ export default function AdminClient() {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-2 border-b border-[var(--line)] pb-3">
+      <div className="tab-rail mt-5">
         {visibleTabs.length === 0 ? (
-          <p className="text-sm text-[var(--muted)]">
+          <p className="px-2 py-1 text-sm text-[var(--muted)]">
             Your role has no admin tools assigned yet. Ask the Website Owner to
             add permissions.
           </p>
@@ -871,7 +871,7 @@ export default function AdminClient() {
               setError("");
               setNotice("");
             }}
-            className={`admin-tab px-3 py-2 text-xs font-bold tracking-wide uppercase ${
+            className={`admin-tab px-3.5 py-2.5 text-xs font-bold tracking-wide uppercase ${
               activeTab === t.id ? "admin-tab-active" : ""
             }`}
           >
