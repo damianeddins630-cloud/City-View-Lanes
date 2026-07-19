@@ -1,0 +1,101 @@
+EDIT YOUR WEBSITE FROM GITHUB (files)
+
+Your full CityView Lanes site is on GitHub here:
+https://github.com/damianeddins630-cloud/City-View-Lanes
+
+Branch to edit: main
+
+
+────────────────────────────────────────
+HOW TO CHANGE A FILE ON GITHUB
+────────────────────────────────────────
+
+1) Open the repo link above (log in as damianeddins630)
+2) Click the folder / file you want
+3) Click the pencil icon (Edit this file)
+4) Make your change
+5) Scroll down → Commit changes → Commit directly to the main branch
+6) If Vercel is connected to this GitHub repo, the site updates by itself
+   (see “Connect Vercel to GitHub” below)
+
+
+────────────────────────────────────────
+WHICH FILES TO EDIT
+────────────────────────────────────────
+
+LOOK / COLORS / STYLE
+  src/app/globals.css
+  → background, buttons, fonts, silver/blue look
+
+HOME PAGE TEXT & LAYOUT
+  src/app/page.tsx
+
+LEAGUES PAGE
+  src/app/leagues/page.tsx
+
+PRO SHOP (Hall of Fame)
+  src/app/pro-shop/page.tsx
+
+HOURS PAGE
+  src/app/hours/page.tsx
+  (open hours numbers are also editable in Admin → Hours)
+
+BOOK A PARTY / CAREERS
+  src/app/book/page.tsx
+  src/app/careers/page.tsx
+  src/components/BookClient.tsx
+  src/components/CareersClient.tsx
+
+HEADER / FOOTER / SITE NAME / PHONE
+  src/components/Header.tsx
+  src/components/Footer.tsx
+  src/lib/site.ts
+  → phone, address, tagline, nav links, Pro Shop URL
+
+PHOTOS (in the project)
+  public/images/
+  → replace a file with the SAME name to swap a photo
+  → or upload a new image and change the path in the page file
+
+DEFAULT LEAGUES / ROLES (seed data)
+  data/store.json
+  → only the starting data; live site saves go to Vercel Blob
+  → for live leagues/hours/users use Admin on the website
+
+ADMIN / PERMISSIONS LABELS
+  src/lib/site.ts          → permission checkboxes
+  src/lib/roles.ts         → Website Owner vs Admin rules
+
+
+────────────────────────────────────────
+CONNECT VERCEL TO GITHUB (best way)
+────────────────────────────────────────
+So you do NOT need the zip every time:
+
+1) Go to https://vercel.com → open your SAME CityView project
+2) Settings → Git → Connect Git Repository
+3) Choose: damianeddins630-cloud/City-View-Lanes
+4) Production Branch: main
+5) Save
+
+After that:
+  Edit a file on GitHub → Commit → Vercel redeploys automatically
+
+Keep Blob Storage connected on that same project so Admin saves still stick.
+
+
+────────────────────────────────────────
+ZIP (only if you are NOT on Git yet)
+────────────────────────────────────────
+https://github.com/damianeddins630-cloud/City-View-Lanes/releases/download/cityview-full/City-View-Lanes-FULL.zip
+
+Prefer GitHub + Vercel Git connection instead.
+
+
+────────────────────────────────────────
+WEBSITE OWNER LOGIN
+────────────────────────────────────────
+username: cityview_damian
+password: Archer6!9_20
+
+Change password after login (Profile).

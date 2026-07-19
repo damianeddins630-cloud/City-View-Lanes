@@ -1,27 +1,40 @@
-UPDATE THIS WEBSITE ON THE SAME VERCEL PROJECT
-(so you keep Blob / saves / everything already set up)
+UPDATE / DEPLOY CITYVIEW LANES
 
-1) Download the newest FULL zip
+BEST WAY — edit files on GitHub (recommended)
+────────────────────────────────────────────
+1) Open: https://github.com/damianeddins630-cloud/City-View-Lanes
+2) Edit any file → Commit to main
+3) Connect this repo to your SAME Vercel project (one time):
+     Vercel → Project → Settings → Git → Connect
+     Repository: damianeddins630-cloud/City-View-Lanes
+     Production branch: main
+4) Every GitHub commit then auto-deploys. Keep Blob Storage on that project.
+
+Full file map: see EDIT-ON-GITHUB.txt
+
+
+ZIP WAY — only if Git is not connected yet
+────────────────────────────────────────────
+1) Download:
    https://github.com/damianeddins630-cloud/City-View-Lanes/releases/download/cityview-full/City-View-Lanes-FULL.zip
 
-2) Go to Vercel → open the SAME project that is already live
-   (do NOT create a new project)
+2) Vercel → SAME project that is already live (do NOT create a new project)
 
-3) Deploy → Upload / Redeploy with that zip
-   (wording can say "Deploy" or "Upload" depending on Vercel)
+3) Deploy → Upload that zip
 
 4) After it finishes:
-   - Storage → Blob should still be Connected (same project keeps it)
-   - If you see a Redeploy button after Blob, click it once
+   - Storage → Blob should still be Connected
+   - If you see Redeploy after Blob, click it once
 
 5) Log in as Website Owner:
    username: cityview_damian
    password: Archer6!9_20
 
-6) Admin → click "Test save now"
-   - PASS = you are good (hours/profile will stick)
-   - FAIL = Blob is not on this project → Storage → Blob → Connect → Redeploy → test again
+6) Admin → “Test save now”
+   - PASS = good
+   - FAIL = Blob not on this project → Storage → Blob → Connect → Redeploy
+
 
 IMPORTANT
-- Same project = keeps Blob + env vars + domain
+- Same Vercel project = keeps Blob + env vars + domain
 - New project = you have to set Blob up again (avoid this)
