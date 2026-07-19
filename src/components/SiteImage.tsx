@@ -28,7 +28,8 @@ export default function SiteImage({
   width,
   height,
 }: Props) {
-  const safeSrc = src || "/images/cityview-lanes.webp";
+  const safeSrc = src || "/images/yelp-lanes-extra.jpg";
+  const classes = `img-smooth ${className || ""}`.trim();
 
   if (isRemote(safeSrc)) {
     if (fill) {
@@ -37,7 +38,7 @@ export default function SiteImage({
         <img
           src={safeSrc}
           alt={alt}
-          className={`absolute inset-0 h-full w-full object-cover ${className || ""}`}
+          className={`absolute inset-0 h-full w-full object-cover ${classes}`}
         />
       );
     }
@@ -48,7 +49,7 @@ export default function SiteImage({
         alt={alt}
         width={width}
         height={height}
-        className={className}
+        className={classes}
       />
     );
   }
@@ -60,7 +61,7 @@ export default function SiteImage({
         alt={alt}
         fill
         priority={priority}
-        className={className}
+        className={classes}
         sizes={sizes}
       />
     );
@@ -73,7 +74,7 @@ export default function SiteImage({
       width={width || 800}
       height={height || 600}
       priority={priority}
-      className={className}
+      className={classes}
       sizes={sizes}
     />
   );

@@ -55,16 +55,16 @@ export const YOUTH_LEAGUE = {
   phoneNote: "Ask for the youth / league desk",
   photos: [
     {
-      src: "/images/yelp-lanes-kids.jpg",
-      alt: "Kids bowling at CityView Lanes",
+      src: "/images/yelp-lanes-wide.jpg",
+      alt: "Kids having fun at CityView Lanes",
     },
     {
-      src: "/images/cityview-lanes.webp",
-      alt: "CityView Lanes bowling lanes",
+      src: "/images/yelp-lanes-dragon.jpg",
+      alt: "Youth bowling with ramp at CityView Lanes",
     },
     {
-      src: "/images/yelp-interior-1.jpg",
-      alt: "Inside CityView Lanes",
+      src: "/images/yelp-interior-fresh.jpg",
+      alt: "Youth bowler releasing a ball at CityView Lanes",
     },
   ],
   highlights: [

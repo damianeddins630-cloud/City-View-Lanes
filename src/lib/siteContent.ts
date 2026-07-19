@@ -4,8 +4,8 @@ import type { SiteContent } from "./types";
 export function defaultSiteContent(): SiteContent {
   return {
     home: {
-      heroImage: "/images/cityview-lanes.webp",
-      heroImageAlt: "Bowling lanes at CityView Lanes",
+      heroImage: "/images/yelp-lanes-extra.jpg",
+      heroImageAlt: "Bowling lanes at CityView Lanes Fort Worth",
       heroTitleLine1: "CityView",
       heroTitleLine2: "Lanes",
       heroSubtitle:
@@ -27,8 +27,8 @@ export function defaultSiteContent(): SiteContent {
       academyTitle: "Ballard's Bowling Academy",
       academyCopy:
         "Owned by Del Ballard Jr. and Carolyn Dorin-Ballard — 33 combined PBA & PWBA titles, four Hall of Fame inductions, and one pro shop inside CityView Lanes.",
-      academyImage: "/images/cityview-interior.webp",
-      academyImageAlt: "Inside CityView Lanes",
+      academyImage: "/images/cityview-lanes.webp",
+      academyImageAlt: "CityView Lanes lanes 59 and 60",
       academyStat1Value: "33",
       academyStat1Label: "Combined PBA + PWBA titles",
       academyStat2Value: "4",
@@ -39,16 +39,16 @@ export function defaultSiteContent(): SiteContent {
         "Real photos from CityView Lanes — more official gallery shots coming soon.",
       galleryImages: [
         {
-          src: "/images/yelp-lanes-kids.jpg",
-          alt: "Kids bowling at CityView Lanes",
+          src: "/images/yelp-interior-fresh.jpg",
+          alt: "Youth bowler on the lanes at CityView Lanes",
         },
         {
-          src: "/images/yelp-interior-1.jpg",
-          alt: "CityView Lanes interior",
+          src: "/images/cityview-lanes.webp",
+          alt: "CityView Lanes branded pin deck",
         },
         {
-          src: "/images/yelp-interior-2.jpg",
-          alt: "CityView Lanes lanes",
+          src: "/images/yelp-lanes-dragon.jpg",
+          alt: "Kids bowling with ramp at CityView Lanes",
         },
       ],
       reviewsKicker: "Loved locally",
@@ -59,7 +59,7 @@ export function defaultSiteContent(): SiteContent {
         role: r.role,
       })),
       visitKicker: "Come visit",
-      visitImage: "/images/cityview-lanes.webp",
+      visitImage: "/images/yelp-lanes-extra.jpg",
       visitHoursNote: "Open daily 12:00 PM – 12:00 AM",
       visitParkingNote: "Free parking on-site",
       lanesAvailable: true,
@@ -77,8 +77,21 @@ export function defaultSiteContent(): SiteContent {
       season: YOUTH_LEAGUE.season,
       format: YOUTH_LEAGUE.format,
       phoneNote: YOUTH_LEAGUE.phoneNote,
-      heroImage: "/images/cityview-lanes.webp",
-      photos: YOUTH_LEAGUE.photos.map((p) => ({ src: p.src, alt: p.alt })),
+      heroImage: "/images/yelp-lanes-dragon.jpg",
+      photos: [
+        {
+          src: "/images/yelp-lanes-wide.jpg",
+          alt: "Kids having fun at CityView Lanes",
+        },
+        {
+          src: "/images/yelp-lanes-dragon.jpg",
+          alt: "Youth bowling with ramp at CityView Lanes",
+        },
+        {
+          src: "/images/yelp-interior-fresh.jpg",
+          alt: "Youth bowler releasing a ball at CityView Lanes",
+        },
+      ],
       highlights: YOUTH_LEAGUE.highlights.map((h) => ({
         label: h.label,
         value: h.value,
@@ -100,6 +113,13 @@ function mergeString(current: unknown, fallback: string): string {
   return typeof current === "string" && current.trim() ? current : fallback;
 }
 
+/** Swap older bundled defaults for the newer lane photo pack. */
+function refreshBundledPhoto(current: unknown, next: string, previous: string[]): string {
+  if (typeof current !== "string" || !current.trim()) return next;
+  if (previous.includes(current)) return next;
+  return current;
+}
+
 /** Fill missing site content from defaults so old stores keep working. */
 export function ensureSiteContent(content: SiteContent | undefined | null): SiteContent {
   const defaults = defaultSiteContent();
@@ -111,7 +131,10 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
 
   return {
     home: {
-      heroImage: mergeString(homeIn.heroImage, d.home.heroImage),
+      heroImage: refreshBundledPhoto(homeIn.heroImage, d.home.heroImage, [
+        "/images/cityview-lanes.webp",
+        "/images/cityview-interior.webp",
+      ]),
       heroImageAlt: mergeString(homeIn.heroImageAlt, d.home.heroImageAlt),
       heroTitleLine1: mergeString(homeIn.heroTitleLine1, d.home.heroTitleLine1),
       heroTitleLine2: mergeString(homeIn.heroTitleLine2, d.home.heroTitleLine2),

@@ -32,3 +32,9 @@ What you can edit
 
 Needs Blob connected (same as Profile/Hours saves)
 so photos and text stick after refresh.
+
+Newest lane photos included
+----------------------------
+The zip ships with fresher CityView Lanes photos
+(lanes, youth bowling, center shots). You can still
+replace any of them in Admin → Pictures & Text.
