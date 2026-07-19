@@ -62,11 +62,11 @@ export const YOUTH_LEAGUE = {
   photos: [
     {
       src: "/images/yelp-lanes-wide.jpg",
-      alt: "Kids having fun at CityView Lanes",
+      alt: "Young bowler with popcorn on the ball return at CityView Lanes",
     },
     {
       src: "/images/yelp-lanes-dragon.jpg",
-      alt: "Youth bowling with ramp at CityView Lanes",
+      alt: "Youth bowling with a dragon ramp at CityView Lanes",
     },
     {
       src: "/images/yelp-interior-fresh.jpg",

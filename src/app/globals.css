@@ -22,10 +22,10 @@
   --ink: #0a1018;
   --muted: #2a3444;
   --line: rgba(255, 255, 255, 0.55);
-  --bg: #d9e6f4;
-  --ice: #eaf4ff;
-  --slate: #6f849c;
-  --teal-glow: rgba(56, 189, 210, 0.22);
+  --bg: #c8e0f2;
+  --ice: #e3f4ff;
+  --slate: #5f7e96;
+  --teal-glow: rgba(34, 180, 210, 0.28);
   --hof-gold: #c9a227;
   --hof-red: #9b1b1e;
   --hof-black: #111111;
@@ -103,18 +103,18 @@ body {
   margin: 0;
   min-height: 100%;
   color: var(--ink);
-  /* Soft electric lane chrome — cooler, less glare */
-  background-color: #9aadc2;
+  /* Cool ice-cyan alley atmosphere — no warm gray cast */
+  background-color: #6e93b0;
   background-image:
-    radial-gradient(720px 420px at 100% 0%, rgba(90, 180, 230, 0.28), transparent 50%),
-    radial-gradient(640px 480px at 0% 100%, rgba(40, 90, 160, 0.22), transparent 55%),
-    radial-gradient(500px 360px at 50% 40%, rgba(255, 255, 255, 0.18), transparent 60%),
+    radial-gradient(780px 460px at 92% -8%, rgba(120, 220, 255, 0.34), transparent 52%),
+    radial-gradient(700px 520px at -6% 108%, rgba(20, 90, 160, 0.34), transparent 58%),
+    radial-gradient(520px 380px at 48% 42%, rgba(180, 230, 255, 0.14), transparent 62%),
     linear-gradient(
-      160deg,
-      #e4eef8 0%,
-      #c2d4e6 28%,
-      #93acc6 58%,
-      #6d89a8 100%
+      165deg,
+      #dff2ff 0%,
+      #b7d8f0 26%,
+      #7eafd0 56%,
+      #4f7fa3 100%
     );
   background-attachment: fixed;
   font-family: var(--font-body), sans-serif;
@@ -128,25 +128,25 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
+  opacity: 0.5;
   background-image:
     repeating-linear-gradient(
       90deg,
       transparent 0,
       transparent 72px,
-      rgba(255, 255, 255, 0.06) 72px,
-      rgba(255, 255, 255, 0.06) 74px,
+      rgba(210, 240, 255, 0.07) 72px,
+      rgba(210, 240, 255, 0.07) 74px,
       transparent 74px,
       transparent 146px,
-      rgba(21, 94, 240, 0.07) 146px,
-      rgba(21, 94, 240, 0.07) 148px
+      rgba(40, 150, 220, 0.09) 146px,
+      rgba(40, 150, 220, 0.09) 148px
     ),
     repeating-linear-gradient(
       0deg,
       transparent 0,
       transparent 56px,
-      rgba(255, 255, 255, 0.03) 56px,
-      rgba(255, 255, 255, 0.03) 57px
+      rgba(180, 230, 255, 0.035) 56px,
+      rgba(180, 230, 255, 0.035) 57px
     );
   background-size: auto, auto;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 65%, transparent 100%);
@@ -161,8 +161,8 @@ body::after {
   inset: -25% -35%;
   z-index: 0;
   background:
-    radial-gradient(42% 34% at 18% 22%, rgba(255, 255, 255, 0.18), transparent 62%),
-    radial-gradient(38% 30% at 82% 68%, rgba(90, 170, 230, 0.16), transparent 65%);
+    radial-gradient(42% 34% at 18% 22%, rgba(200, 240, 255, 0.2), transparent 62%),
+    radial-gradient(38% 30% at 82% 68%, rgba(60, 180, 230, 0.2), transparent 65%);
   animation: alley-shine 14s ease-in-out infinite;
 }
 
