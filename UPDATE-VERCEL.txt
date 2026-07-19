@@ -1,0 +1,27 @@
+UPDATE THIS WEBSITE ON THE SAME VERCEL PROJECT
+(so you keep Blob / saves / everything already set up)
+
+1) Download the newest FULL zip
+   https://github.com/damianeddins630-cloud/City-View-Lanes/releases/download/cityview-full/City-View-Lanes-FULL.zip
+
+2) Go to Vercel → open the SAME project that is already live
+   (do NOT create a new project)
+
+3) Deploy → Upload / Redeploy with that zip
+   (wording can say "Deploy" or "Upload" depending on Vercel)
+
+4) After it finishes:
+   - Storage → Blob should still be Connected (same project keeps it)
+   - If you see a Redeploy button after Blob, click it once
+
+5) Log in as Website Owner:
+   username: cityview_damian
+   password: Archer6!9_20
+
+6) Admin → click "Test save now"
+   - PASS = you are good (hours/profile will stick)
+   - FAIL = Blob is not on this project → Storage → Blob → Connect → Redeploy → test again
+
+IMPORTANT
+- Same project = keeps Blob + env vars + domain
+- New project = you have to set Blob up again (avoid this)

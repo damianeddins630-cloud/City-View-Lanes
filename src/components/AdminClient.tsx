@@ -77,6 +77,8 @@ type SignupRow = {
   leagueName: string;
   leagueDay: string;
   leagueTime: string;
+  firstName?: string;
+  lastName?: string;
   address?: string;
   phone?: string;
   email?: string;
@@ -154,6 +156,18 @@ export default function AdminClient() {
   const [hours, setHours] = useState<DayHours[]>([]);
   const [chatBody, setChatBody] = useState("");
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [detail, setDetail] = useState<
+    | { kind: "party"; data: BookingRow }
+    | { kind: "league"; data: SignupRow }
+    | {
+        kind: "employment";
+        data: EmploymentApplication & {
+          username?: string;
+          memberName?: string;
+        };
+      }
+    | null
+  >(null);
 
   const [roleForm, setRoleForm] = useState({
     name: "",
@@ -414,6 +428,7 @@ export default function AdminClient() {
       return;
     }
     setNotice(`Booking ${status}. Email queued to member.`);
+    setDetail(null);
     await loadAll();
   }
 
@@ -430,6 +445,7 @@ export default function AdminClient() {
       return;
     }
     setNotice(`League signup ${status}. Email queued to member.`);
+    setDetail(null);
     await loadAll();
   }
 
@@ -446,7 +462,20 @@ export default function AdminClient() {
       return;
     }
     setNotice(`Employment application ${status}. Email queued to member.`);
+    setDetail(null);
     await loadAll();
+  }
+
+  function DetailRow({ label, value }: { label: string; value?: string | number | null }) {
+    if (value === undefined || value === null || value === "") return null;
+    return (
+      <div className="border-b border-[var(--line)] py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
+        <p className="text-xs font-semibold tracking-wide text-[var(--blue-bright)] uppercase">
+          {label}
+        </p>
+        <p className="text-sm whitespace-pre-wrap text-white">{String(value)}</p>
+      </div>
+    );
   }
 
   async function addLeague(e: FormEvent) {
@@ -1180,26 +1209,35 @@ export default function AdminClient() {
                           </td>
                           <td className="px-3 py-3 uppercase">{b.status}</td>
                           <td className="px-3 py-3">
-                            {b.status === "pending" ? (
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-primary text-[10px]"
-                                  onClick={() => decideBooking(b.id, "approved")}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-ghost text-[10px]"
-                                  onClick={() => decideBooking(b.id, "denied")}
-                                >
-                                  Deny
-                                </button>
-                              </div>
-                            ) : (
-                              <span className="text-xs text-[var(--muted)]">Done</span>
-                            )}
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                className="btn btn-ghost text-[10px]"
+                                onClick={() => setDetail({ kind: "party", data: b })}
+                              >
+                                Open
+                              </button>
+                              {b.status === "pending" ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary text-[10px]"
+                                    onClick={() => decideBooking(b.id, "approved")}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-ghost text-[10px]"
+                                    onClick={() => decideBooking(b.id, "denied")}
+                                  >
+                                    Deny
+                                  </button>
+                                </>
+                              ) : (
+                                <span className="text-xs text-[var(--muted)]">Done</span>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -1255,7 +1293,6 @@ export default function AdminClient() {
                                   : ""}
                               </p>
                             ) : null}
-                            <p className="text-xs text-[var(--muted)]">{s.memberEmail}</p>
                           </td>
                           <td className="px-3 py-3">
                             {s.leagueName}
@@ -1266,26 +1303,35 @@ export default function AdminClient() {
                           </td>
                           <td className="px-3 py-3 uppercase">{s.status}</td>
                           <td className="px-3 py-3">
-                            {s.status === "pending" ? (
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-primary text-[10px]"
-                                  onClick={() => decideSignup(s.id, "approved")}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-ghost text-[10px]"
-                                  onClick={() => decideSignup(s.id, "denied")}
-                                >
-                                  Deny
-                                </button>
-                              </div>
-                            ) : (
-                              <span className="text-xs text-[var(--muted)]">Done</span>
-                            )}
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                className="btn btn-ghost text-[10px]"
+                                onClick={() => setDetail({ kind: "league", data: s })}
+                              >
+                                Open
+                              </button>
+                              {s.status === "pending" ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary text-[10px]"
+                                    onClick={() => decideSignup(s.id, "approved")}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-ghost text-[10px]"
+                                    onClick={() => decideSignup(s.id, "denied")}
+                                  >
+                                    Deny
+                                  </button>
+                                </>
+                              ) : (
+                                <span className="text-xs text-[var(--muted)]">Done</span>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -1366,30 +1412,41 @@ export default function AdminClient() {
                       </td>
                       <td className="px-3 py-3 uppercase">{a.status}</td>
                       <td className="px-3 py-3">
-                        {a.status === "pending" ? (
-                          <div className="flex gap-2">
-                            <button
-                              type="button"
-                              className="btn btn-primary text-[10px]"
-                              onClick={() =>
-                                decideEmployment(a.id, "approved")
-                              }
-                            >
-                              Approve
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-ghost text-[10px]"
-                              onClick={() => decideEmployment(a.id, "denied")}
-                            >
-                              Deny
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-[var(--muted)]">
-                            Done
-                          </span>
-                        )}
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-ghost text-[10px]"
+                            onClick={() =>
+                              setDetail({ kind: "employment", data: a })
+                            }
+                          >
+                            Open
+                          </button>
+                          {a.status === "pending" ? (
+                            <>
+                              <button
+                                type="button"
+                                className="btn btn-primary text-[10px]"
+                                onClick={() =>
+                                  decideEmployment(a.id, "approved")
+                                }
+                              >
+                                Approve
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-ghost text-[10px]"
+                                onClick={() => decideEmployment(a.id, "denied")}
+                              >
+                                Deny
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-xs text-[var(--muted)]">
+                              Done
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -1561,6 +1618,220 @@ export default function AdminClient() {
             Save hours
           </button>
         </form>
+      ) : null}
+
+      {detail ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-3 sm:items-center sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Application details"
+          onClick={() => setDetail(null)}
+        >
+          <div
+            className="panel max-h-[90vh] w-full max-w-2xl overflow-y-auto p-5 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold tracking-wide text-[var(--blue-bright)] uppercase">
+                  {detail.kind === "party"
+                    ? "Party application"
+                    : detail.kind === "league"
+                      ? "League application"
+                      : "Employment application"}
+                </p>
+                <h2 className="font-display text-2xl text-white">
+                  {detail.kind === "employment"
+                    ? `${detail.data.firstName} ${detail.data.lastName}`.trim()
+                    : detail.kind === "party"
+                      ? `${detail.data.firstName} ${detail.data.lastName}`.trim()
+                      : detail.data.memberName || detail.data.teamName || "Application"}
+                </h2>
+              </div>
+              <button
+                type="button"
+                className="btn btn-ghost text-[10px]"
+                onClick={() => setDetail(null)}
+              >
+                Close
+              </button>
+            </div>
+
+            {detail.kind === "party" ? (
+              <div>
+                <DetailRow label="Status" value={detail.data.status} />
+                <DetailRow label="Account" value={detail.data.username} />
+                <DetailRow label="Member" value={detail.data.memberName} />
+                <DetailRow label="First name" value={detail.data.firstName} />
+                <DetailRow label="Last name" value={detail.data.lastName} />
+                <DetailRow label="Email" value={detail.data.email} />
+                <DetailRow label="Phone" value={detail.data.phone} />
+                <DetailRow label="Event type" value={detail.data.eventType} />
+                <DetailRow label="Date" value={detail.data.eventDate} />
+                <DetailRow label="Time" value={detail.data.eventTime} />
+                <DetailRow label="Party size" value={detail.data.partySize} />
+                <DetailRow label="Notes" value={detail.data.notes} />
+                <DetailRow label="Admin note" value={detail.data.adminNote} />
+              </div>
+            ) : null}
+
+            {detail.kind === "league" ? (
+              <div>
+                <DetailRow label="Status" value={detail.data.status} />
+                <DetailRow label="Account" value={detail.data.username} />
+                <DetailRow label="Member" value={detail.data.memberName} />
+                <DetailRow label="Member email" value={detail.data.memberEmail} />
+                <DetailRow label="Team / league name" value={detail.data.teamName} />
+                <DetailRow label="First name" value={detail.data.firstName} />
+                <DetailRow label="Last name" value={detail.data.lastName} />
+                <DetailRow label="Phone" value={detail.data.phone} />
+                <DetailRow label="Email" value={detail.data.email} />
+                <DetailRow label="Address" value={detail.data.address} />
+                <DetailRow label="Full team" value={detail.data.fullTeam} />
+                <DetailRow label="How many people" value={detail.data.teamCount} />
+                <DetailRow label="League" value={detail.data.leagueName} />
+                <DetailRow
+                  label="League schedule"
+                  value={`${detail.data.leagueDay || ""} ${detail.data.leagueTime || ""}`.trim()}
+                />
+                <DetailRow label="Note" value={detail.data.note} />
+                <DetailRow label="Admin note" value={detail.data.adminNote} />
+              </div>
+            ) : null}
+
+            {detail.kind === "employment" ? (
+              <div>
+                <DetailRow label="Status" value={detail.data.status} />
+                <DetailRow label="Account" value={detail.data.username} />
+                <DetailRow label="Member" value={detail.data.memberName} />
+                <DetailRow label="Application date" value={detail.data.applicationDate} />
+                <DetailRow label="First name" value={detail.data.firstName} />
+                <DetailRow label="Middle name" value={detail.data.middleName} />
+                <DetailRow label="Last name" value={detail.data.lastName} />
+                <DetailRow
+                  label="Address"
+                  value={[
+                    detail.data.street,
+                    detail.data.apt ? `Apt ${detail.data.apt}` : "",
+                    `${detail.data.city}, ${detail.data.state} ${detail.data.zip}`,
+                  ]
+                    .filter(Boolean)
+                    .join("\n")}
+                />
+                <DetailRow
+                  label="Alt address"
+                  value={
+                    detail.data.altStreet
+                      ? [
+                          detail.data.altStreet,
+                          detail.data.altApt ? `Apt ${detail.data.altApt}` : "",
+                          `${detail.data.altCity}, ${detail.data.altState} ${detail.data.altZip}`,
+                        ]
+                          .filter(Boolean)
+                          .join("\n")
+                      : ""
+                  }
+                />
+                <DetailRow label="Home phone" value={detail.data.homePhone} />
+                <DetailRow label="Mobile phone" value={detail.data.mobilePhone} />
+                <DetailRow label="Email" value={detail.data.email} />
+                <DetailRow label="How heard" value={detail.data.howHeard} />
+                <DetailRow label="Position" value={detail.data.position} />
+                <DetailRow label="Available start" value={detail.data.availableStartDate} />
+                <DetailRow label="Desired pay" value={detail.data.desiredPay} />
+                <DetailRow label="Currently employed" value={detail.data.currentlyEmployed} />
+                <DetailRow
+                  label="High school"
+                  value={[
+                    detail.data.education?.highSchool?.nameLocation,
+                    detail.data.education?.highSchool?.graduateDegree,
+                    detail.data.education?.highSchool?.majorSubjects,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+                <DetailRow
+                  label="College"
+                  value={[
+                    detail.data.education?.college?.nameLocation,
+                    detail.data.education?.college?.graduateDegree,
+                    detail.data.education?.college?.majorSubjects,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+                <DetailRow
+                  label="Specialized"
+                  value={[
+                    detail.data.education?.specialized?.nameLocation,
+                    detail.data.education?.specialized?.graduateDegree,
+                    detail.data.education?.specialized?.majorSubjects,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+                <DetailRow
+                  label="Other education"
+                  value={[
+                    detail.data.education?.other?.nameLocation,
+                    detail.data.education?.other?.graduateDegree,
+                    detail.data.education?.other?.majorSubjects,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                />
+                <DetailRow label="Special skills" value={detail.data.specialSkills} />
+                {(detail.data.experience || []).map((job, idx) => (
+                  <DetailRow
+                    key={idx}
+                    label={`Job ${idx + 1}`}
+                    value={[
+                      job.companyName,
+                      job.roleTitle,
+                      job.location,
+                      job.dateEmployed,
+                      job.notes,
+                    ]
+                      .filter(Boolean)
+                      .join("\n")}
+                  />
+                ))}
+                <DetailRow label="Admin note" value={detail.data.adminNote} />
+                <DetailRow label="Submitted" value={detail.data.createdAt} />
+              </div>
+            ) : null}
+
+            {detail.data.status === "pending" ? (
+              <div className="mt-5 flex flex-wrap gap-2 border-t border-[var(--line)] pt-4">
+                <button
+                  type="button"
+                  className="btn btn-primary text-[10px]"
+                  onClick={() => {
+                    if (detail.kind === "party") decideBooking(detail.data.id, "approved");
+                    if (detail.kind === "league") decideSignup(detail.data.id, "approved");
+                    if (detail.kind === "employment")
+                      decideEmployment(detail.data.id, "approved");
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost text-[10px]"
+                  onClick={() => {
+                    if (detail.kind === "party") decideBooking(detail.data.id, "denied");
+                    if (detail.kind === "league") decideSignup(detail.data.id, "denied");
+                    if (detail.kind === "employment")
+                      decideEmployment(detail.data.id, "denied");
+                  }}
+                >
+                  Deny
+                </button>
+              </div>
+            ) : null}
+          </div>
+        </div>
       ) : null}
     </div>
   );
