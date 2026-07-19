@@ -42,7 +42,7 @@ export default function ProShopPage() {
         <p className="text-sm font-bold tracking-[0.2em] text-[var(--hof-gold)] uppercase">
           Hall of Fame Pro Shop
         </p>
-        <h1 className="font-display mt-3 text-5xl tracking-[0.06em] text-white sm:text-7xl">
+        <h1 className="font-display mt-3 text-5xl tracking-[0.06em] text-[var(--ink)] sm:text-7xl">
           Ballard&apos;s
           <br />
           Bowling Academy
@@ -50,7 +50,7 @@ export default function ProShopPage() {
         <p className="mt-4 text-lg text-[var(--hof-gold)]">
           Owned by Del Ballard Jr. &amp; Carolyn Dorin-Ballard
         </p>
-        <p className="mt-5 max-w-3xl text-base leading-relaxed text-white/75">
+        <p className="mt-5 max-w-3xl text-base leading-relaxed text-[var(--muted)]">
           A Hall of Fame pro shop located inside CityView Lanes. Two of the most
           decorated bowlers in the history of the sport — coaching, custom
           drilling, and elite equipment, all under one roof in Fort Worth.
@@ -62,10 +62,10 @@ export default function ProShopPage() {
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-gold)] uppercase">
             Pro Shop Manager · Cityview Lanes
           </p>
-          <h2 className="font-display mt-2 text-4xl text-white sm:text-5xl">
+          <h2 className="font-display mt-2 text-4xl text-[var(--ink)] sm:text-5xl">
             Tim Watson
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/75">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
             Day-to-day manager of Ballard&apos;s Bowling Academy at CityView
             Lanes — your point of contact for pro shop visits, equipment, custom
             drilling appointments, and on-site questions at the Fort Worth
@@ -75,9 +75,9 @@ export default function ProShopPage() {
             <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
               Role
             </p>
-            <p className="mt-1 font-semibold text-white">Pro Shop Manager</p>
+            <p className="mt-1 font-semibold text-[var(--ink)]">Pro Shop Manager</p>
           </div>
-          <p className="mt-4 text-sm text-white/60">
+          <p className="mt-4 text-sm text-[var(--muted)]">
             Ballard&apos;s Bowling Academy · 6601 Oakmont Blvd, Fort Worth, TX
             76132
           </p>
@@ -93,7 +93,7 @@ export default function ProShopPage() {
             <h2 className="font-display text-2xl tracking-[0.04em] text-[var(--hof-gold)]">
               {item.title}
             </h2>
-            <p className="mt-2 text-sm text-white/70">{item.copy}</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">{item.copy}</p>
           </article>
         ))}
       </section>
@@ -103,12 +103,12 @@ export default function ProShopPage() {
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-red)] uppercase">
             Legend
           </p>
-          <h2 className="font-display mt-2 text-4xl text-white">Del Ballard Jr.</h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/70">
+          <h2 className="font-display mt-2 text-4xl text-[var(--ink)]">Del Ballard Jr.</h2>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
             A two-time U.S. Open champion and one of the most respected
             competitors in the history of professional bowling.
           </p>
-          <ul className="mt-5 space-y-2 text-sm text-white/80">
+          <ul className="mt-5 space-y-2 text-sm text-[var(--muted)]">
             <li>13 PBA Titles</li>
             <li>1988 USBC Masters Champion</li>
             <li>1989 Firestone Tournament of Champions</li>
@@ -117,7 +117,7 @@ export default function ProShopPage() {
             <li>PBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-white/55">
+          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-[var(--muted)]">
             Owner: upload official photo of Del Ballard Jr.
             <br />
             Manage in the admin content panel
@@ -128,14 +128,14 @@ export default function ProShopPage() {
           <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-red)] uppercase">
             Legend
           </p>
-          <h2 className="font-display mt-2 text-4xl text-white">
+          <h2 className="font-display mt-2 text-4xl text-[var(--ink)]">
             Carolyn Dorin-Ballard
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/70">
+          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
             PWBA Player of the Year and one of the most dominant seasons in the
             history of women&apos;s professional bowling.
           </p>
-          <ul className="mt-5 space-y-2 text-sm text-white/80">
+          <ul className="mt-5 space-y-2 text-sm text-[var(--muted)]">
             <li>20 PWBA Titles</li>
             <li>2001 USBC Queens Champion</li>
             <li>2001 PWBA Player of the Year</li>
@@ -144,7 +144,7 @@ export default function ProShopPage() {
             <li>PWBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-white/55">
+          <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-dashed border-[rgba(201,162,39,0.4)] bg-black/40 p-4 text-center text-sm text-[var(--muted)]">
             Owner: upload official photo of Carolyn Dorin-Ballard
             <br />
             Manage in the admin content panel
@@ -155,10 +155,10 @@ export default function ProShopPage() {
       <section className="border-t border-[rgba(201,162,39,0.25)]">
         <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] flex-col gap-5 py-12 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="font-display text-3xl text-white">
+            <h2 className="font-display text-3xl text-[var(--ink)]">
               Ready to elevate your game?
             </h2>
-            <p className="mt-2 max-w-xl text-sm text-white/70">
+            <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
               Schedule a private lesson or custom ball drilling with Del or
               Carolyn — right inside CityView Lanes.
             </p>

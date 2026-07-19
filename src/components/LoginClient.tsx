@@ -56,7 +56,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-[min(480px,calc(100%-1.5rem))] flex-col justify-center py-16">
-      <h1 className="font-display text-center text-5xl tracking-[0.06em] text-white">
+      <h1 className="font-display text-center text-5xl tracking-[0.06em] text-[var(--ink)]">
         CityView Lanes
       </h1>
 

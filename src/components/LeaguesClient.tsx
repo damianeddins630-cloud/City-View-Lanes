@@ -197,7 +197,7 @@ export default function LeaguesClient({
 
       {showForm ? (
         <form onSubmit={submitApplication} className="panel mt-6 grid max-w-2xl gap-4 p-5">
-          <h2 className="font-display text-2xl text-white">League application</h2>
+          <h2 className="font-display text-2xl text-[var(--ink)]">League application</h2>
           <p className="text-sm text-[var(--muted)]">
             {selectedLeague
               ? `Applying for: ${selectedLeague.name} (${selectedLeague.day} ${selectedLeague.time})`
@@ -237,7 +237,7 @@ export default function LeaguesClient({
             </div>
           </div>
 
-          <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
+          <p className="text-xs font-semibold tracking-wide text-[var(--muted)] uppercase">
             Address
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -408,7 +408,7 @@ export default function LeaguesClient({
 
         <div className="panel mt-5 overflow-x-auto">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-[var(--navy)] text-xs tracking-[0.08em] text-white uppercase">
+            <thead className="bg-[var(--blue)]/15 text-xs tracking-[0.08em] text-[var(--blue)] uppercase">
               <tr>
                 <th className="px-4 py-3">Day</th>
                 <th className="px-4 py-3">Time</th>
@@ -438,7 +438,7 @@ export default function LeaguesClient({
                   >
                     <td className="px-4 py-3">{league.day}</td>
                     <td className="px-4 py-3">{league.time}</td>
-                    <td className="px-4 py-3 font-semibold text-white">
+                    <td className="px-4 py-3 font-semibold text-[var(--ink)]">
                       {league.name}
                     </td>
                     <td className="px-4 py-3">{league.type}</td>

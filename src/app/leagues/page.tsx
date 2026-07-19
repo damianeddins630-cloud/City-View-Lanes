@@ -41,14 +41,14 @@ export default async function LeaguesPage() {
             <span className="brand-star" aria-hidden />
             <div className="silver-bar max-w-[140px]" />
           </div>
-          <p className="fade-up section-kicker text-white/90">
+          <p className="fade-up section-kicker">
             CityView Lanes · {SITE.fallSeasonLabel}
           </p>
-          <h1 className="font-display fade-up mt-2 max-w-3xl text-[clamp(3.4rem,10vw,6.5rem)] leading-[0.88] tracking-[0.03em] text-white">
+          <h1 className="font-display fade-up mt-2 max-w-3xl text-[clamp(3.4rem,10vw,6.5rem)] leading-[0.88] tracking-[0.03em] text-[var(--ink)]">
             Leagues
             <span className="brand-title-accent block">that hit harder</span>
           </h1>
-          <p className="fade-up-delay mt-5 max-w-xl text-lg text-white/90">
+          <p className="fade-up-delay mt-5 max-w-xl text-lg text-[var(--muted)]">
             Adult, senior, youth, and IGBO — weekly play in Fort Worth with a
             desk that actually answers the phone.
           </p>
@@ -113,7 +113,7 @@ export default async function LeaguesPage() {
             <div className="youth-highlights mt-8">
               {youth.highlights.map((item) => (
                 <div key={item.label} className="youth-highlight">
-                  <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
+                  <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
                     {item.label}
                   </p>
                   <p className="mt-1 font-display text-2xl tracking-wide text-[var(--ink)]">
@@ -167,7 +167,7 @@ export default async function LeaguesPage() {
             <div className="state-strip">
               {youth.playerStates.map((state) => (
                 <div key={`${state.code}-${state.name}`} className="state-chip">
-                  <p className="font-display text-4xl tracking-wide text-[var(--blue-bright)]">
+                  <p className="font-display text-4xl tracking-wide text-[var(--blue)]">
                     {state.code}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
@@ -183,7 +183,7 @@ export default async function LeaguesPage() {
             <div className="youth-stats-row mt-8">
               {youth.playerStats.map((stat) => (
                 <div key={stat.label} className="youth-stat">
-                  <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--silver)] uppercase">
+                  <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
                     {stat.label}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-[var(--ink)]">

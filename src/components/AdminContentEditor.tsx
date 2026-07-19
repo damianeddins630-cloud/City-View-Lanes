@@ -78,7 +78,7 @@ function PhotoSlot({
 
   return (
     <div className="panel space-y-3 p-4">
-      <p className="text-xs font-bold tracking-wide text-[var(--blue-bright)] uppercase">
+      <p className="text-xs font-bold tracking-wide text-[var(--blue)] uppercase">
         {label}
       </p>
       <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-white/35">
@@ -313,7 +313,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
         <div className="grid gap-3 md:grid-cols-2">
           {h.whyCards.map((card, idx) => (
             <div key={idx} className="panel space-y-2 p-4">
-              <p className="text-xs font-bold text-[var(--blue-bright)] uppercase">
+              <p className="text-xs font-bold text-[var(--blue)] uppercase">
                 Feature {idx + 1}
               </p>
               <Field
@@ -480,7 +480,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
         <div className="grid gap-3 md:grid-cols-3">
           {h.reviews.map((review, idx) => (
             <div key={idx} className="panel space-y-2 p-4">
-              <p className="text-xs font-bold text-[var(--blue-bright)] uppercase">
+              <p className="text-xs font-bold text-[var(--blue)] uppercase">
                 Review {idx + 1}
               </p>
               <Field
@@ -628,7 +628,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
         <div className="grid gap-3 md:grid-cols-2">
           {y.playerStates.map((state, idx) => (
             <div key={idx} className="panel space-y-2 p-4">
-              <p className="text-xs font-bold text-[var(--blue-bright)] uppercase">
+              <p className="text-xs font-bold text-[var(--blue)] uppercase">
                 Player state {idx + 1}
               </p>
               <Field

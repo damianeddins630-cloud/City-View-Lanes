@@ -473,7 +473,7 @@ export default function AdminClient() {
     if (value === undefined || value === null || value === "") return null;
     return (
       <div className="border-b border-[var(--line)] py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
-        <p className="text-xs font-semibold tracking-wide text-[var(--blue-bright)] uppercase">
+        <p className="text-xs font-semibold tracking-wide text-[var(--blue)] uppercase">
           {label}
         </p>
         <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{String(value)}</p>
@@ -812,7 +812,7 @@ export default function AdminClient() {
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
           <div className="panel overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase tracking-wide">
+              <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase tracking-wide">
                 <tr>
                   <th className="px-3 py-3">User</th>
                   <th className="px-3 py-3">Role</th>
@@ -1177,7 +1177,7 @@ export default function AdminClient() {
               <h2 className="font-display text-2xl text-[var(--ink)]">Party applications</h2>
               <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
                 <table className="min-w-full text-left text-sm">
-                  <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
+                  <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                     <tr>
                       <th className="px-3 py-3">Guest</th>
                       <th className="px-3 py-3">When</th>
@@ -1258,7 +1258,7 @@ export default function AdminClient() {
               </h2>
               <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
                 <table className="min-w-full text-left text-sm">
-                  <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
+                  <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                     <tr>
                       <th className="px-3 py-3">Member</th>
                       <th className="px-3 py-3">League</th>
@@ -1354,7 +1354,7 @@ export default function AdminClient() {
           </h2>
           <div className="mt-3 overflow-x-auto border border-[var(--line)] bg-white/35">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
+              <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
                 <tr>
                   <th className="px-3 py-3">Name</th>
                   <th className="px-3 py-3">Position</th>
@@ -1463,7 +1463,7 @@ export default function AdminClient() {
       {activeTab === "admins" && can("view_admins") ? (
         <div className="mt-6 overflow-x-auto border border-[var(--line)] bg-white/35">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-[var(--blue)]/20 text-xs text-white uppercase">
+            <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
               <tr>
                 <th className="px-3 py-3">Role</th>
                 <th className="px-3 py-3">Username</th>
@@ -1650,7 +1650,7 @@ export default function AdminClient() {
           >
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold tracking-wide text-[var(--blue-bright)] uppercase">
+                <p className="text-xs font-semibold tracking-wide text-[var(--blue)] uppercase">
                   {detail.kind === "party"
                     ? "Party application"
                     : detail.kind === "league"

@@ -12,7 +12,7 @@ export default function CareersPage() {
         <p className="text-xs font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
           Employment
         </p>
-        <h1 className="font-display mt-2 text-4xl text-white sm:text-5xl">
+        <h1 className="font-display mt-2 text-4xl text-[var(--ink)] sm:text-5xl">
           Join the CityView team
         </h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)]">

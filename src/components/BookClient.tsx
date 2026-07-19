@@ -166,7 +166,7 @@ export default function BookClient() {
       </div>
 
       <div>
-        <p className="mb-2 text-xs font-semibold tracking-wide text-white/70 uppercase">
+        <p className="mb-2 text-xs font-semibold tracking-wide text-[var(--muted)] uppercase">
           Time *
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -240,7 +240,7 @@ export default function BookClient() {
 
       {error ? <p className="text-sm font-semibold text-red-400">{error}</p> : null}
       {message ? (
-        <p className="text-sm font-semibold text-[var(--blue-bright)]">{message}</p>
+        <p className="text-sm font-semibold text-[var(--blue)]">{message}</p>
       ) : null}
 
       <button type="submit" className="btn btn-primary w-fit" disabled={submitting}>

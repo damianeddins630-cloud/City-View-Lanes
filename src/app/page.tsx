@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-stage relative isolate overflow-hidden bg-[#7a8491] text-white">
+      <section className="hero-stage relative isolate overflow-hidden bg-[#7a8491] text-[var(--ink)]">
         <div className="absolute inset-0">
           <SiteImage
             src={h.heroImage}
@@ -39,11 +39,11 @@ export default async function HomePage() {
             <span className="brand-star brand-star-lg" aria-hidden />
             <div className="silver-bar max-w-[180px]" />
           </div>
-          <h1 className="font-display brand-title fade-up text-[clamp(5.2rem,15vw,10rem)] leading-[0.8] tracking-[0.03em] text-white">
+          <h1 className="font-display brand-title fade-up text-[clamp(5.2rem,15vw,10rem)] leading-[0.8] tracking-[0.03em] text-[var(--ink)]">
             {h.heroTitleLine1}
             <span className="brand-title-accent block">{h.heroTitleLine2}</span>
           </h1>
-          <p className="fade-up-delay mt-6 max-w-xl text-xl text-white sm:text-2xl">
+          <p className="fade-up-delay mt-6 max-w-xl text-xl text-[var(--muted)] sm:text-2xl">
             {h.heroSubtitle}
           </p>
           <div className="fade-up-delay-2 mt-10 flex flex-wrap gap-3">
@@ -79,7 +79,7 @@ export default async function HomePage() {
                 h.lanesAvailable ? "is-open" : "is-full"
               }`}
             >
-              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue-bright)] uppercase">
+              <p className="text-[10px] font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
                 {h.lanesStatusLabel}
               </p>
               <p className="font-display mt-2 text-3xl tracking-[0.04em] text-[var(--ink)] sm:text-4xl">
@@ -242,7 +242,7 @@ export default async function HomePage() {
               <p className="mt-2 text-lg text-[var(--muted)]">{SITE.addressLine2}</p>
               <a
                 href={`tel:${SITE.phoneTel}`}
-                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue-bright)]"
+                className="phone-link mt-5 inline-block text-3xl font-bold tracking-wide text-[var(--blue)]"
               >
                 {SITE.phoneDisplay}
               </a>

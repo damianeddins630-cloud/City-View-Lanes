@@ -18,8 +18,8 @@
     #ffffff 100%
   );
   --white: #ffffff;
-  --ink: #1a2230;
-  --muted: #3d4654;
+  --ink: #0b0f14;
+  --muted: #1e2733;
   --line: rgba(255, 255, 255, 0.45);
   --bg: #9aa3ae;
   --hof-gold: #c9a227;
@@ -127,22 +127,22 @@ a {
 }
 
 .btn-ghost {
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.04);
-  color: white;
+  border-color: rgba(11, 15, 20, 0.35);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--ink);
 }
 
 .btn-ghost:hover {
-  border-color: var(--blue-bright);
-  color: white;
-  background: rgba(29, 111, 255, 0.16);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  border-color: var(--blue);
+  color: var(--blue);
+  background: rgba(29, 111, 255, 0.12);
+  box-shadow: 0 8px 20px rgba(40, 48, 58, 0.18);
 }
 
 .btn-dark {
-  background: #5c6672;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--ink);
+  color: #ffffff;
+  border: 1px solid rgba(11, 15, 20, 0.5);
 }
 
 .btn-xl {
@@ -153,7 +153,7 @@ a {
 
 .btn-hero-primary {
   background: linear-gradient(135deg, #8cbcff, #2f7bff 42%, #0a47d4);
-  color: #ffffff !important;
+  color: #ffffff !important; /* white only on solid blue buttons */
   border: 2px solid #d7e7ff;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.15) inset,
@@ -182,16 +182,17 @@ a {
 }
 
 .btn-hero-outline {
-  background: rgba(90, 100, 112, 0.45) !important;
-  color: #ffffff !important;
-  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: var(--ink) !important;
+  border: 2px solid var(--ink);
   backdrop-filter: blur(10px);
   font-weight: 800;
 }
 
 .btn-hero-outline:hover {
-  background: rgba(29, 111, 255, 0.35) !important;
-  border-color: #8cbcff;
+  background: rgba(29, 111, 255, 0.14) !important;
+  border-color: var(--blue);
+  color: var(--blue) !important;
   transform: translateY(-3px) scale(1.02);
 }
 
@@ -201,8 +202,8 @@ a {
 
 .hero-veil {
   background:
-    linear-gradient(180deg, rgba(90, 100, 112, 0.2) 0%, rgba(90, 100, 112, 0.05) 30%, rgba(70, 80, 92, 0.72) 100%),
-    linear-gradient(115deg, rgba(80, 90, 102, 0.55) 0%, rgba(120, 130, 142, 0.12) 48%, rgba(29, 111, 255, 0.28) 100%);
+    linear-gradient(180deg, rgba(215, 221, 229, 0.35) 0%, rgba(215, 221, 229, 0.15) 35%, rgba(200, 208, 220, 0.82) 100%),
+    linear-gradient(115deg, rgba(232, 236, 241, 0.7) 0%, rgba(200, 208, 220, 0.25) 48%, rgba(29, 111, 255, 0.18) 100%);
 }
 
 .hero-dots {
@@ -272,7 +273,7 @@ a {
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--blue-bright);
+  color: var(--blue);
 }
 
 .section-title {
@@ -330,11 +331,11 @@ a {
 }
 
 .brand-title {
-  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 8px 24px rgba(255, 255, 255, 0.45);
 }
 
 .brand-title-accent {
-  background: linear-gradient(180deg, #ffffff 0%, #9ec0ff 48%, #4b8dff 100%);
+  background: linear-gradient(180deg, #0b0f14 0%, #1e6fff 55%, #0a47d4 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -435,11 +436,12 @@ a {
 }
 
 .phone-link {
+  color: var(--blue);
   transition: color 160ms ease, transform 160ms ease;
 }
 
 .phone-link:hover {
-  color: var(--blue-bright);
+  color: #0a47d4;
   transform: translateY(-1px);
 }
 
@@ -657,7 +659,6 @@ a {
   color: var(--ink);
   padding: 0.65rem 0.8rem;
   font: inherit;
-  color: white;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -723,13 +724,13 @@ a {
 
 .admin-tab:hover {
   border-color: var(--blue);
-  color: white;
+  color: var(--blue);
 }
 
 .admin-tab-active {
   background: linear-gradient(135deg, var(--blue), #0d3fad);
   border-color: transparent;
-  color: white;
+  color: #ffffff;
   box-shadow: var(--shadow-lift);
 }
 
@@ -932,12 +933,12 @@ a {
 }
 
 .league-filter:hover {
-  color: white;
-  border-color: var(--blue-bright);
+  color: var(--blue);
+  border-color: var(--blue);
 }
 
 .league-filter.is-active {
-  color: white;
+  color: #ffffff;
   border-color: transparent;
   background: linear-gradient(135deg, var(--blue-bright), var(--blue));
   box-shadow: var(--shadow-lift);

@@ -209,7 +209,7 @@ export default function CareersClient() {
           </div>
         </div>
 
-        <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
+        <p className="text-xs font-semibold tracking-wide text-[var(--muted)] uppercase">
           Address
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -259,7 +259,7 @@ export default function CareersClient() {
           </div>
         </div>
 
-        <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
+        <p className="text-xs font-semibold tracking-wide text-[var(--muted)] uppercase">
           Alternate Address
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -310,7 +310,7 @@ export default function CareersClient() {
           </div>
         </div>
 
-        <p className="text-xs font-semibold tracking-wide text-white/70 uppercase">
+        <p className="text-xs font-semibold tracking-wide text-[var(--muted)] uppercase">
           Contact Information
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -419,7 +419,7 @@ export default function CareersClient() {
         </p>
         {eduRows.map((row) => (
           <div key={row.key} className="grid gap-3 border border-[var(--line)] p-4">
-            <p className="text-sm font-semibold text-white">{row.label} *</p>
+            <p className="text-sm font-semibold text-[var(--ink)]">{row.label} *</p>
             <div className="grid gap-3 md:grid-cols-3">
               <div className="field">
                 <label>Name and location *</label>
@@ -488,7 +488,7 @@ export default function CareersClient() {
         </div>
         {form.experience.map((job, index) => (
           <div key={index} className="grid gap-3 border border-[var(--line)] p-4">
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-[var(--ink)]">
               Job {index + 1}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">

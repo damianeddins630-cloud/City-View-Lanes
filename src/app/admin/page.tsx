@@ -12,7 +12,7 @@ export default function AdminPage() {
       <p className="text-sm font-bold tracking-[0.18em] text-[var(--blue)] uppercase">
         Master control
       </p>
-      <h1 className="font-display mt-2 text-5xl tracking-[0.05em] text-white">
+      <h1 className="font-display mt-2 text-5xl tracking-[0.05em] text-[var(--ink)]">
         Admin panel
       </h1>
       <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">

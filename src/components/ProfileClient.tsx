@@ -35,7 +35,7 @@ function statusClass(status: string) {
   if (status === "pending") return "text-amber-200";
   if (status === "approved") return "text-emerald-300";
   if (status === "denied") return "text-red-300";
-  return "text-white/70";
+  return "text-[var(--muted)]";
 }
 
 const APPROVED_NOTE =
@@ -179,7 +179,7 @@ export default function ProfileClient() {
             <span className="text-sm text-[var(--muted)]">No photo</span>
           )}
         </div>
-        <p className="mt-4 text-center font-semibold text-white">
+        <p className="mt-4 text-center font-semibold text-[var(--ink)]">
           {user.firstName} {user.lastName}
         </p>
         <p className="text-center text-xs tracking-wide text-[var(--muted)] uppercase">
@@ -202,7 +202,7 @@ export default function ProfileClient() {
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
                 Applications
               </p>
-              <h2 className="font-display mt-1 text-2xl text-white">
+              <h2 className="font-display mt-1 text-2xl text-[var(--ink)]">
                 Party, league & employment
               </h2>
             </div>
@@ -232,17 +232,17 @@ export default function ProfileClient() {
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                      <p className="text-xs tracking-wide text-white/50 uppercase">
+                      <p className="text-xs tracking-wide text-[var(--muted)] uppercase">
                         {app.kind}
                       </p>
-                      <p className="font-semibold text-white">{app.title}</p>
+                      <p className="font-semibold text-[var(--ink)]">{app.title}</p>
                       {app.detail ? (
                         <p className="mt-1 text-sm text-[var(--muted)]">
                           {app.detail}
                         </p>
                       ) : null}
                       {app.adminNote ? (
-                        <p className="mt-2 text-sm text-white/80">
+                        <p className="mt-2 text-sm text-[var(--muted)]">
                           Note: {app.adminNote}
                         </p>
                       ) : null}
@@ -275,7 +275,7 @@ export default function ProfileClient() {
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--blue)] uppercase">
                 Notifications
               </p>
-              <h2 className="font-display mt-1 text-2xl text-white">
+              <h2 className="font-display mt-1 text-2xl text-[var(--ink)]">
                 Updates {unread ? `(${unread} new)` : ""}
               </h2>
             </div>
@@ -304,11 +304,11 @@ export default function ProfileClient() {
                       : "border-[var(--blue)]/40 bg-[var(--blue-soft)]"
                   }`}
                 >
-                  <p className="font-semibold text-white">{n.subject}</p>
+                  <p className="font-semibold text-[var(--ink)]">{n.subject}</p>
                   <p className="mt-1 whitespace-pre-wrap text-sm text-[var(--muted)]">
                     {n.body}
                   </p>
-                  <p className="mt-2 text-xs text-white/40">
+                  <p className="mt-2 text-xs text-[var(--muted)]">
                     {new Date(n.createdAt).toLocaleString()}
                   </p>
                 </li>
