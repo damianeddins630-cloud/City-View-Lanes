@@ -48,8 +48,8 @@ export function defaultSiteContent(): SiteContent {
           alt: "CityView Lanes branded pin deck on lanes 59 and 60",
         },
         {
-          src: "/images/yelp-interior-fresh.jpg",
-          alt: "Youth bowler using a lane ramp at CityView Lanes",
+          src: "/images/yelp-lanes-dragon.jpg",
+          alt: "Youth bowling with CityView Lanes branding on the lanes",
         },
       ],
       reviewsKicker: "Loved locally",
@@ -60,7 +60,7 @@ export function defaultSiteContent(): SiteContent {
         role: r.role,
       })),
       visitKicker: "Come visit",
-      visitImage: "/images/yelp-party.jpg",
+      visitImage: "/images/yelp-lanes-extra.jpg",
       visitHoursNote: "Open daily 12:00 PM – 12:00 AM",
       visitParkingNote: "Free parking on-site",
       lanesAvailable: true,
@@ -207,8 +207,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
                   "/images/yelp-interior-1.jpg",
                   "/images/yelp-interior-2.jpg",
                   "/images/yelp-interior-fresh.jpg",
-                  "/images/yelp-lanes-dragon.jpg",
+                  "/images/yelp-party.jpg",
                   "/images/cityview-interior.webp",
+                  "/images/cityview-official-hero.webp",
                 ],
               ),
               alt: mergeString(
@@ -230,8 +231,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       visitKicker: mergeString(homeIn.visitKicker, d.home.visitKicker),
       visitImage: refreshBundledPhoto(homeIn.visitImage, d.home.visitImage, [
         "/images/cityview-lanes.webp",
-        "/images/yelp-lanes-extra.jpg",
+        "/images/yelp-party.jpg",
         "/images/yelp-center.jpg",
+        "/images/cityview-interior.webp",
       ]),
       visitHoursNote: mergeString(homeIn.visitHoursNote, d.home.visitHoursNote),
       visitParkingNote: mergeString(
