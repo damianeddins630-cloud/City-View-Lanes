@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 type PageBannerProps = {
   kicker: string;
   title: string;
@@ -15,16 +13,18 @@ export default function PageBanner({
   image = "/images/cityview-lanes.webp",
   imageAlt = "CityView Lanes Fort Worth",
 }: PageBannerProps) {
+  const isGif = /\.gif($|\?)/i.test(image);
+
   return (
     <section className="page-banner relative isolate overflow-hidden">
       <div className="absolute inset-0">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={image}
           alt={imageAlt}
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
+          decoding="async"
+          {...(isGif ? {} : { loading: "eager" as const })}
         />
       </div>
       <div className="page-banner-veil absolute inset-0" />
