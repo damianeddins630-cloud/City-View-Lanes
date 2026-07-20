@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import SiteImage from "@/components/SiteImage";
 import { useEditMode } from "@/components/EditModeProvider";
 
+/** Stored value meaning “intentionally cleared” (public view uses fallback). */
+export const CLEARED_IMAGE = "__cleared__";
+
 type Props = {
   path?: string;
   src: string;
@@ -20,6 +23,11 @@ type Props = {
   canDelete?: boolean;
   deleteFallback?: string;
 };
+
+function displaySrc(src: string, fallback: string) {
+  if (!src || src === CLEARED_IMAGE) return fallback;
+  return src;
+}
 
 export default function EditableImage({
   path,
@@ -43,6 +51,8 @@ export default function EditableImage({
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const live = Boolean(editMode && path);
+  const cleared = currentSrc === CLEARED_IMAGE || currentSrc === "";
+  const shown = displaySrc(currentSrc, deleteFallback);
 
   if (src !== baseline) {
     setBaseline(src);
@@ -55,7 +65,7 @@ export default function EditableImage({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: targetPath, value }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || "Could not save photo");
     return data;
   }
@@ -68,13 +78,18 @@ export default function EditableImage({
       const form = new FormData();
       form.append("file", file);
       const up = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const upData = await up.json();
+      const upData = await up.json().catch(() => ({}));
       if (!up.ok) {
         setStatus(upData.error || "Upload failed");
         setBusy(false);
         return;
       }
       const url = String(upData.url || "");
+      if (!url) {
+        setStatus("Upload failed — no URL returned");
+        setBusy(false);
+        return;
+      }
       await patchValue(path, url);
       setCurrentSrc(url);
       setBaseline(url);
@@ -89,14 +104,17 @@ export default function EditableImage({
 
   async function removePhoto() {
     if (!path || !canDelete) return;
-    if (!window.confirm("Remove this photo and restore the default image?")) return;
+    const ok = window.confirm(
+      "Remove this photo? You can upload a new one anytime with Replace.",
+    );
+    if (!ok) return;
     setBusy(true);
     setStatus("Removing photo…");
     try {
-      await patchValue(path, deleteFallback);
-      setCurrentSrc(deleteFallback);
-      setBaseline(deleteFallback);
-      setStatus("Photo removed.");
+      await patchValue(path, CLEARED_IMAGE);
+      setCurrentSrc(CLEARED_IMAGE);
+      setBaseline(CLEARED_IMAGE);
+      setStatus("Photo removed. Use Replace to add a new one.");
       router.refresh();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Could not remove photo");
@@ -110,10 +128,12 @@ export default function EditableImage({
     setBusy(true);
     setStatus("Reordering…");
     try {
-      await patchValue(path, siblingSrc);
-      await patchValue(siblingPath, currentSrc);
-      setCurrentSrc(siblingSrc);
-      setBaseline(siblingSrc);
+      const mine = currentSrc || CLEARED_IMAGE;
+      const theirs = siblingSrc || CLEARED_IMAGE;
+      await patchValue(path, theirs);
+      await patchValue(siblingPath, mine);
+      setCurrentSrc(theirs);
+      setBaseline(theirs);
       setStatus("Photos reordered.");
       router.refresh();
     } catch (err) {
@@ -135,16 +155,20 @@ export default function EditableImage({
         live ? "is-editable" : ""
       }`}
     >
-      <SiteImage
-        src={currentSrc}
-        alt={alt}
-        fill={fill}
-        priority={priority}
-        className={className}
-        sizes={sizes}
-        width={width}
-        height={height}
-      />
+      {cleared && live ? (
+        <span className="site-editable-image-empty">Photo removed</span>
+      ) : (
+        <SiteImage
+          src={shown}
+          alt={alt}
+          fill={fill}
+          priority={priority}
+          className={className}
+          sizes={sizes}
+          width={width}
+          height={height}
+        />
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -168,7 +192,7 @@ export default function EditableImage({
               openPicker();
             }}
           >
-            {busy ? "…" : "Replace"}
+            {busy ? "…" : cleared ? "Upload" : "Replace"}
           </button>
           {siblingPath && siblingSrc != null ? (
             <button
@@ -184,7 +208,7 @@ export default function EditableImage({
               Swap
             </button>
           ) : null}
-          {canDelete ? (
+          {canDelete && !cleared ? (
             <button
               type="button"
               className="site-editable-image-btn is-danger"

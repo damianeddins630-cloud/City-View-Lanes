@@ -17,11 +17,19 @@ const ADMIN_CAPABILITY_SET = new Set<string>(ASSIGNABLE_PERMISSION_IDS);
 
 export type EditablePage = "home" | "leagues" | "hours";
 
-/** Admin dashboard access — not granted by page-edit-only permissions. */
+/** Admin dashboard access — Owner always; others need dashboard capabilities. */
 export function canAccessAdminPanel(
-  user: Pick<PublicUser, "permissions"> | null | undefined,
+  user: Pick<PublicUser, "permissions" | "roleId" | "roleName"> | null | undefined,
 ): boolean {
-  if (!user?.permissions?.length) return false;
+  if (!user) return false;
+  if (
+    user.roleId === "role_master_admin" ||
+    user.roleName === "Website Owner" ||
+    user.roleName === "Master Admin"
+  ) {
+    return true;
+  }
+  if (!user.permissions?.length) return false;
   return user.permissions.some((p) => ADMIN_PANEL_PERMISSIONS.has(p as Permission));
 }
 
