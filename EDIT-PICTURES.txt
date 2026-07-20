@@ -1,46 +1,36 @@
-EDIT HOMEPAGE PICTURES & DESCRIPTIONS (no code)
-==============================================
+EDIT HOMEPAGE / PAGE CONTENT (authorized editors)
+================================================
 
-1) Log in as Website Owner
+1) Log in as Website Owner (or a role with edit permissions)
    username: cityview_damian
    password: Archer6!9_20
 
-2) Go to Admin
+2) Open the page you want to change:
+   - Home → needs “Edit homepage” (or “Edit all website pages”)
+   - Leagues → needs “Edit leagues / youth page” (or “Edit all…”)
+   - Hours → needs “Edit hours on the Hours page”
 
-3) Open the tab: Pictures & Text
+3) Click the floating Edit button (bottom-right).
+   Only people with permission see this button.
 
-4) For any photo slot:
-   - Click "Upload new photo" (JPG / PNG / WEBP)
-   - Or paste an image URL
-   - Edit the description / headline text next to it
+4) While Edit is on:
+   - Click any outlined text to change it
+   - Use Replace / Remove / Swap on photos
+   - On Hours, edit open/close times and Save hours
 
-5) Scroll to the bottom → click "Save all changes"
+5) Click Done editing when finished.
 
-6) Open Home (or Leagues → Youth) and refresh the page
-   (Ctrl+Shift+R / Cmd+Shift+R)
+Admin dashboard
+---------------
+Applications (dropdown): Party / League / Employment
+(only categories you have permission for)
 
-What you can edit
------------------
-- Homepage hero picture + titles + description
-- Lane availability (Yes / No) + pricing (N/A for now)
-- Why CityView feature titles/descriptions
-- Academy picture + text + stats
-- Gallery photos (3)
-- Reviews
-- Visit band picture + notes
-- Youth league photos, description, and player states
+Pictures & Text and Hours were removed from Admin —
+edit those on the live pages instead.
 
-Needs Blob connected (same as Profile/Hours saves)
-so photos and text stick after refresh.
-
-Newest lane photos included
-----------------------------
-Defaults use real CityView Lanes photos that match the
-current center look (branded pin deck, modern lane screens,
-youth bowling with CityView wall art). Prefer fresh guest
-or staff photos from 2024–2026 when you replace them in
-Admin → Pictures & Text. No AI-generated pictures.
-
-Non-photo chrome (page backgrounds, tabs, panels, bands,
-header, footer) uses a cool ice-cyan look — edit colors
-in src/app/globals.css if you want them cooler/darker.
+Photos
+------
+Use real City View Lanes photos from 2025–2026.
+No AI-generated images. Keep files under ~4.5 MB
+(JPG / PNG / WEBP). Blob storage must be connected
+so uploads and text saves stick after refresh.

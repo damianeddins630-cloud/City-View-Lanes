@@ -275,6 +275,21 @@ export default async function HomePage() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 40vw"
+                siblingPath={
+                  index < h.galleryImages.length - 1
+                    ? `home.galleryImages.${index + 1}.src`
+                    : index > 0
+                      ? `home.galleryImages.${index - 1}.src`
+                      : undefined
+                }
+                siblingSrc={
+                  index < h.galleryImages.length - 1
+                    ? h.galleryImages[index + 1]?.src
+                    : index > 0
+                      ? h.galleryImages[index - 1]?.src
+                      : undefined
+                }
+                deleteFallback="/images/cityview-lanes.webp"
               />
             </div>
           ))}
