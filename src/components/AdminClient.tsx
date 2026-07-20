@@ -821,8 +821,8 @@ export default function AdminClient() {
       <div className="tab-rail mt-5">
         {visibleTabs.length === 0 ? (
           <p className="px-2 py-1 text-sm text-[var(--muted)]">
-            Your role has no admin tools assigned yet. Ask the Website Owner to
-            add permissions.
+            No admin dashboard tools on this role. Page editing (if granted)
+            uses the Edit button on Home, Leagues, or Hours — not this panel.
           </p>
         ) : null}
         {visibleTabs.map((t) => (
