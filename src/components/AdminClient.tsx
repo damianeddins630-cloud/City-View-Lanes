@@ -119,7 +119,7 @@ function DetailRow({
 }) {
   if (value === undefined || value === null || value === "") return null;
   return (
-    <div className="border-b border-[var(--line)] py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
+    <div className="py-2 sm:grid sm:grid-cols-[160px_1fr] sm:gap-3">
       <p className="text-xs font-semibold tracking-wide text-[var(--blue)] uppercase">
         {label}
       </p>
@@ -654,7 +654,7 @@ export default function AdminClient() {
   return (
     <div className="mt-8">
       <div
-        className={`mb-4 border px-4 py-3 text-sm ${
+        className={`mb-4 px-4 py-3 text-sm ${
           storage.durable
             ? "ice-success"
             : "ice-warn"
@@ -739,7 +739,7 @@ export default function AdminClient() {
       <div className="panel overflow-hidden">
         <div className="silver-bar" />
         <div className="grid gap-6 p-5 md:grid-cols-[120px_1fr_auto] md:items-center">
-          <div className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)] md:mx-0">
+          <div className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden bg-[var(--blue-soft)] md:mx-0">
             {user.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -862,14 +862,14 @@ export default function AdminClient() {
                 {users.map((u) => (
                   <tr
                     key={u.id}
-                    className={`cursor-pointer border-t border-[var(--line)] hover:bg-[var(--blue-soft)]/60 ${
+                    className={`cursor-pointer hover:bg-[var(--blue-soft)]/60 ${
                       selectedUser?.id === u.id ? "bg-[var(--blue-soft)]" : ""
                     }`}
                     onClick={() => setSelectedUser(u)}
                   >
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)] text-xs font-bold text-[var(--blue)]">
+                        <div className="flex h-9 w-9 items-center justify-center overflow-hidden bg-[var(--blue-soft)] text-xs font-bold text-[var(--blue)]">
                           {u.avatarUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={u.avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -893,7 +893,7 @@ export default function AdminClient() {
                         disabled={(u.roleRank ?? 999) <= (user?.roleRank ?? 999)}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => assignRole(u.id, e.target.value)}
-                        className="border border-[var(--line)] px-2 py-1 disabled:opacity-60"
+                        className="bg-[var(--blue-soft)]/40 px-2 py-1 disabled:opacity-60"
                       >
                         {roles
                           .filter((r) => r.rank > (user?.roleRank ?? 999))
@@ -925,7 +925,7 @@ export default function AdminClient() {
               {selectedUser ? (
                 <div className="mt-4 space-y-4 text-sm">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]">
+                    <div className="flex h-16 w-16 items-center justify-center overflow-hidden bg-[var(--blue-soft)]">
                       {selectedUser.avatarUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -989,7 +989,7 @@ export default function AdminClient() {
                         {selectedUser.bookings.map((b) => (
                           <li
                             key={b.id}
-                            className="border border-[var(--line)] bg-[var(--blue-soft)]/40 px-3 py-2"
+                            className="bg-[var(--blue-soft)]/40 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {b.eventType} · {b.status}
@@ -1018,7 +1018,7 @@ export default function AdminClient() {
                         {selectedUser.leagueSignups.map((s) => (
                           <li
                             key={s.id}
-                            className="border border-[var(--line)] bg-[var(--blue-soft)]/40 px-3 py-2"
+                            className="bg-[var(--blue-soft)]/40 px-3 py-2"
                           >
                             <p className="font-semibold">
                               {s.leagueName || s.leagueId} · {s.status}
@@ -1184,7 +1184,7 @@ export default function AdminClient() {
       {activeTab === "chat" && can("admin_chat") ? (
         <div className="mt-6 panel p-5">
           <h2 className="font-display text-2xl text-[var(--ink)]">Admin chat</h2>
-          <div className="mt-4 max-h-[420px] space-y-3 overflow-y-auto border border-[var(--line)] bg-[var(--bg)] p-4">
+          <div className="mt-4 max-h-[420px] space-y-3 overflow-y-auto bg-[var(--bg)]/70 p-4">
             {messages.length === 0 ? (
               <p className="text-sm text-[var(--muted)]">No messages yet.</p>
             ) : (
@@ -1201,7 +1201,7 @@ export default function AdminClient() {
           </div>
           <form onSubmit={sendChat} className="mt-4 flex gap-2">
             <input
-              className="min-h-11 flex-1 border border-[var(--line)] px-3"
+              className="min-h-11 flex-1 bg-[rgba(232,248,255,0.72)] px-3"
               value={chatBody}
               onChange={(e) => setChatBody(e.target.value)}
               placeholder="Message all admins…"
@@ -1254,7 +1254,7 @@ export default function AdminClient() {
                       </tr>
                     ) : (
                       bookings.map((b) => (
-                        <tr key={b.id} className="border-t border-[var(--line)]">
+                        <tr key={b.id} className="">
                           <td className="px-3 py-3">
                             <p className="font-semibold">
                               {b.firstName} {b.lastName}
@@ -1339,7 +1339,7 @@ export default function AdminClient() {
                       </tr>
                     ) : (
                       signups.map((s) => (
-                        <tr key={s.id} className="border-t border-[var(--line)]">
+                        <tr key={s.id} className="">
                           <td className="px-3 py-3">
                             <p className="font-semibold">{s.memberName || s.username}</p>
                             <p className="text-xs text-[var(--muted)]">
@@ -1443,7 +1443,7 @@ export default function AdminClient() {
                   </tr>
                 ) : (
                   employmentApps.map((a) => (
-                    <tr key={a.id} className="border-t border-[var(--line)]">
+                    <tr key={a.id} className="">
                       <td className="px-3 py-3">
                         <p className="font-semibold">
                           {a.firstName} {a.middleName ? `${a.middleName} ` : ""}
@@ -1545,7 +1545,7 @@ export default function AdminClient() {
             </thead>
             <tbody>
               {admins.map((a) => (
-                <tr key={a.id} className="border-t border-[var(--line)]">
+                <tr key={a.id} className="">
                   <td className="px-3 py-3 font-semibold text-[var(--ink)]">
                     {a.roleName}
                   </td>
@@ -1845,7 +1845,7 @@ export default function AdminClient() {
               </div>
             ) : null}
 
-            <div className="mt-5 flex flex-wrap gap-2 border-t border-[var(--line)] pt-4">
+            <div className="mt-5 flex flex-wrap gap-2 pt-4">
               {detail.data.status === "pending" ? (
                 <>
                   <button

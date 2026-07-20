@@ -90,7 +90,7 @@ export default async function LeaguesPage() {
         </div>
       </section>
 
-      <div className="marquee-wrap border-y border-[var(--line)]">
+      <div className="marquee-wrap">
         <div className="marquee-track">
           {[
             "Adult",

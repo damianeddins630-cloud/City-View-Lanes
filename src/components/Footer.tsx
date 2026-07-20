@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="border-t border-white/20 py-4 text-center text-xs tracking-wide text-white/70">
+      <div className="py-4 text-center text-xs tracking-wide text-white/70">
         © {new Date().getFullYear()} {SITE.name}. Fort Worth, TX.
       </div>
     </footer>

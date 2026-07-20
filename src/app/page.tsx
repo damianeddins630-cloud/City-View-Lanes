@@ -60,7 +60,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <div className="marquee-wrap border-y border-[var(--line)]">
+      <div className="marquee-wrap">
         <div className="marquee-track">
           {marquee.map((item, i) => (
             <span key={`${item}-${i}`} className="marquee-item">
@@ -172,7 +172,7 @@ export default async function HomePage() {
         <SpotlightCards cards={h.whyCards} />
       </section>
 
-      <section className="relative overflow-hidden border-y border-[var(--line)] academy-band">
+      <section className="relative overflow-hidden academy-band">
         <div className="section grid items-center gap-10 md:grid-cols-2">
           <div>
             <EditableText

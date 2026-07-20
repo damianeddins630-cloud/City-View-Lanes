@@ -168,7 +168,7 @@ export default function ProfileClient() {
   return (
     <div className="mt-8 grid gap-8 lg:grid-cols-[220px_1fr]">
       <aside className="panel p-5">
-        <div className="mx-auto flex h-36 w-36 items-center justify-center overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]">
+        <div className="mx-auto flex h-36 w-36 items-center justify-center overflow-hidden bg-[var(--blue-soft)]">
           {form.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -229,7 +229,7 @@ export default function ProfileClient() {
               {applications.map((app) => (
                 <li
                   key={`${app.kind}-${app.id}`}
-                  className="border border-[var(--line)] bg-[var(--blue-soft)] px-4 py-3"
+                  className="bg-[var(--blue-soft)] px-4 py-3"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
@@ -299,10 +299,10 @@ export default function ProfileClient() {
               {notifications.map((n) => (
                 <li
                   key={n.id}
-                  className={`border px-4 py-3 ${
+                  className={`px-4 py-3 ${
                     n.read
-                      ? "border-[var(--line)] bg-[var(--blue-soft)]/60"
-                      : "border-[var(--blue)]/40 bg-[var(--blue-soft)]"
+                      ? "bg-[var(--blue-soft)]/60"
+                      : "bg-[var(--blue-soft)]"
                   }`}
                 >
                   <p className="font-semibold text-[var(--ink)]">{n.subject}</p>

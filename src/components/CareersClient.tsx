@@ -418,7 +418,7 @@ export default function CareersClient() {
           Name and Location | Graduate? / Degree? | Major / Subjects of study
         </p>
         {eduRows.map((row) => (
-          <div key={row.key} className="grid gap-3 border border-[var(--line)] p-4">
+          <div key={row.key} className="grid gap-3 bg-[rgba(232,248,255,0.35)] p-4">
             <p className="text-sm font-semibold text-[var(--ink)]">{row.label} *</p>
             <div className="grid gap-3 md:grid-cols-3">
               <div className="field">
@@ -487,7 +487,7 @@ export default function CareersClient() {
           </p>
         </div>
         {form.experience.map((job, index) => (
-          <div key={index} className="grid gap-3 border border-[var(--line)] p-4">
+          <div key={index} className="grid gap-3 bg-[rgba(232,248,255,0.35)] p-4">
             <p className="text-sm font-semibold text-[var(--ink)]">
               Job {index + 1}
             </p>

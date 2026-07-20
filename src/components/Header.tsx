@@ -79,7 +79,7 @@ export default function Header() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center border border-white/30 bg-white/10 text-white lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center bg-white/10 text-white lg:hidden"
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
@@ -92,7 +92,7 @@ export default function Header() {
       </div>
 
       {open ? (
-        <div className="site-header-mobile border-t border-white/20 px-4 py-4 lg:hidden">
+        <div className="site-header-mobile px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-3">
             {NAV.map((link) => (
               <Link

@@ -81,7 +81,7 @@ function PhotoSlot({
       <p className="text-xs font-bold tracking-wide text-[var(--blue)] uppercase">
         {label}
       </p>
-      <div className="relative h-36 overflow-hidden border border-[var(--line)] bg-[var(--blue-soft)]">
+      <div className="relative h-36 overflow-hidden bg-[var(--blue-soft)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt || label} className="h-full w-full object-cover" />
       </div>
@@ -554,7 +554,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
         </div>
       </section>
 
-      <section className="space-y-4 border-t border-[var(--line)] pt-8">
+      <section className="space-y-4 pt-8">
         <h3 className="font-display text-3xl text-[var(--ink)]">Leagues — Youth section</h3>
         <div className="grid gap-4 lg:grid-cols-2">
           <PhotoSlot
@@ -663,7 +663,7 @@ export default function AdminContentEditor({ onNotice, onError }: Props) {
         </div>
       </section>
 
-      <div className="sticky bottom-3 z-20 flex flex-wrap gap-3 border border-[var(--line)] bg-[var(--black)]/95 p-4 shadow-2xl backdrop-blur">
+      <div className="sticky bottom-3 z-20 flex flex-wrap gap-3 bg-[var(--black)]/95 p-4 shadow-2xl backdrop-blur">
         <button type="submit" className="btn btn-primary" disabled={saving}>
           {saving ? "Saving…" : "Save all changes"}
         </button>

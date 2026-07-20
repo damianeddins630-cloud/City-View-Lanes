@@ -97,7 +97,7 @@ export default function ProShopPage() {
             drilling appointments, and on-site questions at the Fort Worth
             location.
           </p>
-          <div className="mt-5 max-w-xs border border-[rgba(201,162,39,0.3)] p-3 text-sm">
+          <div className="mt-5 max-w-xs p-3 text-sm">
             <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
               Role
             </p>
@@ -151,7 +151,7 @@ export default function ProShopPage() {
             <li>PBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden border border-[rgba(201,162,39,0.45)] bg-black/40">
+          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden bg-black/40">
             <Image
               src={SITE.delBallardPhoto}
               alt="Del Ballard Jr."
@@ -182,7 +182,7 @@ export default function ProShopPage() {
             <li>PWBA Hall of Fame</li>
             <li>USBC Hall of Fame</li>
           </ul>
-          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden border border-[rgba(201,162,39,0.45)] bg-black/40">
+          <div className="hof-legend-photo relative mt-6 aspect-[4/3] overflow-hidden bg-black/40">
             <Image
               src={SITE.carolynDorinBallardPhoto}
               alt="Carolyn Dorin-Ballard"
@@ -194,7 +194,7 @@ export default function ProShopPage() {
         </article>
       </section>
 
-      <section className="border-t border-[rgba(201,162,39,0.25)]">
+      <section>
         <div className="mx-auto flex w-[min(1140px,calc(100%-1.5rem))] flex-col gap-5 py-12 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="font-display text-3xl text-white">
@@ -226,7 +226,7 @@ export default function ProShopPage() {
             <a href={`tel:${SITE.phoneTel}`} className="btn btn-red">
               Call to schedule
             </a>
-            <Link href="/book" className="btn btn-ghost text-white border-white/40">
+            <Link href="/book" className="btn btn-ghost text-white">
               Book an event
             </Link>
           </div>
