@@ -110,7 +110,7 @@ export default function HoursClient({
 
   return (
     <>
-      <div className="panel mt-10 divide-y divide-[var(--line)] overflow-hidden">
+      <div className="panel mt-10 overflow-hidden">
         {loading ? (
           <p className="px-5 py-8 text-sm text-[var(--muted)]">Loading hours…</p>
         ) : (
