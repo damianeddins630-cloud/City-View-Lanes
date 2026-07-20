@@ -2,35 +2,21 @@ type PageBannerProps = {
   kicker: string;
   title: string;
   subtitle?: string;
+  /** @deprecated Photos only on Home / Pro Shop — ignored */
   image?: string;
+  /** @deprecated ignored */
   imageAlt?: string;
 };
 
+/** Text-only page header. No background photos (those stay on Home + Pro Shop). */
 export default function PageBanner({
   kicker,
   title,
   subtitle,
-  image = "/images/cityview-lanes.webp",
-  imageAlt = "CityView Lanes Fort Worth",
 }: PageBannerProps) {
-  const isGif = /\.gif($|\?)/i.test(image);
-
   return (
-    <section className="page-banner relative isolate overflow-hidden">
-      <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={image}
-          alt={imageAlt}
-          className="absolute inset-0 h-full w-full object-cover"
-          decoding="async"
-          {...(isGif ? {} : { loading: "eager" as const })}
-        />
-      </div>
-      <div className="page-banner-veil absolute inset-0" />
-      <div className="hero-lane-glow pointer-events-none absolute inset-0 opacity-60" />
-      <div className="relative z-10 mx-auto w-[min(1160px,calc(100%-1.5rem))] py-16 sm:py-20">
-        <div className="silver-bar mb-5 max-w-[140px]" />
+    <section className="page-banner page-banner-text relative isolate overflow-hidden">
+      <div className="relative z-10 mx-auto w-[min(1160px,calc(100%-1.5rem))] py-14 sm:py-16">
         <p className="section-kicker text-[var(--ice-accent)]">{kicker}</p>
         <h1 className="font-display mt-3 max-w-3xl text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[0.95] tracking-[0.04em] text-white uppercase">
           {title}

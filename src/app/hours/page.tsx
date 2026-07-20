@@ -19,8 +19,6 @@ export default async function HoursPage() {
         kicker="CityView Lanes"
         title="Hours of operation"
         subtitle="Open every day. Walk-ins welcome — reservations recommended for parties of 8+."
-        image="/images/cityview-pins-official.jpg"
-        imageAlt="Bowling pins at CityView Lanes"
       />
       <div className="section pt-10 pb-20">
         <HoursClient initialHours={store.hours} />

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import EditableImage from "@/components/EditableImage";
 import EditableText from "@/components/EditableText";
 import LeaguesClient from "@/components/LeaguesClient";
 import { resolveEditValue } from "@/lib/contentPath";
@@ -24,23 +23,8 @@ export default async function LeaguesPage() {
 
   return (
     <>
-      <section className="league-hero relative isolate overflow-hidden text-[var(--ink)]">
-        <div className="absolute inset-0">
-          <EditableImage
-            path="youth.heroImage"
-            src={youth.heroImage}
-            alt="Bowling lanes at CityView Lanes"
-            fill
-            priority
-            className="object-cover hero-pan"
-            sizes="100vw"
-          />
-        </div>
-        <div className="hero-veil absolute inset-0" />
-        <div className="hero-beam pointer-events-none absolute inset-0" />
-        <div className="lane-pulse pointer-events-none absolute inset-x-0 bottom-0 h-40" />
-
-        <div className="relative z-10 mx-auto flex min-h-[78svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-16 pt-24">
+      <section className="league-hero league-hero-text relative isolate overflow-hidden text-[var(--ink)]">
+        <div className="relative z-10 mx-auto flex min-h-[42svh] w-[min(1160px,calc(100%-1.5rem))] flex-col justify-end pb-14 pt-20">
           <p className="fade-up section-kicker text-[var(--ice-accent)]">
             CityView Lanes · {SITE.fallSeasonLabel}
           </p>
@@ -117,8 +101,8 @@ export default async function LeaguesPage() {
       </div>
 
       <section id="youth" className="youth-band relative overflow-hidden">
-        <div className="section grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="fade-up">
+        <div className="section">
+          <div className="fade-up max-w-3xl">
             <EditableText
               path="youth.kicker"
               value={youth.kicker}
@@ -177,39 +161,6 @@ export default async function LeaguesPage() {
                 <EditableText path="youth.phoneNote" value={youth.phoneNote} />
               </a>
             </div>
-          </div>
-
-          <div className="youth-photo-stack fade-up-delay">
-            {youth.photos.map((photo, index) => (
-              <div
-                key={`${photo.src}-${index}`}
-                className={`youth-photo youth-photo-${index + 1} relative overflow-hidden`}
-              >
-                <EditableImage
-                  path={`youth.photos.${index}.src`}
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 48vw"
-                  siblingPath={
-                    index < youth.photos.length - 1
-                      ? `youth.photos.${index + 1}.src`
-                      : index > 0
-                        ? `youth.photos.${index - 1}.src`
-                        : undefined
-                  }
-                  siblingSrc={
-                    index < youth.photos.length - 1
-                      ? youth.photos[index + 1]?.src
-                      : index > 0
-                        ? youth.photos[index - 1]?.src
-                        : undefined
-                  }
-                  deleteFallback="/images/yelp-lanes-dragon.jpg"
-                />
-              </div>
-            ))}
           </div>
         </div>
 
