@@ -8,17 +8,17 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <>
+    <div className="admin-theme">
       <PageBanner
         kicker="Master control"
         title="Admin panel"
         subtitle="Your admin profile, member records, bookings, leagues, roles, and hours — all in one place."
-        image="/images/cityview-lanes.webp"
-        imageAlt="CityView Lanes"
+        image="/images/bg-admin.gif"
+        imageAlt="Admin command background"
       />
       <div className="section pt-10 pb-20">
         <AdminClient />
       </div>
-    </>
+    </div>
   );
 }
