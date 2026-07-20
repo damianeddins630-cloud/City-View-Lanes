@@ -38,8 +38,7 @@ const services = [
 
 export default function ProShopPage() {
   return (
-    <div className="hof-theme min-h-full">
-      <div className="silver-bar" />
+    <div className="hof-theme hof-gold-chrome min-h-full">
       <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pt-16 pb-10">
         <p className="text-sm font-bold tracking-[0.2em] text-[var(--hof-gold)] uppercase">
           Hall of Fame Pro Shop
