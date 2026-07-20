@@ -654,7 +654,7 @@ export default function AdminClient() {
   return (
     <div className="mt-8">
       <div
-        className={`mb-4 border px-4 py-3 text-sm ${
+        className={`mb-4 px-4 py-3 text-sm ${
           storage.durable
             ? "ice-success"
             : "ice-warn"
