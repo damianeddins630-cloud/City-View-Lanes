@@ -193,6 +193,7 @@ a {
 }
 
 .page-banner-veil {
+  pointer-events: none;
   background:
     linear-gradient(
       180deg,
@@ -346,6 +347,7 @@ a {
 }
 
 .hero-veil {
+  pointer-events: none;
   background:
     linear-gradient(
       180deg,
@@ -497,6 +499,7 @@ a {
 }
 
 .hero-shine {
+  pointer-events: none;
   background: linear-gradient(
     105deg,
     transparent 28%,
@@ -513,6 +516,7 @@ a {
 }
 
 .lane-pulse {
+  pointer-events: none;
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -657,6 +661,7 @@ a {
 }
 
 .visit-veil {
+  pointer-events: none;
   background: linear-gradient(
     120deg,
     rgba(20, 70, 110, 0.9) 0%,
@@ -1474,7 +1479,7 @@ a {
   position: fixed;
   right: 1rem;
   bottom: 1rem;
-  z-index: 80;
+  z-index: 90;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -1539,11 +1544,20 @@ body.site-edit-mode [data-site-edit].is-editing {
   display: block;
 }
 
+.site-editable-image.is-editable {
+  z-index: 45;
+  pointer-events: auto;
+}
+
+.site-editable-image.is-fill.is-editable {
+  z-index: 45;
+}
+
 body.site-edit-mode .site-editable-image.is-editable::after {
   content: "";
   position: absolute;
   inset: 0;
-  outline: 2px dashed rgba(47, 111, 214, 0.7);
+  outline: 2px dashed rgba(62, 196, 255, 0.75);
   outline-offset: -4px;
   pointer-events: none;
   z-index: 2;
@@ -1553,24 +1567,40 @@ body.site-edit-mode .site-editable-image.is-editable::after {
   position: absolute;
   left: 0.75rem;
   bottom: 0.75rem;
-  z-index: 3;
+  z-index: 60;
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
   max-width: calc(100% - 1.5rem);
+  pointer-events: auto;
+}
+
+.site-editable-image-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 32, 55, 0.72);
+  color: #e8f7ff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 1;
 }
 
 .site-editable-image-btn {
   position: static;
   border: 1px solid rgba(40, 70, 120, 0.35);
-  background: rgba(232, 248, 255, 0.95);
+  background: rgba(232, 248, 255, 0.96);
   color: var(--ink);
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.4rem 0.65rem;
+  padding: 0.45rem 0.7rem;
   cursor: pointer;
+  box-shadow: 0 8px 20px rgba(8, 30, 55, 0.35);
 }
 
 .site-editable-image-btn:disabled {
@@ -1579,8 +1609,8 @@ body.site-edit-mode .site-editable-image.is-editable::after {
 }
 
 .site-editable-image-btn.is-danger {
-  background: rgba(255, 220, 225, 0.95);
-  border-color: rgba(180, 60, 80, 0.35);
+  background: rgba(255, 220, 225, 0.96);
+  border-color: rgba(180, 60, 80, 0.4);
   color: #8a2030;
 }
 

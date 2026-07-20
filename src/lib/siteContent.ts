@@ -117,6 +117,8 @@ function mergeString(current: unknown, fallback: string): string {
 /** Swap older bundled defaults for the newer lane photo pack. */
 function refreshBundledPhoto(current: unknown, next: string, previous: string[]): string {
   if (typeof current !== "string" || !current.trim()) return next;
+  // Intentional clear from on-page Remove — do not auto-restore.
+  if (current === "__cleared__") return current;
   if (previous.includes(current)) return next;
   return current;
 }

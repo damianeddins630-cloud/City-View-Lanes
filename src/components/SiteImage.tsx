@@ -28,7 +28,8 @@ export default function SiteImage({
   width,
   height,
 }: Props) {
-  const safeSrc = src || "/images/cityview-lanes.webp";
+  const safeSrc =
+    !src || src === "__cleared__" ? "/images/cityview-lanes.webp" : src;
   const classes = `img-smooth ${className || ""}`.trim();
 
   if (isRemote(safeSrc)) {
