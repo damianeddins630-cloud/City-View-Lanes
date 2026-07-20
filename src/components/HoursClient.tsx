@@ -80,7 +80,7 @@ export default function HoursClient({
         {rows.map((row, index) => (
           <div
             key={row.day}
-            className="grid gap-2 border-b border-[var(--line)] py-3 sm:grid-cols-[1fr_1fr_1fr] sm:items-end"
+            className="grid gap-2 py-3 sm:grid-cols-[1fr_1fr_1fr] sm:items-end"
           >
             <p className="font-display text-xl text-[var(--ink)]">{row.day}</p>
             <div className="field">
