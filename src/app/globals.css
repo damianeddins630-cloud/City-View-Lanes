@@ -1466,6 +1466,36 @@ a {
   .admin-theme {
     background-attachment: scroll, scroll;
   }
+
+  .fade-up,
+  .fade-up-delay,
+  .fade-up-delay-2,
+  .silver-bar,
+  .hero-shine,
+  .hero-pan,
+  .hero-gif-feel,
+  .hero-lane-glow,
+  .lane-neon-text,
+  .lane-pulse,
+  .pin-streak,
+  .btn-pulse,
+  .marquee-track,
+  .brand-title-accent,
+  .brand-star,
+  .hero-beam,
+  .neon-ring,
+  .feature-card,
+  .gallery-tile,
+  .quote-block,
+  body::before,
+  body::after {
+    animation: none;
+  }
+
+  .btn:hover,
+  .feature-card:hover {
+    transform: none;
+  }
 }
 
 .site-header {
