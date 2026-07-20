@@ -20,6 +20,8 @@ const OWNER_PERMISSIONS: Permission[] = [
   "manage_hours",
   "view_admins",
   "manage_employment",
+  "edit_page_home",
+  "edit_page_leagues",
   "manage_content",
 ];
 
@@ -86,8 +88,14 @@ export function ensureRoles(store: Store): Store {
       role.permissions = role.permissions.filter(
         (p) => !APPLICATION_PERMISSIONS.includes(p),
       );
-      if (!role.permissions.includes("manage_content")) {
-        role.permissions = [...role.permissions, "manage_content"];
+      // Keep page editing if they already had manage_content; ensure home+leagues.
+      if (role.permissions.includes("manage_content")) {
+        if (!role.permissions.includes("edit_page_home")) {
+          role.permissions = [...role.permissions, "edit_page_home"];
+        }
+        if (!role.permissions.includes("edit_page_leagues")) {
+          role.permissions = [...role.permissions, "edit_page_leagues"];
+        }
       }
       if (typeof role.rank !== "number" || role.rank < 1) role.rank = 10;
       role.description =

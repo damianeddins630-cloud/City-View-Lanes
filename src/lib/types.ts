@@ -10,6 +10,8 @@ export type Permission =
   | "view_admins"
   | "manage_employment"
   | "manage_content"
+  | "edit_page_home"
+  | "edit_page_leagues"
   /** Legacy — stripped from roles; not assignable. */
   | "edit_site";
 

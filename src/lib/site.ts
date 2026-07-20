@@ -133,12 +133,20 @@ export const ALL_PERMISSIONS = [
   { id: "manage_bookings", label: "Approve / deny party applications" },
   { id: "manage_league_signups", label: "Approve / deny league applications" },
   { id: "manage_leagues", label: "Add / edit / remove leagues" },
-  { id: "manage_hours", label: "Edit open hours" },
+  { id: "manage_hours", label: "Edit hours on the Hours page" },
   { id: "view_admins", label: "View admin list" },
   { id: "manage_employment", label: "Approve / deny employment applications" },
   {
+    id: "edit_page_home",
+    label: "Edit homepage (text & photos)",
+  },
+  {
+    id: "edit_page_leagues",
+    label: "Edit leagues / youth page (text & photos)",
+  },
+  {
     id: "manage_content",
-    label: "Edit homepage / youth photos & descriptions",
+    label: "Edit all website pages (home + leagues)",
   },
 ] as const;
 

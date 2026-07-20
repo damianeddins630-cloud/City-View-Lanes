@@ -1549,13 +1549,21 @@ body.site-edit-mode .site-editable-image.is-editable::after {
   z-index: 2;
 }
 
-.site-editable-image-btn {
+.site-editable-image-actions {
   position: absolute;
   left: 0.75rem;
   bottom: 0.75rem;
   z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-width: calc(100% - 1.5rem);
+}
+
+.site-editable-image-btn {
+  position: static;
   border: 1px solid rgba(40, 70, 120, 0.35);
-  background: rgba(232, 236, 242, 0.95);
+  background: rgba(232, 248, 255, 0.95);
   color: var(--ink);
   font-size: 0.65rem;
   font-weight: 800;
@@ -1563,4 +1571,26 @@ body.site-edit-mode .site-editable-image.is-editable::after {
   text-transform: uppercase;
   padding: 0.4rem 0.65rem;
   cursor: pointer;
+}
+
+.site-editable-image-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.site-editable-image-btn.is-danger {
+  background: rgba(255, 220, 225, 0.95);
+  border-color: rgba(180, 60, 80, 0.35);
+  color: #8a2030;
+}
+
+.site-editable-text.is-editable {
+  outline: 2px dashed rgba(62, 196, 255, 0.45);
+  outline-offset: 3px;
+  cursor: text;
+}
+
+.site-editable-text.is-editing {
+  outline-color: rgba(62, 196, 255, 0.95);
+  background: rgba(232, 248, 255, 0.35);
 }

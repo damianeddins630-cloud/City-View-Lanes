@@ -1,11 +1,9 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import AdminContentEditor from "@/components/AdminContentEditor";
 import { canAccessAdminPanel } from "@/lib/permissions";
 import { ALL_PERMISSIONS } from "@/lib/site";
 import type {
-  DayHours,
   EmploymentApplication,
   League,
   Permission,
@@ -17,12 +15,11 @@ type Tab =
   | "users"
   | "roles"
   | "chat"
-  | "bookings"
-  | "employment"
+  | "applications"
   | "admins"
-  | "leagues"
-  | "hours"
-  | "content";
+  | "leagues";
+
+type AppSection = "party" | "league" | "employment";
 
 type AdminUser = PublicUser & {
   bookingCount: number;
@@ -100,16 +97,13 @@ type ChatRow = {
   roleName: string;
 };
 
-const TABS: { id: Tab; label: string; permission?: Permission }[] = [
+const TABS: { id: Tab; label: string; permission?: Permission | "applications" }[] = [
   { id: "users", label: "Users", permission: "manage_users" },
   { id: "roles", label: "Role Manager", permission: "manage_roles" },
-  { id: "content", label: "Pictures & Text", permission: "manage_content" },
   { id: "chat", label: "Admin Chat", permission: "admin_chat" },
-  { id: "bookings", label: "Party & League Apps", permission: "manage_bookings" },
-  { id: "employment", label: "Employment", permission: "manage_employment" },
+  { id: "applications", label: "Applications", permission: "applications" },
   { id: "admins", label: "Admins", permission: "view_admins" },
   { id: "leagues", label: "League Manager", permission: "manage_leagues" },
-  { id: "hours", label: "Hours", permission: "manage_hours" },
 ];
 
 function isWebsiteOwnerRole(role: Role) {
@@ -175,7 +169,6 @@ export default function AdminClient() {
   >([]);
   const [messages, setMessages] = useState<ChatRow[]>([]);
   const [leagues, setLeagues] = useState<League[]>([]);
-  const [hours, setHours] = useState<DayHours[]>([]);
   const [chatBody, setChatBody] = useState("");
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [detail, setDetail] = useState<
@@ -190,6 +183,8 @@ export default function AdminClient() {
       }
     | null
   >(null);
+
+  const [appSection, setAppSection] = useState<AppSection>("party");
 
   const [roleForm, setRoleForm] = useState({
     name: "",
@@ -213,21 +208,26 @@ export default function AdminClient() {
     [user],
   );
 
-  const visibleTabs = useMemo(() => {
-    return TABS.filter(
-      (t) =>
-        !t.permission ||
-        can(t.permission) ||
-        (t.id === "bookings" && can("manage_league_signups")),
-    ).map((t) => {
-      if (t.id !== "bookings") return t;
-      const party = can("manage_bookings");
-      const league = can("manage_league_signups");
-      if (party && !league) return { ...t, label: "Party Apps" };
-      if (!party && league) return { ...t, label: "League Apps" };
-      return t;
-    });
+  const appSections = useMemo(() => {
+    const sections: { id: AppSection; label: string }[] = [];
+    if (can("manage_bookings")) sections.push({ id: "party", label: "Party Applications" });
+    if (can("manage_league_signups")) sections.push({ id: "league", label: "League Applications" });
+    if (can("manage_employment")) sections.push({ id: "employment", label: "Employment Applications" });
+    return sections;
   }, [can]);
+
+  const visibleTabs = useMemo(() => {
+    return TABS.filter((t) => {
+      if (t.permission === "applications") return appSections.length > 0;
+      if (!t.permission) return true;
+      return can(t.permission as Permission);
+    });
+  }, [can, appSections]);
+
+  const activeAppSection: AppSection =
+    appSections.some((s) => s.id === appSection)
+      ? appSection
+      : appSections[0]?.id || "party";
 
   const loadAll = useCallback(async () => {
     const meRes = await fetch("/api/auth/me");
@@ -319,14 +319,6 @@ export default function AdminClient() {
           .then((d) => setLeagues(d.leagues || [])),
       );
     }
-    if (me.user.permissions.includes("manage_hours")) {
-      tasks.push(
-        fetch("/api/hours")
-          .then((r) => r.json())
-          .then((d) => setHours(d.hours || [])),
-      );
-    }
-
     await Promise.all(tasks);
   }, []);
 
@@ -589,41 +581,6 @@ export default function AdminClient() {
     setNotice(`Removed “${name}”.`);
   }
 
-  async function saveHours(e: FormEvent) {
-    e.preventDefault();
-    setError("");
-    setNotice("");
-    const res = await fetch("/api/hours", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hours }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error || data.help || "Could not save hours");
-      setStorage((s) => ({
-        ...s,
-        durable: false,
-        persistence: data.persistence || s.persistence,
-        blobLastError:
-          typeof data.blobError === "string" ? data.blobError : s.blobLastError,
-      }));
-      return;
-    }
-    setHours(data.hours);
-    setStorage((s) => ({
-      ...s,
-      durable: Boolean(data.durable),
-      persistence: data.persistence || "unknown",
-    }));
-    if (data.durable) {
-      setNotice("Hours saved. Open /hours to confirm — they will stay.");
-    } else {
-      setError(
-        "Hours did NOT save permanently. In Vercel go to Storage → Blob → Connect to this project, then Redeploy.",
-      );
-    }
-  }
 
   async function runStorageTest() {
     setStorageTest({ running: true, message: "Testing Blob save…" });
@@ -1257,9 +1214,24 @@ export default function AdminClient() {
         </div>
       ) : null}
 
-      {activeTab === "bookings" ? (
-        <div className="mt-6 space-y-8">
-          {can("manage_bookings") ? (
+      {activeTab === "applications" ? (
+        <div className="mt-6 space-y-6">
+          <div className="tab-rail">
+            {appSections.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className={`admin-tab px-3.5 py-2.5 text-xs font-bold tracking-wide uppercase ${
+                  activeAppSection === s.id ? "admin-tab-active" : ""
+                }`}
+                onClick={() => setAppSection(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          {activeAppSection === "party" && can("manage_bookings") ? (
             <div>
               <h2 className="font-display text-2xl text-[var(--ink)]">Party applications</h2>
               <div className="ice-table-wrap mt-3">
@@ -1343,7 +1315,7 @@ export default function AdminClient() {
             </div>
           ) : null}
 
-          {can("manage_league_signups") ? (
+          {activeAppSection === "league" && can("manage_league_signups") ? (
             <div>
               <h2 className="font-display text-2xl text-[var(--ink)]">
                 League applications
@@ -1441,14 +1413,12 @@ export default function AdminClient() {
               </div>
             </div>
           ) : null}
-        </div>
-      ) : null}
 
-      {activeTab === "employment" && can("manage_employment") ? (
-        <div className="mt-6">
-          <h2 className="font-display text-2xl text-[var(--ink)]">
-            Employment applications
-          </h2>
+          {activeAppSection === "employment" && can("manage_employment") ? (
+            <div>
+              <h2 className="font-display text-2xl text-[var(--ink)]">
+                Employment applications
+              </h2>
           <div className="ice-table-wrap mt-3">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-[var(--blue)]/20 text-xs text-[var(--blue)] uppercase">
@@ -1556,7 +1526,9 @@ export default function AdminClient() {
                 )}
               </tbody>
             </table>
-          </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -1689,51 +1661,6 @@ export default function AdminClient() {
             )}
           </div>
         </div>
-      ) : null}
-
-      {activeTab === "content" && can("manage_content") ? (
-        <AdminContentEditor
-          onNotice={(msg) => {
-            setNotice(msg);
-            setError("");
-          }}
-          onError={(msg) => {
-            setError(msg);
-            if (msg) setNotice("");
-          }}
-        />
-      ) : null}
-
-      {activeTab === "hours" && can("manage_hours") ? (
-        <form onSubmit={saveHours} className="mt-6 panel max-w-2xl space-y-3 p-5">
-          <h2 className="font-display text-2xl text-[var(--ink)]">Edit open hours</h2>
-          {hours.map((h, idx) => (
-            <div key={h.day} className="grid grid-cols-[1fr_1fr_1fr] items-center gap-3">
-              <p className="font-semibold text-[var(--ink)]">{h.day}</p>
-              <input
-                value={h.open}
-                onChange={(e) => {
-                  const next = [...hours];
-                  next[idx] = { ...h, open: e.target.value };
-                  setHours(next);
-                }}
-                className="border border-[var(--line)] px-2 py-2"
-              />
-              <input
-                value={h.close}
-                onChange={(e) => {
-                  const next = [...hours];
-                  next[idx] = { ...h, close: e.target.value };
-                  setHours(next);
-                }}
-                className="border border-[var(--line)] px-2 py-2"
-              />
-            </div>
-          ))}
-          <button type="submit" className="btn btn-primary">
-            Save hours
-          </button>
-        </form>
       ) : null}
 
       {detail ? (

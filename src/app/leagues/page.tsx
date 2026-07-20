@@ -192,6 +192,21 @@ export default async function LeaguesPage() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 48vw"
+                  siblingPath={
+                    index < youth.photos.length - 1
+                      ? `youth.photos.${index + 1}.src`
+                      : index > 0
+                        ? `youth.photos.${index - 1}.src`
+                        : undefined
+                  }
+                  siblingSrc={
+                    index < youth.photos.length - 1
+                      ? youth.photos[index + 1]?.src
+                      : index > 0
+                        ? youth.photos[index - 1]?.src
+                        : undefined
+                  }
+                  deleteFallback="/images/yelp-lanes-dragon.jpg"
                 />
               </div>
             ))}

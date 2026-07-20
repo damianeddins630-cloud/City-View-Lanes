@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, hasPermission } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { uploadSiteImage } from "@/lib/db";
+import { canUploadSiteImages } from "@/lib/permissions";
 
 const MAX_BYTES = 4_500_000;
 const ALLOWED = new Set([
@@ -13,7 +14,7 @@ const ALLOWED = new Set([
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
-  if (!hasPermission(user, "manage_content")) {
+  if (!canUploadSiteImages(user)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -25,13 +26,13 @@ export async function POST(request: Request) {
     }
     if (!ALLOWED.has(file.type)) {
       return NextResponse.json(
-        { error: "Use a JPG, PNG, WEBP, or GIF image." },
+        { error: "Use a JPG, PNG, or WEBP image (real photos only)." },
         { status: 400 },
       );
     }
     if (file.size > MAX_BYTES) {
       return NextResponse.json(
-        { error: "Image is too large (max about 4.5 MB)." },
+        { error: "Image is too large (max about 4.5 MB). Compress and retry." },
         { status: 400 },
       );
     }
