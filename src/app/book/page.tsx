@@ -14,8 +14,6 @@ export default function BookPage() {
         kicker="Party application"
         title="Book the lanes"
         subtitle="Birthdays, corporate nights, fundraisers — we handle the lanes, the food, and the fun."
-        image="/images/yelp-lanes-extra.jpg"
-        imageAlt="Bowlers on the lanes at CityView Lanes"
       />
       <div className="section pt-10 pb-20">
         <p className="max-w-2xl text-sm leading-relaxed text-[var(--muted)]">

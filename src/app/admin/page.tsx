@@ -13,8 +13,6 @@ export default function AdminPage() {
         kicker="Master control"
         title="Admin panel"
         subtitle="Your admin profile, member records, bookings, leagues, roles, and hours — all in one place."
-        image="/images/bg-admin.webp"
-        imageAlt="Admin command background"
       />
       <div className="section pt-10 pb-20">
         <AdminClient />

@@ -224,20 +224,16 @@ a {
 }
 
 .page-banner {
-  min-height: 280px;
-  background: #0d2438;
+  min-height: auto;
+  background: transparent;
+}
+
+.page-banner-text {
+  background: transparent;
 }
 
 .page-banner-veil {
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(8, 28, 48, 0.55) 0%,
-      rgba(10, 40, 70, 0.45) 40%,
-      rgba(8, 32, 58, 0.88) 100%
-    ),
-    linear-gradient(105deg, rgba(14, 90, 150, 0.35), transparent 55%);
+  display: none;
 }
 
 .ice-alert {
@@ -1252,8 +1248,12 @@ a {
 }
 
 .league-hero {
-  min-height: 78svh;
-  background: #1d4a6e;
+  min-height: 42svh;
+  background: transparent;
+}
+
+.league-hero-text {
+  background: transparent;
 }
 
 .youth-band {

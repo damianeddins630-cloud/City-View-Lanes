@@ -14,8 +14,6 @@ export default function CareersPage() {
         kicker="Employment"
         title="Join the CityView team"
         subtitle="Submit an employment application, then track review status on your Profile. We’ll notify you when it’s approved or denied."
-        image="/images/cityview-lanes.webp"
-        imageAlt="CityView Lanes pin deck"
       />
       <div className="section pt-10 pb-20">
         <CareersClient />
