@@ -153,36 +153,41 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Soft lane rails — keep subtle so new cinematic backgrounds stay visible */
-body::before {
-  content: "";
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.22;
+/* Full-page theme: header + tabs + bg all switch together */
+body[data-page-theme="hof"] {
+  --blue: #e0c35a;
+  --blue-bright: #f0d878;
+  --ice-accent: #f5e6a8;
+  background-color: #0a0602;
   background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 72px,
-      rgba(200, 240, 255, 0.09) 72px,
-      rgba(200, 240, 255, 0.09) 74px,
-      transparent 74px,
-      transparent 146px,
-      rgba(50, 180, 240, 0.12) 146px,
-      rgba(50, 180, 240, 0.12) 148px
+    linear-gradient(
+      180deg,
+      rgba(8, 5, 1, 0.55) 0%,
+      rgba(24, 14, 4, 0.38) 45%,
+      rgba(8, 5, 1, 0.68) 100%
     ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0,
-      transparent 56px,
-      rgba(160, 220, 255, 0.04) 56px,
-      rgba(160, 220, 255, 0.04) 57px
-    );
-  background-size: auto, auto;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.32) 65%, transparent 100%);
-  animation: lane-drift 28s linear infinite;
+    url("/images/bg-hof.webp");
+}
+
+body[data-page-theme="admin"] {
+  --blue: #6ad4ff;
+  --blue-bright: #9ee4ff;
+  --ice-accent: #9ee4ff;
+  background-color: #020814;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(2, 10, 24, 0.55) 0%,
+      rgba(4, 20, 44, 0.4) 50%,
+      rgba(2, 8, 20, 0.68) 100%
+    ),
+    url("/images/bg-admin.webp");
+}
+
+/* Soft lane rails — disabled (read as tiny blue borders over photos) */
+body::before {
+  content: none;
+  display: none;
 }
 
 /* Soft ambient light */
@@ -193,8 +198,8 @@ body::after {
   inset: -25% -35%;
   z-index: 0;
   background:
-    radial-gradient(42% 34% at 18% 22%, rgba(180, 235, 255, 0.24), transparent 62%),
-    radial-gradient(38% 30% at 82% 68%, rgba(40, 190, 240, 0.22), transparent 65%);
+    radial-gradient(42% 34% at 18% 22%, rgba(180, 235, 255, 0.18), transparent 62%),
+    radial-gradient(38% 30% at 82% 68%, rgba(40, 190, 240, 0.14), transparent 65%);
   animation: alley-shine 14s ease-in-out infinite;
 }
 
@@ -1039,8 +1044,8 @@ a {
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(62, 196, 255, 0.28);
-  background: rgba(232, 248, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28);
+  background: rgba(245, 252, 255, 0.96);
 }
 
 .field option {
@@ -1396,25 +1401,14 @@ a {
 .hof-theme {
   --hof-bg: #0d0d0d;
   --ink: #ffffff;
-  --muted: rgba(255, 236, 236, 0.78);
-  --blue: #ff8a94;
+  --muted: rgba(255, 240, 210, 0.78);
+  --blue: #e0c35a;
   --line: transparent;
   color: #f5f5f5;
   position: relative;
   isolation: isolate;
-  background-color: #120406;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(18, 4, 6, 0.55) 0%,
-      rgba(40, 8, 10, 0.38) 45%,
-      rgba(12, 2, 4, 0.68) 100%
-    ),
-    url("/images/bg-pro-shop.webp");
-  background-size: cover, cover;
-  background-position: center, center;
-  background-attachment: fixed, fixed;
-  background-repeat: no-repeat, no-repeat;
+  background-color: transparent;
+  background-image: none;
   min-height: 100%;
 }
 
@@ -1427,60 +1421,57 @@ a {
   isolation: isolate;
   min-height: 100%;
   color: #eef8ff;
-  background-color: #020814;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(2, 10, 24, 0.55) 0%,
-      rgba(4, 20, 44, 0.4) 50%,
-      rgba(2, 8, 20, 0.68) 100%
-    ),
-    url("/images/bg-admin.webp");
-  background-size: cover, cover;
-  background-position: center, center;
-  background-attachment: fixed, fixed;
-  background-repeat: no-repeat, no-repeat;
+  background-color: transparent;
+  background-image: none;
 }
 
 .admin-theme .page-banner {
   background: transparent;
 }
 
-.admin-theme .tab-rail {
+.admin-theme .tab-rail,
+body[data-page-theme="admin"] .tab-rail,
+body[data-page-theme="admin"] .league-filters {
   border: none;
   background:
     linear-gradient(
       145deg,
-      rgba(60, 190, 255, 0.28) 0%,
-      rgba(16, 60, 120, 0.5) 45%,
-      rgba(4, 22, 48, 0.62) 100%
+      rgba(60, 190, 255, 0.32) 0%,
+      rgba(16, 60, 120, 0.55) 45%,
+      rgba(4, 22, 48, 0.7) 100%
     );
   box-shadow: 0 12px 28px rgba(0, 16, 40, 0.35);
 }
 
-.admin-theme .admin-tab {
+.admin-theme .admin-tab,
+body[data-page-theme="admin"] .admin-tab,
+body[data-page-theme="admin"] .league-filter {
   color: rgba(210, 245, 255, 0.9);
   background:
     linear-gradient(
       160deg,
-      rgba(100, 210, 255, 0.2) 0%,
-      rgba(30, 90, 160, 0.18) 55%,
-      rgba(8, 36, 80, 0.32) 100%
+      rgba(100, 210, 255, 0.22) 0%,
+      rgba(30, 90, 160, 0.2) 55%,
+      rgba(8, 36, 80, 0.35) 100%
     );
 }
 
-.admin-theme .admin-tab:hover {
+.admin-theme .admin-tab:hover,
+body[data-page-theme="admin"] .admin-tab:hover,
+body[data-page-theme="admin"] .league-filter:hover {
   color: #ffffff;
   background:
     linear-gradient(
       160deg,
-      rgba(120, 230, 255, 0.4) 0%,
-      rgba(40, 140, 220, 0.38) 55%,
-      rgba(10, 60, 130, 0.5) 100%
+      rgba(120, 230, 255, 0.42) 0%,
+      rgba(40, 140, 220, 0.4) 55%,
+      rgba(10, 60, 130, 0.55) 100%
     );
 }
 
-.admin-theme .admin-tab-active {
+.admin-theme .admin-tab-active,
+body[data-page-theme="admin"] .admin-tab-active,
+body[data-page-theme="admin"] .league-filter.is-active {
   background:
     linear-gradient(
       145deg,
@@ -1489,85 +1480,72 @@ a {
       #0a8fd8 55%,
       #0450a0 100%
     );
-  border-color: transparent;
+  border: none;
   box-shadow: 0 8px 22px rgba(10, 100, 200, 0.45);
 }
 
-.hof-theme .tab-rail {
+/* Pro Shop = Hall of Fame gold chrome */
+.hof-theme .tab-rail,
+.hof-theme.hof-gold-chrome .tab-rail,
+body[data-page-theme="hof"] .tab-rail,
+body[data-page-theme="hof"] .league-filters {
   border: none;
   background:
     linear-gradient(
       145deg,
-      rgba(200, 60, 70, 0.38) 0%,
-      rgba(100, 16, 24, 0.55) 45%,
-      rgba(36, 6, 10, 0.68) 100%
-    );
-  box-shadow: 0 12px 28px rgba(30, 0, 8, 0.35);
-}
-
-.hof-theme .admin-tab,
-.hof-theme .league-filter {
-  color: rgba(255, 230, 230, 0.92);
-  background:
-    linear-gradient(
-      160deg,
-      rgba(220, 90, 100, 0.26) 0%,
-      rgba(120, 25, 35, 0.22) 55%,
-      rgba(50, 8, 14, 0.36) 100%
-    );
-  text-shadow: 0 1px 2px rgba(30, 0, 8, 0.55);
-}
-
-.hof-theme .admin-tab:hover,
-.hof-theme .league-filter:hover {
-  color: #fff0f0;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(255, 120, 130, 0.42) 0%,
-      rgba(180, 40, 50, 0.38) 55%,
-      rgba(90, 12, 20, 0.5) 100%
-    );
-}
-
-.hof-theme .admin-tab-active,
-.hof-theme .league-filter.is-active {
-  background:
-    linear-gradient(
-      145deg,
-      #ffd0d4 0%,
-      #ff6b76 22%,
-      #c9182c 55%,
-      #7a0c18 100%
-    );
-  color: #ffffff;
-  border-color: transparent;
-  text-shadow: 0 1px 2px rgba(40, 0, 8, 0.4);
-  box-shadow: 0 8px 20px rgba(180, 30, 45, 0.45);
-}
-
-/* Hall of Fame gold accent rail — available when needed */
-.hof-theme.hof-gold-chrome .tab-rail {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(210, 170, 70, 0.38) 0%,
-      rgba(100, 70, 16, 0.55) 45%,
-      rgba(36, 24, 6, 0.68) 100%
+      rgba(230, 190, 90, 0.42) 0%,
+      rgba(120, 85, 20, 0.58) 45%,
+      rgba(40, 26, 6, 0.72) 100%
     );
   box-shadow: 0 12px 28px rgba(20, 10, 0, 0.35);
 }
 
-.hof-theme.hof-gold-chrome {
-  --blue: #e0c35a;
-  background-image:
+.hof-theme .admin-tab,
+.hof-theme .league-filter,
+.hof-theme.hof-gold-chrome .admin-tab,
+body[data-page-theme="hof"] .admin-tab,
+body[data-page-theme="hof"] .league-filter {
+  color: rgba(255, 236, 190, 0.92);
+  background:
     linear-gradient(
-      180deg,
-      rgba(8, 5, 1, 0.48) 0%,
-      rgba(24, 14, 4, 0.34) 45%,
-      rgba(8, 5, 1, 0.6) 100%
-    ),
-    url("/images/bg-hof.webp");
+      160deg,
+      rgba(230, 190, 90, 0.28) 0%,
+      rgba(120, 80, 18, 0.24) 55%,
+      rgba(40, 26, 6, 0.4) 100%
+    );
+  text-shadow: 0 1px 2px rgba(20, 10, 0, 0.55);
+}
+
+.hof-theme .admin-tab:hover,
+.hof-theme .league-filter:hover,
+body[data-page-theme="hof"] .admin-tab:hover,
+body[data-page-theme="hof"] .league-filter:hover {
+  color: #fff8e0;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(245, 210, 110, 0.48) 0%,
+      rgba(180, 130, 30, 0.42) 55%,
+      rgba(80, 50, 10, 0.55) 100%
+    );
+}
+
+.hof-theme .admin-tab-active,
+.hof-theme .league-filter.is-active,
+body[data-page-theme="hof"] .admin-tab-active,
+body[data-page-theme="hof"] .league-filter.is-active {
+  background:
+    linear-gradient(
+      145deg,
+      #fff0b8 0%,
+      #e0c35a 22%,
+      #c9a227 55%,
+      #8a6a12 100%
+    );
+  color: #1a1200;
+  border: none;
+  text-shadow: none;
+  box-shadow: 0 8px 20px rgba(180, 130, 30, 0.45);
 }
 
 .hof-theme .panel {
@@ -1575,8 +1553,8 @@ a {
   background: rgba(0, 0, 0, 0.55);
   color: #f5f5f5;
   --ink: #ffffff;
-  --muted: rgba(255, 236, 236, 0.78);
-  --blue: #ff8a94;
+  --muted: rgba(255, 240, 210, 0.78);
+  --blue: #e0c35a;
 }
 
 .hof-theme .btn-gold {
@@ -1668,19 +1646,49 @@ a {
 .site-header {
   border-bottom: none;
   background:
-    linear-gradient(180deg, rgba(12, 40, 68, 0.72), rgba(10, 36, 60, 0.58)),
-    rgba(8, 32, 55, 0.55);
+    linear-gradient(180deg, rgba(12, 40, 68, 0.78), rgba(10, 36, 60, 0.62)),
+    rgba(8, 32, 55, 0.58);
   box-shadow: 0 10px 28px rgba(6, 24, 45, 0.28);
   backdrop-filter: blur(18px) saturate(1.25);
 }
 
+body[data-page-theme="hof"] .site-header {
+  background:
+    linear-gradient(180deg, rgba(36, 24, 6, 0.86), rgba(20, 12, 4, 0.72)),
+    rgba(12, 8, 2, 0.7);
+  box-shadow: 0 10px 28px rgba(20, 10, 0, 0.4);
+}
+
+body[data-page-theme="admin"] .site-header {
+  background:
+    linear-gradient(180deg, rgba(4, 24, 52, 0.88), rgba(2, 14, 34, 0.75)),
+    rgba(2, 10, 24, 0.72);
+  box-shadow: 0 10px 28px rgba(0, 16, 40, 0.4);
+}
+
 .site-header-brand-accent {
   color: #7dd8ff;
-  text-shadow: 0 0 10px rgba(62, 196, 255, 0.35);
+  text-shadow: none;
+}
+
+body[data-page-theme="hof"] .site-header-brand-accent {
+  color: #e0c35a;
+}
+
+body[data-page-theme="admin"] .site-header-brand-accent {
+  color: #5ad8ff;
 }
 
 .site-header-mobile {
   background: rgba(8, 32, 55, 0.97);
+}
+
+body[data-page-theme="hof"] .site-header-mobile {
+  background: rgba(18, 12, 4, 0.97);
+}
+
+body[data-page-theme="admin"] .site-header-mobile {
+  background: rgba(2, 12, 28, 0.97);
 }
 
 .site-nav-link {
@@ -1698,6 +1706,16 @@ a {
   color: #7dd8ff;
 }
 
+body[data-page-theme="hof"] .site-nav-link:hover,
+body[data-page-theme="hof"] .site-nav-link.is-active {
+  color: #e0c35a;
+}
+
+body[data-page-theme="admin"] .site-nav-link:hover,
+body[data-page-theme="admin"] .site-nav-link.is-active {
+  color: #5ad8ff;
+}
+
 .site-nav-link.is-active::after {
   content: "";
   position: absolute;
@@ -1705,16 +1723,29 @@ a {
   right: 0;
   bottom: -0.35rem;
   height: 2px;
-  background: linear-gradient(90deg, #7dd8ff, rgba(14, 140, 220, 0.2));
-  box-shadow: 0 0 8px rgba(62, 196, 255, 0.4);
+  background: currentColor;
+  box-shadow: none;
+  opacity: 0.85;
 }
 
 .site-footer {
   border-top: none;
   background:
-    radial-gradient(700px 280px at 10% 0%, rgba(62, 196, 255, 0.28), transparent 60%),
+    radial-gradient(700px 280px at 10% 0%, rgba(62, 196, 255, 0.22), transparent 60%),
     linear-gradient(180deg, rgba(78, 160, 208, 0.92) 0%, rgba(37, 95, 140, 0.95) 100%);
   color: #e8f7ff;
+}
+
+body[data-page-theme="hof"] .site-footer {
+  background:
+    radial-gradient(700px 280px at 10% 0%, rgba(224, 195, 90, 0.28), transparent 60%),
+    linear-gradient(180deg, rgba(80, 55, 12, 0.95) 0%, rgba(28, 18, 4, 0.98) 100%);
+}
+
+body[data-page-theme="admin"] .site-footer {
+  background:
+    radial-gradient(700px 280px at 10% 0%, rgba(90, 216, 255, 0.25), transparent 60%),
+    linear-gradient(180deg, rgba(20, 60, 110, 0.95) 0%, rgba(4, 18, 40, 0.98) 100%);
 }
 
 .site-footer-muted {
@@ -1723,6 +1754,10 @@ a {
 
 .site-footer-kicker {
   color: #9ee4ff;
+}
+
+body[data-page-theme="hof"] .site-footer-kicker {
+  color: #e0c35a;
 }
 
 .site-footer-link:hover {
@@ -1748,9 +1783,9 @@ a {
 }
 
 .site-edit-toggle {
-  border: 1px solid rgba(40, 70, 120, 0.35);
+  border: none;
   background: linear-gradient(180deg, #dfe5ec 0%, #b7c0cb 100%);
-  color: var(--ink);
+  color: #071420;
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -1763,28 +1798,28 @@ a {
 .site-edit-toggle.is-on {
   background: linear-gradient(180deg, #5b9bff 0%, #2f6fd6 100%);
   color: #fff;
-  border-color: rgba(20, 60, 120, 0.45);
+  border: none;
 }
 
 .site-edit-status {
   margin: 0;
   padding: 0.55rem 0.75rem;
   background: rgba(232, 236, 242, 0.96);
-  border: 1px solid rgba(40, 70, 120, 0.2);
-  color: var(--ink);
+  border: none;
+  color: #071420;
   font-size: 0.72rem;
   line-height: 1.35;
   box-shadow: 0 10px 24px rgba(60, 70, 85, 0.18);
 }
 
 body.site-edit-mode [data-site-edit].is-editable {
-  outline: 2px dashed rgba(47, 111, 214, 0.55);
+  outline: 2px dashed rgba(80, 90, 110, 0.55);
   outline-offset: 3px;
   cursor: text;
 }
 
 body.site-edit-mode [data-site-edit].is-editing {
-  outline-color: rgba(47, 111, 214, 0.95);
+  outline-color: rgba(60, 70, 90, 0.9);
   background: rgba(255, 255, 255, 0.35);
 }
 
@@ -1812,7 +1847,7 @@ body.site-edit-mode .site-editable-image.is-editable::after {
   content: "";
   position: absolute;
   inset: 0;
-  outline: 2px dashed rgba(62, 196, 255, 0.75);
+  outline: 2px dashed rgba(90, 100, 120, 0.65);
   outline-offset: -4px;
   pointer-events: none;
   z-index: 2;
@@ -1846,9 +1881,9 @@ body.site-edit-mode .site-editable-image.is-editable::after {
 
 .site-editable-image-btn {
   position: static;
-  border: 1px solid rgba(40, 70, 120, 0.35);
+  border: none;
   background: rgba(232, 248, 255, 0.96);
-  color: var(--ink);
+  color: #071420;
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -1865,17 +1900,17 @@ body.site-edit-mode .site-editable-image.is-editable::after {
 
 .site-editable-image-btn.is-danger {
   background: rgba(255, 220, 225, 0.96);
-  border-color: rgba(180, 60, 80, 0.4);
+  border: none;
   color: #8a2030;
 }
 
 .site-editable-text.is-editable {
-  outline: 2px dashed rgba(62, 196, 255, 0.45);
+  outline: 2px dashed rgba(90, 100, 120, 0.5);
   outline-offset: 3px;
   cursor: text;
 }
 
 .site-editable-text.is-editing {
-  outline-color: rgba(62, 196, 255, 0.95);
+  outline-color: rgba(60, 70, 90, 0.9);
   background: rgba(232, 248, 255, 0.35);
 }

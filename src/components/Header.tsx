@@ -24,7 +24,6 @@ export default function Header() {
 
   return (
     <header className="site-header sticky top-0 z-50">
-      <div className="silver-bar" />
       <div className="mx-auto flex w-[min(1160px,calc(100%-1.5rem))] items-center justify-between gap-4 py-3.5">
         <Link href="/" className="group flex items-center gap-3">
           <Image
