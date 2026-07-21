@@ -1662,9 +1662,9 @@ body[data-page-theme="hof"] .site-header {
 
 body[data-page-theme="admin"] .site-header {
   background:
-    linear-gradient(180deg, rgba(4, 24, 52, 0.88), rgba(2, 14, 34, 0.75)),
-    rgba(2, 10, 24, 0.72);
-  box-shadow: 0 10px 28px rgba(0, 16, 40, 0.4);
+    linear-gradient(180deg, rgba(245, 250, 255, 0.14), rgba(10, 24, 44, 0.72)),
+    rgba(6, 14, 28, 0.55);
+  box-shadow: 0 10px 28px rgba(0, 12, 28, 0.35);
 }
 
 .site-header-brand-accent {
@@ -1677,7 +1677,7 @@ body[data-page-theme="hof"] .site-header-brand-accent {
 }
 
 body[data-page-theme="admin"] .site-header-brand-accent {
-  color: #5ad8ff;
+  color: #9ee4ff;
 }
 
 .site-header-mobile {
@@ -1689,7 +1689,7 @@ body[data-page-theme="hof"] .site-header-mobile {
 }
 
 body[data-page-theme="admin"] .site-header-mobile {
-  background: rgba(2, 12, 28, 0.97);
+  background: rgba(8, 18, 36, 0.96);
 }
 
 .site-nav-link {
@@ -1714,7 +1714,7 @@ body[data-page-theme="hof"] .site-nav-link.is-active {
 
 body[data-page-theme="admin"] .site-nav-link:hover,
 body[data-page-theme="admin"] .site-nav-link.is-active {
-  color: #5ad8ff;
+  color: #9ee4ff;
 }
 
 .site-nav-link.is-active::after {
@@ -1745,8 +1745,8 @@ body[data-page-theme="hof"] .site-footer {
 
 body[data-page-theme="admin"] .site-footer {
   background:
-    radial-gradient(700px 280px at 10% 0%, rgba(90, 216, 255, 0.25), transparent 60%),
-    linear-gradient(180deg, rgba(20, 60, 110, 0.95) 0%, rgba(4, 18, 40, 0.98) 100%);
+    radial-gradient(700px 280px at 10% 0%, rgba(158, 228, 255, 0.22), transparent 60%),
+    linear-gradient(180deg, rgba(30, 70, 120, 0.9) 0%, rgba(8, 18, 36, 0.96) 100%);
 }
 
 .site-footer-muted {
