@@ -13,6 +13,9 @@ export default function ProfilePage() {
         kicker="Member account"
         title="Your profile"
         subtitle="Update your photo, contact info, birth date, username, and password. Track party, league, and employment applications here."
+        kickerPath="edits.profile.bannerKicker"
+        titlePath="edits.profile.bannerTitle"
+        subtitlePath="edits.profile.bannerSubtitle"
       />
       <div className="section pt-10 pb-20">
         <ProfileClient />

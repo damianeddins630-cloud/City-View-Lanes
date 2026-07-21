@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import EditableListControls from "@/components/EditableListControls";
 import EditableText from "@/components/EditableText";
 import LeaguesClient from "@/components/LeaguesClient";
 import { resolveEditValue } from "@/lib/contentPath";
@@ -135,8 +136,21 @@ export default async function LeaguesPage() {
             />
 
             <div className="youth-highlights mt-8">
+              <EditableListControls
+                path="youth.highlights"
+                count={youth.highlights.length}
+                label="highlight"
+                className="mb-3 col-span-full"
+              />
               {youth.highlights.map((item, index) => (
-                <div key={item.label} className="youth-highlight">
+                <div key={item.label} className="youth-highlight relative">
+                  <EditableListControls
+                    path="youth.highlights"
+                    count={youth.highlights.length}
+                    index={index}
+                    variant="item"
+                    label="highlight"
+                  />
                   <EditableText
                     path={`youth.highlights.${index}.label`}
                     value={item.label}
@@ -201,8 +215,21 @@ export default async function LeaguesPage() {
             </div>
 
             <div className="state-strip">
+              <EditableListControls
+                path="youth.playerStates"
+                count={youth.playerStates.length}
+                label="state"
+                className="mb-3 col-span-full"
+              />
               {youth.playerStates.map((state, index) => (
-                <div key={`${state.code}-${state.name}`} className="state-chip">
+                <div key={`${state.code}-${state.name}`} className="state-chip relative">
+                  <EditableListControls
+                    path="youth.playerStates"
+                    count={youth.playerStates.length}
+                    index={index}
+                    variant="item"
+                    label="state"
+                  />
                   <EditableText
                     path={`youth.playerStates.${index}.code`}
                     value={state.code}
@@ -227,8 +254,21 @@ export default async function LeaguesPage() {
             </div>
 
             <div className="youth-stats-row mt-8">
+              <EditableListControls
+                path="youth.playerStats"
+                count={youth.playerStats.length}
+                label="stat"
+                className="mb-3 col-span-full"
+              />
               {youth.playerStats.map((stat, index) => (
-                <div key={stat.label} className="youth-stat">
+                <div key={stat.label} className="youth-stat relative">
+                  <EditableListControls
+                    path="youth.playerStats"
+                    count={youth.playerStats.length}
+                    index={index}
+                    variant="item"
+                    label="stat"
+                  />
                   <EditableText
                     path={`youth.playerStats.${index}.label`}
                     value={stat.label}

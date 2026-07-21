@@ -200,9 +200,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       galleryCopy: mergeString(homeIn.galleryCopy, d.home.galleryCopy),
       galleryImages:
         Array.isArray(homeIn.galleryImages) && homeIn.galleryImages.length
-          ? [0, 1, 2].map((i) => ({
+          ? homeIn.galleryImages.map((img, i) => ({
               src: refreshBundledPhoto(
-                homeIn.galleryImages[i]?.src,
+                img?.src,
                 d.home.galleryImages[i]?.src || d.home.heroImage,
                 [
                   "/images/yelp-lanes-kids.jpg",
@@ -215,7 +215,7 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
                 ],
               ),
               alt: mergeString(
-                homeIn.galleryImages[i]?.alt,
+                img?.alt,
                 d.home.galleryImages[i]?.alt || "CityView Lanes",
               ),
             }))
@@ -277,9 +277,9 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
       ]),
       photos:
         Array.isArray(youthIn.photos) && youthIn.photos.length
-          ? [0, 1, 2].map((i) => ({
+          ? youthIn.photos.map((photo, i) => ({
               src: refreshBundledPhoto(
-                youthIn.photos[i]?.src,
+                photo?.src,
                 d.youth.photos[i]?.src || d.youth.heroImage,
                 [
                   "/images/yelp-lanes-kids.jpg",
@@ -289,7 +289,7 @@ export function ensureSiteContent(content: SiteContent | undefined | null): Site
                 ],
               ),
               alt: mergeString(
-                youthIn.photos[i]?.alt,
+                photo?.alt,
                 d.youth.photos[i]?.alt || "Youth bowling",
               ),
             }))

@@ -1914,3 +1914,66 @@ body.site-edit-mode .site-editable-image.is-editable::after {
   outline-color: rgba(60, 70, 90, 0.9);
   background: rgba(232, 248, 255, 0.35);
 }
+
+/* —— List + / − controls (edit mode) —— */
+.editable-list-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.editable-list-item-controls {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 50;
+}
+
+.editable-list-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0 0.55rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+.editable-list-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.editable-list-btn.is-plus {
+  background: linear-gradient(145deg, #7dffb0, #1fa85a);
+  color: #042814;
+}
+
+.editable-list-btn.is-minus {
+  background: linear-gradient(145deg, #ffb0b8, #d4384a);
+  color: #3a0610;
+}
+
+.editable-list-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(230, 248, 255, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 12, 28, 0.55);
+}
+
+.panel .editable-list-hint,
+.youth-band .editable-list-hint,
+.reviews-band .editable-list-hint {
+  color: var(--muted-on-light);
+  text-shadow: none;
+}
+

@@ -72,9 +72,19 @@ export function canEditPage(
 export function pageFromContentPath(path: string): EditablePage | null {
   const p = path.trim();
   if (!p) return null;
-  if (p === "hours" || p.startsWith("hours.")) return "hours";
+  if (p === "hours" || p.startsWith("hours.") || p.startsWith("edits.hours.")) {
+    return "hours";
+  }
   if (p.startsWith("youth.") || p.startsWith("edits.leagues.")) return "leagues";
-  if (p.startsWith("home.") || p.startsWith("edits.home.") || p.startsWith("edits.")) {
+  if (
+    p.startsWith("home.") ||
+    p.startsWith("edits.home.") ||
+    p.startsWith("edits.book.") ||
+    p.startsWith("edits.careers.") ||
+    p.startsWith("edits.profile.") ||
+    p.startsWith("edits.proshop.") ||
+    p.startsWith("edits.")
+  ) {
     return "home";
   }
   return null;
@@ -103,6 +113,16 @@ export function editablePageFromPathname(pathname: string): EditablePage | null 
   if (pathname === "/") return "home";
   if (pathname.startsWith("/leagues")) return "leagues";
   if (pathname.startsWith("/hours")) return "hours";
+  // Other public pages use home edit permission + edits.* paths
+  if (
+    pathname.startsWith("/pro-shop") ||
+    pathname.startsWith("/book") ||
+    pathname.startsWith("/careers") ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/login")
+  ) {
+    return "home";
+  }
   return null;
 }
 

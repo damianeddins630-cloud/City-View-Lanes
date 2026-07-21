@@ -14,6 +14,9 @@ export default function CareersPage() {
         kicker="Employment"
         title="Join the CityView team"
         subtitle="Submit an employment application, then track review status on your Profile. We’ll notify you when it’s approved or denied."
+        kickerPath="edits.careers.bannerKicker"
+        titlePath="edits.careers.bannerTitle"
+        subtitlePath="edits.careers.bannerSubtitle"
       />
       <div className="section pt-10 pb-20">
         <CareersClient />

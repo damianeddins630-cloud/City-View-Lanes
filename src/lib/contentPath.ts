@@ -34,7 +34,10 @@ export function setContentPath(
   }
 
   const parts = path.split(".");
-  let cur: Record<string, unknown> = content as unknown as Record<string, unknown>;
+  let cur: Record<string, unknown> = content as unknown as Record<
+    string,
+    unknown
+  >;
 
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
@@ -70,4 +73,80 @@ export function resolveEditValue(
   if (typeof found === "string" && found.trim()) return found;
   if (typeof found === "boolean") return found ? "true" : "false";
   return fallback;
+}
+
+/** Default templates when appending a list item. */
+export function defaultArrayItem(path: string): unknown {
+  switch (path) {
+    case "home.marquee":
+      return "New highlight";
+    case "home.whyCards":
+      return { title: "New feature", copy: "Describe this feature…" };
+    case "home.galleryImages":
+      return {
+        src: "/images/cityview-lanes.webp",
+        alt: "CityView Lanes",
+      };
+    case "home.reviews":
+      return { quote: "Great place to bowl.", name: "Guest", role: "Visitor" };
+    case "youth.highlights":
+      return { label: "Label", value: "Value" };
+    case "youth.playerStates":
+      return { code: "TX", name: "Texas", note: "Home state" };
+    case "youth.playerStats":
+      return { label: "Stat", value: "—" };
+    case "youth.photos":
+      return {
+        src: "/images/yelp-lanes-kids.jpg",
+        alt: "Youth bowling",
+      };
+    default:
+      return "New item";
+  }
+}
+
+function resolveArrayAtPath(
+  content: SiteContent,
+  path: string,
+): unknown[] | null {
+  const parts = path.split(".");
+  let cur: unknown = content;
+  for (const part of parts) {
+    if (cur == null || typeof cur !== "object") return null;
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return Array.isArray(cur) ? cur : null;
+}
+
+/**
+ * Append or remove an item in a content array (mutates).
+ * Lists cannot go empty (min length 1).
+ */
+export function mutateContentArray(
+  content: SiteContent,
+  path: string,
+  op: "append" | "remove",
+  index?: number,
+  item?: unknown,
+): void {
+  const arr = resolveArrayAtPath(content, path);
+  if (!arr) {
+    throw new Error(`Not an editable list: ${path}`);
+  }
+
+  if (op === "append") {
+    arr.push(item !== undefined ? item : defaultArrayItem(path));
+    return;
+  }
+
+  if (op === "remove") {
+    const i = typeof index === "number" ? index : arr.length - 1;
+    if (i < 0 || i >= arr.length) {
+      throw new Error("Invalid list index.");
+    }
+    if (arr.length <= 1) {
+      throw new Error("Keep at least one item.");
+    }
+    arr.splice(i, 1);
+  }
 }
