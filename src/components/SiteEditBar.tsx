@@ -12,8 +12,9 @@ export default function SiteEditBar() {
     return (
       <div className="site-edit-bar" role="region" aria-label="Admin tip">
         <p className="site-edit-status">
-          Admin manages users, roles, applications, and leagues. To change page
-          text or photos, open Home, Leagues, or Hours and use Edit.
+          Admin manages users, roles, applications, and leagues. To rename page
+          text or add/remove items, open any public page and tap Edit — then use
+          + / − on lists.
         </p>
       </div>
     );

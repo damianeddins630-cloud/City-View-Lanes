@@ -1,5 +1,6 @@
 import Link from "next/link";
 import EditableImage from "@/components/EditableImage";
+import EditableListControls from "@/components/EditableListControls";
 import EditableText from "@/components/EditableText";
 import SpotlightCards from "@/components/SpotlightCards";
 import { readStore } from "@/lib/db";
@@ -61,6 +62,12 @@ export default async function HomePage() {
       </section>
 
       <div className="marquee-wrap">
+        <EditableListControls
+          path="home.marquee"
+          count={h.marquee.length}
+          label="marquee item"
+          className="section !py-2"
+        />
         <div className="marquee-track">
           {marquee.map((item, i) => (
             <span key={`${item}-${i}`} className="marquee-item">
@@ -261,6 +268,12 @@ export default async function HomePage() {
           multiline
           className="mt-3 max-w-2xl text-sm text-[var(--muted)]"
         />
+        <EditableListControls
+          path="home.galleryImages"
+          count={h.galleryImages.length}
+          label="gallery photo"
+          className="mt-4"
+        />
         <div className="gallery-mosaic mt-8">
           {h.galleryImages.map((img, index) => (
             <div
@@ -268,6 +281,13 @@ export default async function HomePage() {
               className={`gallery-tile relative overflow-hidden bg-[var(--blue-soft)] mosaic-${index + 1}`}
               style={{ animationDelay: `${index * 90}ms` }}
             >
+              <EditableListControls
+                path="home.galleryImages"
+                count={h.galleryImages.length}
+                index={index}
+                variant="item"
+                label="gallery photo"
+              />
               <EditableImage
                 path={`home.galleryImages.${index}.src`}
                 src={img.src}
@@ -311,13 +331,26 @@ export default async function HomePage() {
             as="h2"
             className="font-display mt-2 text-4xl tracking-[0.05em] sm:text-6xl"
           />
+          <EditableListControls
+            path="home.reviews"
+            count={h.reviews.length}
+            label="review"
+            className="mt-4"
+          />
           <div className="mt-10 grid gap-8 md:grid-cols-3">
             {h.reviews.map((review, index) => (
               <blockquote
                 key={`${review.name}-${index}`}
-                className="fade-up quote-block"
+                className="fade-up quote-block relative"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
+                <EditableListControls
+                  path="home.reviews"
+                  count={h.reviews.length}
+                  index={index}
+                  variant="item"
+                  label="review"
+                />
                 <EditableText
                   path={`home.reviews.${index}.quote`}
                   value={review.quote}

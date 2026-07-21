@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { setContentPath } from "@/lib/contentPath";
+import { setContentPath, mutateContentArray } from "@/lib/contentPath";
 import { readStore, updateStore } from "@/lib/db";
 import {
   canEditContentPath,
@@ -50,20 +50,43 @@ export async function PUT(request: Request) {
   }
 }
 
-/** On-page Edit: update one dotted path. */
+/** On-page Edit: update one dotted path, or append/remove list items. */
 export async function PATCH(request: Request) {
   const user = await getCurrentUser();
 
   try {
     const body = await request.json();
     const path = String(body.path || "").trim();
-    const value = body.value;
+    const op = body.op ? String(body.op) : "";
     if (!path) {
       return NextResponse.json({ error: "Path required." }, { status: 400 });
     }
     if (!canEditContentPath(user, path)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    // List add / remove
+    if (op === "append" || op === "remove") {
+      const { store } = await updateStore((s) => {
+        const content = ensureSiteContent(s.siteContent);
+        mutateContentArray(
+          content,
+          path,
+          op,
+          typeof body.index === "number" ? body.index : undefined,
+          body.item,
+        );
+        s.siteContent = ensureSiteContent(content);
+      });
+      revalidatePublicPages();
+      return NextResponse.json({
+        ok: true,
+        content: ensureSiteContent(store.siteContent),
+      });
+    }
+
+    // Scalar field rename / edit
+    const value = body.value;
     if (typeof value !== "string" && typeof value !== "boolean") {
       return NextResponse.json({ error: "Value required." }, { status: 400 });
     }

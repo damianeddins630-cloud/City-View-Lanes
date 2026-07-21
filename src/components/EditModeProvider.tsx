@@ -96,7 +96,7 @@ export default function EditModeProvider({ children }: { children: ReactNode }) 
       }
       setStatus(
         on
-          ? "Edit mode on — click text to edit, use photo buttons to replace or remove."
+          ? "Edit mode on — click text to rename. Use + / − to add or remove list items. Use photo buttons to replace or remove pictures."
           : "",
       );
     },

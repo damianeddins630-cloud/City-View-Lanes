@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import EditableText from "@/components/EditableText";
 import { SITE } from "@/lib/site";
+import { resolveEditValue } from "@/lib/contentPath";
+import { readStore } from "@/lib/db";
+import { ensureSiteContent } from "@/lib/siteContent";
 
 export const metadata: Metadata = {
   title: "Hall of Fame Pro Shop",
   description:
     "Ballard's Bowling Academy — Del Ballard Jr. & Carolyn Dorin-Ballard at CityView Lanes.",
 };
+
+export const dynamic = "force-dynamic";
 
 const services = [
   {
@@ -36,26 +42,54 @@ const services = [
   },
 ];
 
-export default function ProShopPage() {
+export default async function ProShopPage() {
+  const store = await readStore();
+  const content = ensureSiteContent(store.siteContent);
+
   return (
     <div className="hof-theme hof-gold-chrome min-h-full">
       <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pt-16 pb-10">
-        <p className="text-sm font-bold tracking-[0.2em] text-[var(--hof-gold)] uppercase">
-          Hall of Fame Pro Shop
-        </p>
-        <h1 className="font-display mt-3 text-5xl tracking-[0.06em] text-white sm:text-7xl">
-          Ballard&apos;s
-          <br />
-          Bowling Academy
-        </h1>
-        <p className="mt-4 text-lg text-[var(--hof-gold)]">
-          Owned by Del Ballard Jr. &amp; Carolyn Dorin-Ballard
-        </p>
-        <p className="mt-5 max-w-3xl text-base leading-relaxed text-white/75">
-          A Hall of Fame pro shop located inside CityView Lanes. Two of the most
-          decorated bowlers in the history of the sport — coaching, custom
-          drilling, and elite equipment, all under one roof in Fort Worth.
-        </p>
+        <EditableText
+          path="edits.proshop.kicker"
+          value={resolveEditValue(
+            content,
+            "edits.proshop.kicker",
+            "Hall of Fame Pro Shop",
+          )}
+          as="p"
+          className="text-sm font-bold tracking-[0.2em] text-[var(--hof-gold)] uppercase"
+        />
+        <EditableText
+          path="edits.proshop.title"
+          value={resolveEditValue(
+            content,
+            "edits.proshop.title",
+            "Ballard's Bowling Academy",
+          )}
+          as="h1"
+          className="font-display mt-3 text-5xl tracking-[0.06em] text-white sm:text-7xl"
+        />
+        <EditableText
+          path="edits.proshop.owners"
+          value={resolveEditValue(
+            content,
+            "edits.proshop.owners",
+            "Owned by Del Ballard Jr. & Carolyn Dorin-Ballard",
+          )}
+          as="p"
+          className="mt-4 text-lg text-[var(--hof-gold)]"
+        />
+        <EditableText
+          path="edits.proshop.blurb"
+          value={resolveEditValue(
+            content,
+            "edits.proshop.blurb",
+            "A Hall of Fame pro shop located inside CityView Lanes. Two of the most decorated bowlers in the history of the sport — coaching, custom drilling, and elite equipment, all under one roof in Fort Worth.",
+          )}
+          as="p"
+          multiline
+          className="mt-5 max-w-3xl text-base leading-relaxed text-white/75"
+        />
         <div className="mt-8 flex flex-wrap gap-3">
           <a
             href={SITE.proShopUrl}
@@ -84,28 +118,58 @@ export default function ProShopPage() {
 
       <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pb-10">
         <article className="panel p-6 sm:p-8">
-          <p className="text-xs font-bold tracking-[0.18em] text-[var(--hof-gold)] uppercase">
-            Pro Shop Manager · Cityview Lanes
-          </p>
-          <h2 className="font-display mt-2 text-4xl text-white sm:text-5xl">
-            Tim Watson
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/75">
-            Day-to-day manager of Ballard&apos;s Bowling Academy at CityView
-            Lanes — your point of contact for pro shop visits, equipment, custom
-            drilling appointments, and on-site questions at the Fort Worth
-            location.
-          </p>
+          <EditableText
+            path="edits.proshop.managerKicker"
+            value={resolveEditValue(
+              content,
+              "edits.proshop.managerKicker",
+              "Pro Shop Manager · Cityview Lanes",
+            )}
+            as="p"
+            className="text-xs font-bold tracking-[0.18em] text-[var(--hof-gold)] uppercase"
+          />
+          <EditableText
+            path="edits.proshop.managerName"
+            value={resolveEditValue(content, "edits.proshop.managerName", "Tim Watson")}
+            as="h2"
+            className="font-display mt-2 text-4xl text-white sm:text-5xl"
+          />
+          <EditableText
+            path="edits.proshop.managerCopy"
+            value={resolveEditValue(
+              content,
+              "edits.proshop.managerCopy",
+              "Day-to-day manager of Ballard's Bowling Academy at CityView Lanes — your point of contact for pro shop visits, equipment, custom drilling appointments, and on-site questions at the Fort Worth location.",
+            )}
+            as="p"
+            multiline
+            className="mt-3 max-w-2xl text-sm leading-relaxed text-white/75"
+          />
           <div className="mt-5 max-w-xs p-3 text-sm">
             <p className="text-xs tracking-[0.12em] text-[var(--hof-gold)] uppercase">
               Role
             </p>
-            <p className="mt-1 font-semibold text-white">Pro Shop Manager</p>
+            <EditableText
+              path="edits.proshop.managerRole"
+              value={resolveEditValue(
+                content,
+                "edits.proshop.managerRole",
+                "Pro Shop Manager",
+              )}
+              as="p"
+              className="mt-1 font-semibold text-white"
+            />
           </div>
-          <p className="mt-4 text-sm text-white/60">
-            Ballard&apos;s Bowling Academy · 6601 Oakmont Blvd, Fort Worth, TX
-            76132
-          </p>
+          <EditableText
+            path="edits.proshop.managerAddress"
+            value={resolveEditValue(
+              content,
+              "edits.proshop.managerAddress",
+              "Ballard's Bowling Academy · 6601 Oakmont Blvd, Fort Worth, TX 76132",
+            )}
+            as="p"
+            className="mt-4 text-sm text-white/60"
+          />
           <a
             href={SITE.proShopUrl}
             target="_blank"
@@ -118,15 +182,29 @@ export default function ProShopPage() {
       </section>
 
       <section className="mx-auto grid w-[min(1140px,calc(100%-1.5rem))] gap-4 pb-12 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((item) => (
-          <article
-            key={item.title}
-            className="panel p-5"
-          >
-            <h2 className="font-display text-2xl tracking-[0.04em] text-[var(--hof-gold)]">
-              {item.title}
-            </h2>
-            <p className="mt-2 text-sm text-white/70">{item.copy}</p>
+        {services.map((item, index) => (
+          <article key={item.title} className="panel p-5">
+            <EditableText
+              path={`edits.proshop.service${index}Title`}
+              value={resolveEditValue(
+                content,
+                `edits.proshop.service${index}Title`,
+                item.title,
+              )}
+              as="h2"
+              className="font-display text-2xl tracking-[0.04em] text-[var(--hof-gold)]"
+            />
+            <EditableText
+              path={`edits.proshop.service${index}Copy`}
+              value={resolveEditValue(
+                content,
+                `edits.proshop.service${index}Copy`,
+                item.copy,
+              )}
+              as="p"
+              multiline
+              className="mt-2 text-sm text-white/70"
+            />
           </article>
         ))}
       </section>
