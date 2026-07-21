@@ -170,16 +170,16 @@ body[data-page-theme="hof"] {
 }
 
 body[data-page-theme="admin"] {
-  --blue: #6ad4ff;
+  --blue: #3ec4ff;
   --blue-bright: #9ee4ff;
-  --ice-accent: #9ee4ff;
-  background-color: #020814;
+  --ice-accent: #dff6ff;
+  background-color: #0a1524;
   background-image:
     linear-gradient(
       180deg,
-      rgba(2, 10, 24, 0.55) 0%,
-      rgba(4, 20, 44, 0.4) 50%,
-      rgba(2, 8, 20, 0.68) 100%
+      rgba(8, 18, 36, 0.35) 0%,
+      rgba(12, 28, 50, 0.22) 45%,
+      rgba(6, 14, 28, 0.48) 100%
     ),
     url("/images/bg-admin.webp");
 }
@@ -1436,23 +1436,23 @@ body[data-page-theme="admin"] .league-filters {
   background:
     linear-gradient(
       145deg,
-      rgba(60, 190, 255, 0.32) 0%,
-      rgba(16, 60, 120, 0.55) 45%,
-      rgba(4, 22, 48, 0.7) 100%
+      rgba(245, 250, 255, 0.28) 0%,
+      rgba(40, 110, 180, 0.42) 45%,
+      rgba(8, 22, 42, 0.72) 100%
     );
-  box-shadow: 0 12px 28px rgba(0, 16, 40, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 12, 28, 0.3);
 }
 
 .admin-theme .admin-tab,
 body[data-page-theme="admin"] .admin-tab,
 body[data-page-theme="admin"] .league-filter {
-  color: rgba(210, 245, 255, 0.9);
+  color: rgba(235, 248, 255, 0.92);
   background:
     linear-gradient(
       160deg,
-      rgba(100, 210, 255, 0.22) 0%,
-      rgba(30, 90, 160, 0.2) 55%,
-      rgba(8, 36, 80, 0.35) 100%
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(40, 120, 190, 0.22) 55%,
+      rgba(10, 28, 52, 0.4) 100%
     );
 }
 
@@ -1463,9 +1463,9 @@ body[data-page-theme="admin"] .league-filter:hover {
   background:
     linear-gradient(
       160deg,
-      rgba(120, 230, 255, 0.42) 0%,
-      rgba(40, 140, 220, 0.4) 55%,
-      rgba(10, 60, 130, 0.55) 100%
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(80, 190, 255, 0.38) 55%,
+      rgba(20, 70, 130, 0.5) 100%
     );
 }
 
@@ -1475,13 +1475,14 @@ body[data-page-theme="admin"] .league-filter.is-active {
   background:
     linear-gradient(
       145deg,
-      #e0f9ff 0%,
-      #5ad8ff 22%,
-      #0a8fd8 55%,
-      #0450a0 100%
+      #ffffff 0%,
+      #9ee4ff 28%,
+      #3ec4ff 58%,
+      #0a5aa8 100%
     );
   border: none;
-  box-shadow: 0 8px 22px rgba(10, 100, 200, 0.45);
+  color: #041018;
+  box-shadow: 0 8px 22px rgba(40, 140, 220, 0.4);
 }
 
 /* Pro Shop = Hall of Fame gold chrome */
