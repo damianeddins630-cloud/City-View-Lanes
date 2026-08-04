@@ -53,27 +53,32 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (payload.id == null && !topic) {
+      return NextResponse.json({ error: "Empty webhook payload." }, { status: 400 });
+    }
+
     const forcePaid = topic === "orders/paid";
-    let result: ReturnType<typeof applyShopifyOrderToStore> | null = null;
+    const appliedBox: {
+      current: ReturnType<typeof applyShopifyOrderToStore> | null;
+    } = { current: null };
 
     await updateStore((store) => {
-      result = applyShopifyOrderToStore(store, payload, { forcePaid });
+      appliedBox.current = applyShopifyOrderToStore(store, payload, { forcePaid });
     });
 
-    if (!result) {
+    const applied = appliedBox.current;
+    if (!applied) {
       return NextResponse.json({ error: "Order was not applied." }, { status: 500 });
     }
 
-    const applied = result as ReturnType<typeof applyShopifyOrderToStore>;
-
-    if (applied.inventoryUpdated) {
+    if (applied.inventoryUpdated || applied.order.paymentStatus === "paid") {
       revalidatePath("/pro-shop");
       revalidatePath("/admin");
     }
 
     return NextResponse.json({
       ok: true,
-      topic,
+      topic: topic || null,
       orderId: applied.order.id,
       paymentStatus: applied.order.paymentStatus,
       fulfillmentStatus: applied.order.fulfillmentStatus,

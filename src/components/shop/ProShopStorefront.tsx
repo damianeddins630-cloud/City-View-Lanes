@@ -49,6 +49,7 @@ export default function ProShopStorefront({
     removeItem,
     getQuantity,
     clearCart: clearCartItems,
+    syncWithCatalog,
   } = useCart();
   const [products, setProducts] = useState(initialProducts);
   const [categories] = useState(initialCategories);
@@ -84,20 +85,13 @@ export default function ProShopStorefront({
     return map;
   }, [categories]);
 
-  // Drop removed products and clamp quantities to live website inventory.
+  // Drop removed/OOS products and clamp quantities to live website inventory.
   useEffect(() => {
     if (!ready) return;
-    for (const line of lines) {
-      const product = productMap.get(line.productId);
-      if (!product || product.inventory <= 0) {
-        removeItem(line.productId);
-        continue;
-      }
-      if (line.quantity > product.inventory) {
-        setQuantity(line.productId, product.inventory, product.inventory);
-      }
-    }
-  }, [ready, lines, productMap, removeItem, setQuantity]);
+    syncWithCatalog(
+      products.map((p) => ({ id: p.id, inventory: p.inventory })),
+    );
+  }, [ready, products, syncWithCatalog]);
 
   const visibleProducts = useMemo(() => {
     if (filter === "all") return products;
@@ -162,16 +156,25 @@ export default function ProShopStorefront({
           })),
         }),
       });
-      const data = await res.json().catch(() => ({}));
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        detail?: string;
+        checkoutUrl?: string;
+      };
       if (!res.ok || !data.checkoutUrl) {
+        const detail =
+          typeof data.detail === "string" && data.detail
+            ? ` (${data.detail})`
+            : "";
         flashError(
-          data.error ||
-            "Could not start checkout. Please try again or call the pro shop.",
+          `${data.error || "Could not start checkout. Please try again or call the pro shop."}${detail}`,
         );
+        // Keep cart so the customer can retry.
         return;
       }
-      clearCartItems();
       flashNotice("Redirecting to secure Shopify checkout…");
+      // Clear only after we have a valid Shopify URL.
+      clearCartItems();
       window.location.assign(String(data.checkoutUrl));
     } catch {
       flashError("Could not reach checkout. Check your connection and try again.");

@@ -49,12 +49,13 @@ export async function createShopifyDraftOrder(input: {
     ],
   }));
 
+  const defaultNote =
+    `Ballard's Pro Shop website order ${input.websiteOrderId}` +
+    (config.siteUrl ? ` · ${config.siteUrl}` : "");
+
   const draft_order: Record<string, unknown> = {
     line_items,
-    note:
-      input.note ||
-      `Ballard's Pro Shop website order ${input.websiteOrderId}` +
-        (config.siteUrl ? ` · ${config.siteUrl}` : ""),
+    note: input.note || defaultNote,
     tags: "website-pro-shop,ballards-academy",
     note_attributes: [
       { name: "website_order_id", value: input.websiteOrderId },

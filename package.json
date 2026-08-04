@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:shopify": "tsx --test src/lib/money.test.ts src/lib/shopify/webhook.test.ts src/lib/shopify/orders.test.ts",
+    "test:shopify": "tsx --test src/lib/money.test.ts src/lib/cartLogic.test.ts src/lib/shopify/webhook.test.ts src/lib/shopify/orders.test.ts",
     "test": "npm run test:shopify"
   },
   "dependencies": {

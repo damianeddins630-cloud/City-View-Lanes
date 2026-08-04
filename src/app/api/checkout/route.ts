@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
-import { readStore, updateStore } from "@/lib/db";
+import { PersistenceError, readStore, updateStore } from "@/lib/db";
 import { makeId } from "@/lib/ids";
 import { ShopifyApiError, ShopifyConfigError } from "@/lib/shopify/client";
+import { getShopifyConfig } from "@/lib/shopify/config";
 import { createShopifyDraftOrder } from "@/lib/shopify/draftOrder";
 import type { ShopOrder, ShopOrderLineItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+const MAX_LINE_QTY = 99;
 
 type CartLineBody = {
   productId?: string;
@@ -23,6 +26,9 @@ function parseLines(body: unknown): Array<{ productId: string; quantity: number 
   if (!Array.isArray(raw) || raw.length === 0) {
     throw new Error("Cart is empty. Add products before checkout.");
   }
+  if (raw.length > 50) {
+    throw new Error("Too many items in cart. Remove some and try again.");
+  }
 
   const lines: Array<{ productId: string; quantity: number }> = [];
   for (const row of raw as CartLineBody[]) {
@@ -32,9 +38,15 @@ function parseLines(body: unknown): Array<{ productId: string; quantity: number 
     if (!Number.isFinite(quantity) || quantity < 1) {
       throw new Error("Each cart item needs a quantity of 1 or more.");
     }
+    if (quantity > MAX_LINE_QTY) {
+      throw new Error(`Quantity cannot exceed ${MAX_LINE_QTY} per product.`);
+    }
     const existing = lines.find((l) => l.productId === productId);
-    if (existing) existing.quantity += quantity;
-    else lines.push({ productId, quantity });
+    if (existing) {
+      existing.quantity = Math.min(MAX_LINE_QTY, existing.quantity + quantity);
+    } else {
+      lines.push({ productId, quantity });
+    }
   }
   return lines;
 }
@@ -58,6 +70,9 @@ function buildOrderLines(
         `Not enough inventory for “${product.name}”. Only ${product.inventory} available.`,
       );
     }
+    if (product.priceCents < 0 || !Number.isFinite(product.priceCents)) {
+      throw new Error(`“${product.name}” has an invalid price. Contact the pro shop.`);
+    }
     lineItems.push({
       productId: product.id,
       name: product.name,
@@ -68,11 +83,23 @@ function buildOrderLines(
     subtotalCents += product.priceCents * line.quantity;
   }
 
+  if (subtotalCents <= 0) {
+    throw new Error("Cart total must be greater than $0.00.");
+  }
+
   return { lineItems, subtotalCents };
+}
+
+function isValidEmail(email: string): boolean {
+  if (!email) return true;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 export async function POST(request: Request) {
   try {
+    // Fail fast before writing any website order.
+    getShopifyConfig();
+
     let body: unknown;
     try {
       body = await request.json();
@@ -92,29 +119,39 @@ export async function POST(request: Request) {
         ? String((body as { customerName?: string }).customerName || "").trim()
         : "";
 
-    const store = await readStore();
-    const { lineItems, subtotalCents } = buildOrderLines(store.products, requested);
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Please enter a valid email address." },
+        { status: 400 },
+      );
+    }
 
-    const now = new Date().toISOString();
     const websiteOrderId = makeId("ord");
-    const pendingOrder: ShopOrder = {
-      id: websiteOrderId,
-      customerName: customerName || "Checkout customer",
-      customerEmail: email,
-      lineItems,
-      subtotalCents,
-      totalCents: subtotalCents,
-      currency: "USD",
-      paymentStatus: "pending",
-      fulfillmentStatus: "unfulfilled",
-      createdAt: now,
-      updatedAt: now,
-    };
+    const now = new Date().toISOString();
+
+    // Re-read products under write path and persist the pending order.
+    let lineItems: ShopOrderLineItem[] = [];
+    let subtotalCents = 0;
 
     await updateStore((s) => {
-      // Re-check inventory under write lock to reduce oversell races.
-      buildOrderLines(s.products, requested);
-      s.shopOrders.unshift({ ...pendingOrder });
+      const built = buildOrderLines(s.products, requested);
+      lineItems = built.lineItems;
+      subtotalCents = built.subtotalCents;
+
+      const pendingOrder: ShopOrder = {
+        id: websiteOrderId,
+        customerName: customerName || "Checkout customer",
+        customerEmail: email,
+        lineItems,
+        subtotalCents,
+        totalCents: subtotalCents,
+        currency: "USD",
+        paymentStatus: "pending",
+        fulfillmentStatus: "unfulfilled",
+        createdAt: now,
+        updatedAt: now,
+      };
+      s.shopOrders.unshift(pendingOrder);
     });
 
     let checkoutUrl = "";
@@ -137,13 +174,17 @@ export async function POST(request: Request) {
       checkoutUrl = draft.invoiceUrl;
       shopifyDraftOrderId = draft.id;
     } catch (error) {
-      await updateStore((s) => {
-        const order = s.shopOrders.find((o) => o.id === websiteOrderId);
-        if (order) {
-          order.paymentStatus = "failed";
-          order.updatedAt = new Date().toISOString();
-        }
-      });
+      try {
+        await updateStore((s) => {
+          const order = s.shopOrders.find((o) => o.id === websiteOrderId);
+          if (order) {
+            order.paymentStatus = "failed";
+            order.updatedAt = new Date().toISOString();
+          }
+        });
+      } catch {
+        // Still surface the original Shopify error.
+      }
       throw error;
     }
 
@@ -166,6 +207,15 @@ export async function POST(request: Request) {
     if (error instanceof ShopifyConfigError) {
       return NextResponse.json({ error: error.message }, { status: 503 });
     }
+    if (error instanceof PersistenceError) {
+      return NextResponse.json(
+        {
+          error:
+            "Could not save the order. Check that Vercel Blob storage is connected, then try again.",
+        },
+        { status: 503 },
+      );
+    }
     if (error instanceof ShopifyApiError) {
       return NextResponse.json(
         {
@@ -179,7 +229,11 @@ export async function POST(request: Request) {
     const message =
       error instanceof Error ? error.message : "Checkout failed.";
     const status =
-      /inventory|available|empty|quantity|product|cart/i.test(message) ? 400 : 500;
+      /inventory|available|empty|quantity|product|cart|email|price|total/i.test(
+        message,
+      )
+        ? 400
+        : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }

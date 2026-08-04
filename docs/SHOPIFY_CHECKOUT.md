@@ -157,7 +157,17 @@ npm run test:shopify
 npm run build
 ```
 
-These cover money helpers, webhook HMAC verification, and order/inventory apply logic (no live Shopify calls).
+These cover money helpers, cart inventory logic, webhook HMAC verification, and order/inventory apply logic (no live Shopify calls).
+
+### Quick config check (after deploy)
+
+Open:
+
+```text
+https://<your-city-view-lanes-domain>/api/shopify/status
+```
+
+You should see `checkoutConfigured: true`. `webhookConfigured` should be `true` once `SHOPIFY_WEBHOOK_SECRET` is set. This endpoint never returns secrets.
 
 ### B. End-to-end on production / preview
 
