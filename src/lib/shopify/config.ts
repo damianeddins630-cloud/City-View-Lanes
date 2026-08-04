@@ -3,6 +3,7 @@ export type ShopifyConfig = {
   adminAccessToken: string;
   apiVersion: string;
   siteUrl: string;
+  webhookSecret: string;
 };
 
 export class ShopifyConfigError extends Error {
@@ -33,6 +34,11 @@ export function getShopifyConfig(): ShopifyConfig {
   )
     .trim()
     .replace(/\/$/, "");
+  const webhookSecret = (
+    process.env.SHOPIFY_WEBHOOK_SECRET ||
+    process.env.SHOPIFY_API_SECRET ||
+    ""
+  ).trim();
 
   const missing: string[] = [];
   if (!storeDomain) missing.push("SHOPIFY_STORE_DOMAIN");
@@ -45,7 +51,27 @@ export function getShopifyConfig(): ShopifyConfig {
     );
   }
 
-  return { storeDomain, adminAccessToken, apiVersion, siteUrl };
+  return {
+    storeDomain,
+    adminAccessToken,
+    apiVersion,
+    siteUrl,
+    webhookSecret,
+  };
+}
+
+export function getShopifyWebhookSecret(): string {
+  const secret = (
+    process.env.SHOPIFY_WEBHOOK_SECRET ||
+    process.env.SHOPIFY_API_SECRET ||
+    ""
+  ).trim();
+  if (!secret) {
+    throw new ShopifyConfigError(
+      "Shopify webhook secret is not configured. Set SHOPIFY_WEBHOOK_SECRET (app client secret).",
+    );
+  }
+  return secret;
 }
 
 export function isShopifyConfigured(): boolean {

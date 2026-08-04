@@ -56,6 +56,10 @@ export async function createShopifyDraftOrder(input: {
       `Ballard's Pro Shop website order ${input.websiteOrderId}` +
         (config.siteUrl ? ` · ${config.siteUrl}` : ""),
     tags: "website-pro-shop,ballards-academy",
+    note_attributes: [
+      { name: "website_order_id", value: input.websiteOrderId },
+      { name: "source", value: "cityview-pro-shop" },
+    ],
   };
 
   if (input.customerEmail) {
