@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import EditableText from "@/components/EditableText";
+import ProShopStorefront from "@/components/shop/ProShopStorefront";
 import { SITE } from "@/lib/site";
 import { resolveEditValue } from "@/lib/contentPath";
 import { readStore } from "@/lib/db";
@@ -45,6 +46,23 @@ const services = [
 export default async function ProShopPage() {
   const store = await readStore();
   const content = ensureSiteContent(store.siteContent);
+  const catalogProducts = store.products
+    .filter((p) => p.active)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      priceCents: p.priceCents,
+      inventory: p.inventory,
+      categoryId: p.categoryId,
+      imageUrl: p.imageUrl,
+      imageAlt: p.imageAlt || p.name,
+      active: p.active,
+    }));
+  const catalogCategories = [...store.productCategories]
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
+    .map((c) => ({ id: c.id, name: c.name, sortOrder: c.sortOrder }));
 
   return (
     <div className="hof-theme hof-gold-chrome min-h-full">
@@ -91,15 +109,18 @@ export default async function ProShopPage() {
           className="mt-5 max-w-3xl text-base leading-relaxed text-white/75"
         />
         <div className="mt-8 flex flex-wrap gap-3">
+          <a href="#pro-shop-store" className="btn btn-gold">
+            Shop gear
+          </a>
           <a
             href={SITE.proShopUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-gold"
+            className="btn btn-red"
           >
             Visit {SITE.proShopUrlLabel}
           </a>
-          <a href={`tel:${SITE.phoneTel}`} className="btn btn-red">
+          <a href={`tel:${SITE.phoneTel}`} className="btn btn-ghost text-white">
             Call CityView {SITE.phoneDisplay}
           </a>
         </div>
@@ -116,7 +137,12 @@ export default async function ProShopPage() {
         </p>
       </section>
 
-      <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] pb-10">
+      <ProShopStorefront
+        initialProducts={catalogProducts}
+        initialCategories={catalogCategories}
+      />
+
+      <section className="mx-auto w-[min(1140px,calc(100%-1.5rem))] py-10">
         <article className="panel p-6 sm:p-8">
           <EditableText
             path="edits.proshop.managerKicker"
