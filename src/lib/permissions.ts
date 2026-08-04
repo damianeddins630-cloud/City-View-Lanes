@@ -11,6 +11,8 @@ const ADMIN_PANEL_PERMISSIONS = new Set<Permission>([
   "manage_leagues",
   "view_admins",
   "manage_employment",
+  "manage_products",
+  "manage_orders",
 ]);
 
 const ADMIN_CAPABILITY_SET = new Set<string>(ASSIGNABLE_PERMISSION_IDS);
@@ -105,7 +107,8 @@ export function canUploadSiteImages(
   return (
     canEditPage(user, "home") ||
     canEditPage(user, "leagues") ||
-    canEditPage(user, "hours")
+    canEditPage(user, "hours") ||
+    userHasPermission(user, "manage_products")
   );
 }
 

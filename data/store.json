@@ -30,7 +30,9 @@
         "manage_hours",
         "view_admins",
         "manage_employment",
-        "manage_content"
+        "manage_content",
+        "manage_products",
+        "manage_orders"
       ],
       "locked": true,
       "rank": 0
@@ -45,7 +47,9 @@
         "manage_leagues",
         "manage_hours",
         "view_admins",
-        "manage_content"
+        "manage_content",
+        "manage_products",
+        "manage_orders"
       ],
       "locked": false,
       "rank": 10
@@ -168,5 +172,8 @@
   ],
   "chatMessages": [],
   "notifications": [],
-  "employmentApplications": []
+  "employmentApplications": [],
+  "productCategories": [],
+  "products": [],
+  "shopOrders": []
 }

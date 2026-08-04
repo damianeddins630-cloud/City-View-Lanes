@@ -23,6 +23,8 @@ const OWNER_PERMISSIONS: Permission[] = [
   "edit_page_home",
   "edit_page_leagues",
   "manage_content",
+  "manage_products",
+  "manage_orders",
 ];
 
 export function roleRank(role: Role | undefined | null): number {
@@ -96,6 +98,12 @@ export function ensureRoles(store: Store): Store {
         if (!role.permissions.includes("edit_page_leagues")) {
           role.permissions = [...role.permissions, "edit_page_leagues"];
         }
+      }
+      if (!role.permissions.includes("manage_products")) {
+        role.permissions = [...role.permissions, "manage_products"];
+      }
+      if (!role.permissions.includes("manage_orders")) {
+        role.permissions = [...role.permissions, "manage_orders"];
       }
       if (typeof role.rank !== "number" || role.rank < 1) role.rank = 10;
       role.description =

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PageTheme from "@/components/PageTheme";
 import SiteEditBar from "@/components/SiteEditBar";
+import { CartProvider } from "@/lib/cart";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -41,11 +42,13 @@ export default function RootLayout({
           }}
         />
         <EditModeProvider>
-          <PageTheme />
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <SiteEditBar />
+          <CartProvider>
+            <PageTheme />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <SiteEditBar />
+          </CartProvider>
         </EditModeProvider>
       </body>
     </html>

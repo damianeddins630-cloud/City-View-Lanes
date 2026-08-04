@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import AdminOrdersPanel from "@/components/AdminOrdersPanel";
+import AdminProductsPanel from "@/components/AdminProductsPanel";
 import { canAccessAdminPanel } from "@/lib/permissions";
 import { ALL_PERMISSIONS } from "@/lib/site";
 import type {
@@ -17,7 +19,9 @@ type Tab =
   | "chat"
   | "applications"
   | "admins"
-  | "leagues";
+  | "leagues"
+  | "products"
+  | "orders";
 
 type AppSection = "party" | "league" | "employment";
 
@@ -104,6 +108,8 @@ const TABS: { id: Tab; label: string; permission?: Permission | "applications" }
   { id: "applications", label: "Applications", permission: "applications" },
   { id: "admins", label: "Admins", permission: "view_admins" },
   { id: "leagues", label: "League Manager", permission: "manage_leagues" },
+  { id: "products", label: "Products", permission: "manage_products" },
+  { id: "orders", label: "Orders", permission: "manage_orders" },
 ];
 
 function isWebsiteOwnerRole(role: Role) {
@@ -1559,6 +1565,32 @@ export default function AdminClient() {
             </tbody>
           </table>
         </div>
+      ) : null}
+
+      {activeTab === "products" && can("manage_products") ? (
+        <AdminProductsPanel
+          onNotice={(msg) => {
+            setError("");
+            setNotice(msg);
+          }}
+          onError={(msg) => {
+            setNotice("");
+            setError(msg);
+          }}
+        />
+      ) : null}
+
+      {activeTab === "orders" && can("manage_orders") ? (
+        <AdminOrdersPanel
+          onNotice={(msg) => {
+            setError("");
+            setNotice(msg);
+          }}
+          onError={(msg) => {
+            setNotice("");
+            setError(msg);
+          }}
+        />
       ) : null}
 
       {activeTab === "leagues" && can("manage_leagues") ? (

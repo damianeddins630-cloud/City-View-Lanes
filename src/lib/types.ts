@@ -12,8 +12,77 @@ export type Permission =
   | "manage_content"
   | "edit_page_home"
   | "edit_page_leagues"
+  | "manage_products"
+  | "manage_orders"
   /** Legacy — stripped from roles; not assignable. */
   | "edit_site";
+
+/** Pro Shop category — website source of truth (not Shopify). */
+export type ProductCategory = {
+  id: string;
+  name: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** Pro Shop product — website source of truth (not Shopify). */
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  /** Price in USD cents (e.g. 2499 = $24.99). */
+  priceCents: number;
+  inventory: number;
+  categoryId: string;
+  imageUrl: string;
+  imageAlt: string;
+  /** When false, hidden from the public Pro Shop catalog. */
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type OrderPaymentStatus =
+  | "pending"
+  | "paid"
+  | "cancelled"
+  | "refunded"
+  | "failed";
+
+export type OrderFulfillmentStatus =
+  | "unfulfilled"
+  | "partial"
+  | "fulfilled"
+  | "cancelled";
+
+export type ShopOrderLineItem = {
+  productId: string;
+  name: string;
+  quantity: number;
+  unitPriceCents: number;
+  imageUrl?: string;
+};
+
+/** Website order record; Shopify is checkout/payment only. */
+export type ShopOrder = {
+  id: string;
+  shopifyDraftOrderId?: string;
+  shopifyOrderId?: string;
+  shopifyCheckoutUrl?: string;
+  customerName: string;
+  customerEmail: string;
+  lineItems: ShopOrderLineItem[];
+  subtotalCents: number;
+  /** May include tax/shipping once Shopify confirms payment. */
+  totalCents: number;
+  currency: string;
+  paymentStatus: OrderPaymentStatus;
+  fulfillmentStatus: OrderFulfillmentStatus;
+  createdAt: string;
+  updatedAt: string;
+  paidAt?: string;
+};
 
 export type SiteImageSlot = {
   src: string;
@@ -255,6 +324,11 @@ export type Store = {
   chatMessages: ChatMessage[];
   notifications: Notification[];
   siteContent: SiteContent;
+  /** Pro Shop catalog — managed on this website, not Shopify. */
+  productCategories: ProductCategory[];
+  products: Product[];
+  /** Orders created at checkout; updated by Shopify webhooks. */
+  shopOrders: ShopOrder[];
 };
 
 export type SessionPayload = {

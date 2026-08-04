@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCart } from "@/lib/cart";
 import { canAccessAdminPanel } from "@/lib/permissions";
 import { NAV } from "@/lib/site";
 import type { PublicUser } from "@/lib/types";
@@ -12,6 +13,7 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<PublicUser | null>(null);
+  const { itemCount, ready } = useCart();
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -21,6 +23,7 @@ export default function Header() {
   }, [pathname]);
 
   const isAdmin = canAccessAdminPanel(user);
+  const showCart = ready && itemCount > 0;
 
   return (
     <header className="site-header sticky top-0 z-50">
@@ -52,6 +55,11 @@ export default function Header() {
               </Link>
             );
           })}
+          {showCart ? (
+            <Link href="/pro-shop#pro-shop-store" className="site-nav-link">
+              Cart ({itemCount})
+            </Link>
+          ) : null}
           {user ? (
             <>
               <Link
@@ -103,6 +111,15 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {showCart ? (
+              <Link
+                href="/pro-shop#pro-shop-store"
+                className="text-white"
+                onClick={() => setOpen(false)}
+              >
+                Cart ({itemCount})
+              </Link>
+            ) : null}
             <Link
               href={user ? "/profile" : "/login"}
               className="text-white"
