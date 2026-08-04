@@ -40,14 +40,23 @@ export default function ProShopStorefront({
   initialProducts,
   initialCategories,
 }: Props) {
-  const { lines, ready, itemCount, addItem, setQuantity, removeItem, getQuantity } =
-    useCart();
+  const {
+    lines,
+    ready,
+    itemCount,
+    addItem,
+    setQuantity,
+    removeItem,
+    getQuantity,
+    clearCart: clearCartItems,
+  } = useCart();
   const [products, setProducts] = useState(initialProducts);
   const [categories] = useState(initialCategories);
   const [filter, setFilter] = useState<string>("all");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -135,6 +144,40 @@ export default function ProShopStorefront({
     }
     flashNotice(`Added “${product.name}” to cart.`);
     setCartOpen(true);
+  }
+
+  async function startCheckout() {
+    if (checkingOut || cartRows.length === 0) return;
+    setCheckingOut(true);
+    setError("");
+    setNotice("Starting secure checkout…");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cartRows.map(({ line }) => ({
+            productId: line.productId,
+            quantity: line.quantity,
+          })),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.checkoutUrl) {
+        flashError(
+          data.error ||
+            "Could not start checkout. Please try again or call the pro shop.",
+        );
+        return;
+      }
+      clearCartItems();
+      flashNotice("Redirecting to secure Shopify checkout…");
+      window.location.assign(String(data.checkoutUrl));
+    } catch {
+      flashError("Could not reach checkout. Check your connection and try again.");
+    } finally {
+      setCheckingOut(false);
+    }
   }
 
   return (
@@ -366,15 +409,10 @@ export default function ProShopStorefront({
               <button
                 type="button"
                 className="proshop-checkout-btn"
-                disabled={cartRows.length === 0}
-                title="Shopify checkout connects in the next phase"
-                onClick={() => {
-                  flashNotice(
-                    "Checkout is ready to connect. Shopify Draft Order payment will be enabled in the next phase.",
-                  );
-                }}
+                disabled={cartRows.length === 0 || checkingOut}
+                onClick={() => void startCheckout()}
               >
-                Checkout
+                {checkingOut ? "Starting checkout…" : "Checkout securely"}
               </button>
             </div>
           </aside>
