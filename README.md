@@ -15,7 +15,8 @@ Your site files live here:
    → then every commit updates the live site automatically
 
 **Which file does what?** See [`EDIT-ON-GITHUB.txt`](./EDIT-ON-GITHUB.txt)  
-**Deploy steps:** See [`UPDATE-VERCEL.txt`](./UPDATE-VERCEL.txt)
+**Deploy steps:** See [`UPDATE-VERCEL.txt`](./UPDATE-VERCEL.txt)  
+**Pro Shop Shopify checkout:** See [`docs/SHOPIFY_CHECKOUT.md`](./docs/SHOPIFY_CHECKOUT.md)
 
 ## Website Owner login
 

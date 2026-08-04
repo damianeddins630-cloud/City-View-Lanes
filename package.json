@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:shopify": "tsx --test src/lib/money.test.ts src/lib/shopify/webhook.test.ts src/lib/shopify/orders.test.ts",
+    "test": "npm run test:shopify"
   },
   "dependencies": {
     "@vercel/blob": "^2.6.1",
@@ -27,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
+    "tsx": "^4.23.5",
     "typescript": "^5"
   }
 }
