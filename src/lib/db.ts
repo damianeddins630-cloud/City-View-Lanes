@@ -495,6 +495,9 @@ function finalizeStore(store: Store): Store {
   if (!Array.isArray(store.chatMessages)) store.chatMessages = [];
   if (!Array.isArray(store.hours)) store.hours = [];
   if (!Array.isArray(store.users)) store.users = [];
+  if (!Array.isArray(store.productCategories)) store.productCategories = [];
+  if (!Array.isArray(store.products)) store.products = [];
+  if (!Array.isArray(store.shopOrders)) store.shopOrders = [];
   // Never re-merge seed leagues here — that made "Remove" undo itself on the
   // next read. Initial leagues live in data/store.json; admins own the list.
   store.siteContent = ensureSiteContent(store.siteContent);

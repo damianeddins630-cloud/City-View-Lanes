@@ -148,6 +148,14 @@ export const ALL_PERMISSIONS = [
     id: "manage_content",
     label: "Edit all website pages (home + leagues)",
   },
+  {
+    id: "manage_products",
+    label: "Manage Pro Shop products, prices & inventory",
+  },
+  {
+    id: "manage_orders",
+    label: "View and fulfill Pro Shop orders",
+  },
 ] as const;
 
 export const ASSIGNABLE_PERMISSION_IDS = ALL_PERMISSIONS.map((p) => p.id);
