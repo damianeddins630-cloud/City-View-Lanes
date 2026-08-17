@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree, Oswald } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import EditModeProvider from "@/components/EditModeProvider";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -46,6 +47,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <SiteEditBar />
+          <SpeedInsights />
         </EditModeProvider>
       </body>
     </html>
