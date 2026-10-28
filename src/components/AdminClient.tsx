@@ -136,6 +136,8 @@ export default function AdminClient() {
   const [storage, setStorage] = useState<{
     durable: boolean;
     persistence: string;
+    neonConfigured: boolean | null;
+    neonLastError: string | null;
     hasBlobToken: boolean | null;
     hasBlobStoreId: boolean | null;
     blobAuthMethod: string | null;
@@ -144,6 +146,8 @@ export default function AdminClient() {
   }>({
     durable: true,
     persistence: "checking",
+    neonConfigured: null,
+    neonLastError: null,
     hasBlobToken: null,
     hasBlobStoreId: null,
     blobAuthMethod: null,
@@ -245,6 +249,10 @@ export default function AdminClient() {
           setStorage({
             durable: Boolean(d.durable),
             persistence: String(d.persistence || "unknown"),
+            neonConfigured:
+              typeof d.neonConfigured === "boolean" ? d.neonConfigured : null,
+            neonLastError:
+              typeof d.neonLastError === "string" ? d.neonLastError : null,
             hasBlobToken:
               typeof d.hasBlobToken === "boolean" ? d.hasBlobToken : null,
             hasBlobStoreId:
@@ -261,6 +269,8 @@ export default function AdminClient() {
           setStorage({
             durable: false,
             persistence: "unknown",
+            neonConfigured: false,
+            neonLastError: null,
             hasBlobToken: false,
             hasBlobStoreId: false,
             blobAuthMethod: "none",
@@ -583,15 +593,23 @@ export default function AdminClient() {
 
 
   async function runStorageTest() {
-    setStorageTest({ running: true, message: "Testing Blob save…" });
+    setStorageTest({ running: true, message: "Testing durable save…" });
     setError("");
     try {
       const res = await fetch("/api/storage", { method: "POST" });
       const data = await res.json();
+      const backend = typeof data.backend === "string" ? data.backend : "storage";
       setStorage((s) => ({
         ...s,
         durable: Boolean(data.durable),
         persistence: String(data.persistence || s.persistence),
+        neonConfigured: backend === "neon" ? true : s.neonConfigured,
+        neonLastError:
+          backend === "neon"
+            ? typeof data.error === "string"
+              ? data.error
+              : null
+            : s.neonLastError,
         hasBlobToken:
           typeof data.auth?.hasReadWriteToken === "boolean"
             ? data.auth.hasReadWriteToken
@@ -608,23 +626,24 @@ export default function AdminClient() {
           typeof data.auth?.canAttempt === "boolean"
             ? data.auth.canAttempt
             : s.blobCanAttempt,
+        blobLastError:
+          backend === "blob" && typeof data.error === "string"
+            ? data.error
+            : s.blobLastError,
       }));
       if (data.ok) {
         setStorageTest({
           running: false,
-          message: `PASS — Blob write + read worked (${data.access || "ok"}). Saves will stick.`,
+          message: `PASS — ${backend} write + read worked. Saves will stick.`,
         });
         setNotice("Storage test passed. Saves are durable.");
       } else {
-        const failDetail = data.error || data.help || "Blob not working on this deploy.";
+        const failDetail =
+          data.error || data.help || `${backend} not working on this deploy.`;
         setStorageTest({
           running: false,
           message: `FAIL — ${failDetail}`,
         });
-        setStorage((s) => ({
-          ...s,
-          blobLastError: typeof data.error === "string" ? data.error : s.blobLastError,
-        }));
         setError(failDetail);
       }
     } catch {
@@ -664,46 +683,38 @@ export default function AdminClient() {
           <>
             <strong>Saves are on.</strong> Storage mode:{" "}
             <code>{storage.persistence}</code>
-            {storage.blobAuthMethod ? (
-              <>
-                {" "}
-                (auth: <code>{storage.blobAuthMethod}</code>)
-              </>
-            ) : null}
-            . Hours, profiles, bookings, and leagues will stick after you save.
+            {storage.persistence === "neon"
+              ? " (Neon Postgres)."
+              : storage.blobAuthMethod
+                ? (
+                  <>
+                    {" "}
+                    (auth: <code>{storage.blobAuthMethod}</code>).
+                  </>
+                )
+                : "."}{" "}
+            Hours, profiles, bookings, and leagues will stick after you save.
           </>
         ) : (
           <>
             <strong>Saves are NOT permanent yet.</strong>{" "}
-            {storage.blobCanAttempt || storage.persistence === "blob"
-              ? "Blob is connected, but writing data failed."
-              : "This deployment has no working Blob credentials."}
+            {storage.neonConfigured
+              ? "Neon is configured, but writing data failed."
+              : storage.blobCanAttempt || storage.persistence === "blob"
+                ? "Blob is connected, but writing data failed."
+                : "This deployment has no Neon DATABASE_URL or Blob credentials."}
             <br />
-            Looking for <code>BLOB_STORE_ID</code>
-            {storage.hasBlobStoreId === false
-              ? " (missing)"
-              : storage.hasBlobStoreId
-                ? " (found)"
-                : ""}
-            {" "}and/or <code>BLOB_READ_WRITE_TOKEN</code>
-            {storage.hasBlobToken === false
-              ? " (missing)"
-              : storage.hasBlobToken
-                ? " (found)"
-                : ""}
-            .
-            <br />
-            Fix:
+            Fix (preferred: Neon):
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>
                 Open the <strong>same</strong> Vercel project as this live URL
               </li>
               <li>
-                <strong>Storage → Blob → Create/Connect</strong> (Private is fine)
+                Settings → Environment Variables → add{" "}
+                <code>DATABASE_URL</code> (Neon pooled connection string)
               </li>
               <li>
-                Settings → Environment Variables → confirm Production has{" "}
-                <code>BLOB_STORE_ID</code> or <code>BLOB_READ_WRITE_TOKEN</code>
+                Optional fallback: Storage → Blob → Create/Connect
               </li>
               <li>
                 <strong>Deployments → … → Redeploy</strong>
@@ -713,6 +724,13 @@ export default function AdminClient() {
               </li>
             </ol>
             Current mode: <code>{storage.persistence}</code>
+            {storage.neonLastError ? (
+              <>
+                <br />
+                Neon error:{" "}
+                <code className="break-all">{storage.neonLastError}</code>
+              </>
+            ) : null}
             {storage.blobLastError ? (
               <>
                 <br />

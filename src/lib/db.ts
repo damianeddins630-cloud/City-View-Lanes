@@ -2,6 +2,12 @@ import { get, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
 import { ensureMasterAdmin } from "./masterAdmin";
+import {
+  getLastNeonError,
+  isNeonConfigured,
+  readStoreFromNeon,
+  writeStoreToNeon,
+} from "./neon";
 import { ensureRoles } from "./roles";
 import { ensureSiteContent } from "./siteContent";
 import type { Store } from "./types";
@@ -18,6 +24,7 @@ export class PersistenceError extends Error {
 }
 
 export type WriteResult = {
+  neon: boolean;
   blob: boolean;
   github: boolean;
   tmp: boolean;
@@ -318,6 +325,8 @@ async function writeToGithub(store: Store): Promise<boolean> {
 }
 
 export function persistenceMode() {
+  // Neon overrides Blob when DATABASE_URL (or POSTGRES_URL) is set.
+  if (isNeonConfigured()) return "neon";
   const blob = getBlobAuthInfo();
   if (blob.canAttempt) return "blob";
   if (hasGithub()) return "github";
@@ -326,7 +335,13 @@ export function persistenceMode() {
 }
 
 export function storageSetupHelp() {
-  return "Saves need Vercel Blob on THIS project. Storage → Blob → Create/Connect (adds BLOB_STORE_ID and/or BLOB_READ_WRITE_TOKEN), then Deployments → Redeploy. Open Admin → Test save now. Mode must be blob, not memory. See DEPLOY-SAVES.txt.";
+  if (isNeonConfigured()) {
+    const detail = getLastNeonError();
+    return detail
+      ? `Neon is configured but the last write/read failed: ${detail}`
+      : "Neon is configured (DATABASE_URL). Mode should be neon. Open Admin → Test save now.";
+  }
+  return "Saves need Neon DATABASE_URL (preferred) or Vercel Blob on THIS project. Add DATABASE_URL in Vercel Environment Variables, or Storage → Blob → Create/Connect, then Redeploy. Open Admin → Test save now.";
 }
 
 /** Probe write/read against Blob so admins can verify saves without guessing. */
@@ -515,10 +530,21 @@ export async function readStore(): Promise<Store> {
     return structuredClone(finalizeStore(cache.__cityviewStore));
   }
 
+  const fromNeon = await readStoreFromNeon();
+  if (fromNeon) {
+    cache.__cityviewStore = finalizeStore(fromNeon);
+    cache.__cityviewStoreLoadedAt = now;
+    return structuredClone(cache.__cityviewStore);
+  }
+
   const fromBlob = await readFromBlob();
   if (fromBlob) {
     cache.__cityviewStore = finalizeStore(fromBlob);
     cache.__cityviewStoreLoadedAt = now;
+    // Seed Neon once when Blob has data but Neon is empty.
+    if (isNeonConfigured()) {
+      void writeStoreToNeon(cache.__cityviewStore);
+    }
     return structuredClone(cache.__cityviewStore);
   }
 
@@ -526,17 +552,23 @@ export async function readStore(): Promise<Store> {
   if (fromGithub) {
     cache.__cityviewStore = finalizeStore(fromGithub);
     cache.__cityviewStoreLoadedAt = now;
+    if (isNeonConfigured()) {
+      void writeStoreToNeon(cache.__cityviewStore);
+    }
     return structuredClone(cache.__cityviewStore);
   }
 
   // Prefer project file locally; on Vercel prefer /tmp over seed so mid-session edits survive
-  // within the same warm instance when Blob is not configured yet.
+  // within the same warm instance when Blob/Neon is not configured yet.
   if (!isVercel()) {
     const fromSeed = finalizeStore(
       (await readJsonFile(seedPath)) || (await readSeed()),
     );
     cache.__cityviewStore = fromSeed;
     cache.__cityviewStoreLoadedAt = now;
+    if (isNeonConfigured()) {
+      void writeStoreToNeon(fromSeed);
+    }
     return structuredClone(fromSeed);
   }
 
@@ -544,6 +576,9 @@ export async function readStore(): Promise<Store> {
   if (fromTmp) {
     cache.__cityviewStore = finalizeStore(fromTmp);
     cache.__cityviewStoreLoadedAt = now;
+    if (isNeonConfigured()) {
+      void writeStoreToNeon(cache.__cityviewStore);
+    }
     return structuredClone(cache.__cityviewStore);
   }
 
@@ -552,6 +587,9 @@ export async function readStore(): Promise<Store> {
   );
   cache.__cityviewStore = fromSeed;
   cache.__cityviewStoreLoadedAt = now;
+  if (isNeonConfigured()) {
+    void writeStoreToNeon(fromSeed);
+  }
   return structuredClone(fromSeed);
 }
 
@@ -560,21 +598,22 @@ export async function writeStore(store: Store): Promise<WriteResult> {
   cache.__cityviewStore = structuredClone(store);
   cache.__cityviewStoreLoadedAt = Date.now();
 
-  const [blob, github, tmp, file] = await Promise.all([
+  const [neon, blob, github, tmp, file] = await Promise.all([
+    writeStoreToNeon(store),
     writeToBlob(store),
     writeToGithub(store),
     writeJsonFile(tmpPath, store),
     isVercel() ? Promise.resolve(false) : writeJsonFile(seedPath, store),
   ]);
 
-  const durable = blob || github || file;
+  const durable = neon || blob || github || file;
   const mode = persistenceMode();
 
   if (!durable && isVercel()) {
     console.warn("[CityView DB]", storageSetupHelp());
   }
 
-  return { blob, github, tmp, file, durable, mode };
+  return { neon, blob, github, tmp, file, durable, mode };
 }
 
 export async function updateStore(
@@ -587,7 +626,7 @@ export async function updateStore(
 
   const requireDurable = options?.requireDurable ?? isVercel();
   if (requireDurable && !write.durable) {
-    const detail = getLastBlobError();
+    const detail = getLastNeonError() || getLastBlobError();
     throw new PersistenceError(
       detail ? `${storageSetupHelp()} Detail: ${detail}` : storageSetupHelp(),
     );
