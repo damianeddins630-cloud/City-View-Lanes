@@ -70,8 +70,13 @@ function buildOrderLines(
         `Not enough inventory for “${product.name}”. Only ${product.inventory} available.`,
       );
     }
-    if (product.priceCents < 0 || !Number.isFinite(product.priceCents)) {
-      throw new Error(`“${product.name}” has an invalid price. Contact the pro shop.`);
+    if (
+      product.priceCents <= 0 ||
+      !Number.isFinite(product.priceCents)
+    ) {
+      throw new Error(
+        `“${product.name}” is not priced yet. Ask the pro shop to set a price in Ops.`,
+      );
     }
     lineItems.push({
       productId: product.id,
@@ -79,6 +84,7 @@ function buildOrderLines(
       quantity: line.quantity,
       unitPriceCents: product.priceCents,
       imageUrl: product.imageUrl || undefined,
+      sku: product.sku || undefined,
     });
     subtotalCents += product.priceCents * line.quantity;
   }
@@ -166,6 +172,7 @@ export async function POST(request: Request) {
           title: item.name,
           quantity: item.quantity,
           priceCents: item.unitPriceCents,
+          sku: item.sku || item.productId,
         })),
         note: `Ballard's Pro Shop order ${websiteOrderId}${
           customerName ? ` · ${customerName}` : ""

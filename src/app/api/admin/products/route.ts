@@ -18,6 +18,17 @@ function parseInventory(value: unknown): number | null {
   return n;
 }
 
+function parsePriceCents(body: Record<string, unknown>): number | null {
+  if (body.priceCents !== undefined) {
+    const n = Math.round(Number(body.priceCents));
+    return Number.isFinite(n) && n >= 0 ? n : null;
+  }
+  const raw = body.price ?? body.priceDollars ?? "";
+  return parseUsdToCents(
+    typeof raw === "string" || typeof raw === "number" ? raw : "",
+  );
+}
+
 export async function GET() {
   const user = await getCurrentUser();
   if (!hasPermission(user, "manage_products") && !hasPermission(user, "manage_orders")) {
@@ -40,22 +51,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = (await request.json()) as Record<string, unknown>;
     const name = String(body.name || "").trim();
     const description = String(body.description || "").trim();
     const categoryId = String(body.categoryId || "").trim();
     const imageUrl = String(body.imageUrl || "").trim();
     const imageAlt = String(body.imageAlt || name).trim();
+    const sku = String(body.sku || "").trim();
+    const upc = String(body.upc || "").trim();
+    const brand = String(body.brand || "SPI").trim();
+    const family = String(body.family || "").trim();
     const active = body.active === undefined ? true : Boolean(body.active);
-
-    const priceCents =
-      body.priceCents !== undefined
-        ? (() => {
-            const n = Math.round(Number(body.priceCents));
-            return Number.isFinite(n) && n >= 0 ? n : null;
-          })()
-        : parseUsdToCents(body.price ?? body.priceDollars ?? "");
-
+    const priceCents = parsePriceCents(body);
     const inventory = parseInventory(body.inventory);
 
     if (!name) {
@@ -63,7 +70,7 @@ export async function POST(request: Request) {
     }
     if (priceCents === null) {
       return NextResponse.json(
-        { error: "A valid price is required (e.g. 24.99)." },
+        { error: "A valid price is required (use 0 if not priced yet)." },
         { status: 400 },
       );
     }
@@ -81,8 +88,18 @@ export async function POST(request: Request) {
       if (categoryId && !s.productCategories.some((c) => c.id === categoryId)) {
         throw new Error("Selected category was not found.");
       }
+      if (sku) {
+        const clash = s.products.find(
+          (p) => p.sku && p.sku.toLowerCase() === sku.toLowerCase(),
+        );
+        if (clash) throw new Error(`SKU ${sku} already exists.`);
+      }
       product = {
         id: makeId("prod"),
+        sku,
+        upc,
+        brand,
+        family,
         name,
         description,
         priceCents,
@@ -113,7 +130,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = (await request.json()) as Record<string, unknown>;
     const id = String(body.id || "");
     if (!id) {
       return NextResponse.json({ error: "Product id required." }, { status: 400 });
@@ -131,13 +148,32 @@ export async function PUT(request: Request) {
       if (body.description !== undefined) {
         product.description = String(body.description).trim();
       }
-      if (body.priceCents !== undefined || body.price !== undefined || body.priceDollars !== undefined) {
-        const priceCents =
-          body.priceCents !== undefined
-            ? Math.round(Number(body.priceCents))
-            : parseUsdToCents(body.price ?? body.priceDollars ?? "");
-        if (priceCents === null || !Number.isFinite(priceCents) || priceCents < 0) {
-          throw new Error("A valid price is required (e.g. 24.99).");
+      if (body.sku !== undefined) {
+        const sku = String(body.sku || "").trim();
+        if (sku) {
+          const clash = s.products.find(
+            (p) =>
+              p.id !== id &&
+              p.sku &&
+              p.sku.toLowerCase() === sku.toLowerCase(),
+          );
+          if (clash) throw new Error(`SKU ${sku} already exists.`);
+        }
+        product.sku = sku;
+      }
+      if (body.upc !== undefined) product.upc = String(body.upc || "").trim();
+      if (body.brand !== undefined) product.brand = String(body.brand || "").trim();
+      if (body.family !== undefined) {
+        product.family = String(body.family || "").trim();
+      }
+      if (
+        body.priceCents !== undefined ||
+        body.price !== undefined ||
+        body.priceDollars !== undefined
+      ) {
+        const priceCents = parsePriceCents(body);
+        if (priceCents === null) {
+          throw new Error("A valid price is required (use 0 if not priced yet).");
         }
         product.priceCents = priceCents;
       }

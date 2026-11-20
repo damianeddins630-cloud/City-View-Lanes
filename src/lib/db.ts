@@ -8,6 +8,7 @@ import {
   readStoreFromNeon,
   writeStoreToNeon,
 } from "./neon";
+import { ensureSpiCatalog } from "./ensureSpiCatalog";
 import { ensureRoles } from "./roles";
 import { ensureSiteContent } from "./siteContent";
 import type { Store } from "./types";
@@ -499,7 +500,7 @@ export async function uploadSiteImage(
   return { url: `/uploads/${localName}`, mode: "local" };
 }
 
-function finalizeStore(store: Store): Store {
+function finalizeStore(store: Store): { store: Store; catalogAdded: number } {
   if (!Array.isArray(store.leagues)) store.leagues = [];
   if (!Array.isArray(store.leagueSignups)) store.leagueSignups = [];
   if (!Array.isArray(store.bookings)) store.bookings = [];
@@ -518,7 +519,24 @@ function finalizeStore(store: Store): Store {
   store.siteContent = ensureSiteContent(store.siteContent);
   ensureRoles(store);
   ensureMasterAdmin(store);
-  return store;
+  const catalogAdded = ensureSpiCatalog(store);
+  return { store, catalogAdded };
+}
+
+async function cacheFinalized(
+  raw: Store,
+  now: number,
+  opts?: { seedNeonIfMissing?: boolean },
+): Promise<Store> {
+  const cache = g();
+  const { store, catalogAdded } = finalizeStore(raw);
+  cache.__cityviewStore = store;
+  cache.__cityviewStoreLoadedAt = now;
+  // Persist when SPI catalog was newly inserted, or when seeding Neon from a non-Neon source.
+  if (catalogAdded > 0 || opts?.seedNeonIfMissing) {
+    void writeStore(store);
+  }
+  return structuredClone(store);
 }
 
 export async function readStore(): Promise<Store> {
@@ -530,70 +548,49 @@ export async function readStore(): Promise<Store> {
     cache.__cityviewStoreLoadedAt &&
     now - cache.__cityviewStoreLoadedAt < 800
   ) {
-    return structuredClone(finalizeStore(cache.__cityviewStore));
+    const { store } = finalizeStore(cache.__cityviewStore);
+    return structuredClone(store);
   }
 
   const fromNeon = await readStoreFromNeon();
   if (fromNeon) {
-    cache.__cityviewStore = finalizeStore(fromNeon);
-    cache.__cityviewStoreLoadedAt = now;
-    return structuredClone(cache.__cityviewStore);
+    return cacheFinalized(fromNeon, now);
   }
 
   const fromBlob = await readFromBlob();
   if (fromBlob) {
-    cache.__cityviewStore = finalizeStore(fromBlob);
-    cache.__cityviewStoreLoadedAt = now;
-    // Seed Neon once when Blob has data but Neon is empty.
-    if (isNeonConfigured()) {
-      void writeStoreToNeon(cache.__cityviewStore);
-    }
-    return structuredClone(cache.__cityviewStore);
+    return cacheFinalized(fromBlob, now, {
+      seedNeonIfMissing: isNeonConfigured(),
+    });
   }
 
   const fromGithub = await readFromGithub();
   if (fromGithub) {
-    cache.__cityviewStore = finalizeStore(fromGithub);
-    cache.__cityviewStoreLoadedAt = now;
-    if (isNeonConfigured()) {
-      void writeStoreToNeon(cache.__cityviewStore);
-    }
-    return structuredClone(cache.__cityviewStore);
+    return cacheFinalized(fromGithub, now, {
+      seedNeonIfMissing: isNeonConfigured(),
+    });
   }
 
   // Prefer project file locally; on Vercel prefer /tmp over seed so mid-session edits survive
   // within the same warm instance when Blob/Neon is not configured yet.
   if (!isVercel()) {
-    const fromSeed = finalizeStore(
-      (await readJsonFile(seedPath)) || (await readSeed()),
-    );
-    cache.__cityviewStore = fromSeed;
-    cache.__cityviewStoreLoadedAt = now;
-    if (isNeonConfigured()) {
-      void writeStoreToNeon(fromSeed);
-    }
-    return structuredClone(fromSeed);
+    const raw = (await readJsonFile(seedPath)) || (await readSeed());
+    return cacheFinalized(raw, now, {
+      seedNeonIfMissing: isNeonConfigured(),
+    });
   }
 
   const fromTmp = await readJsonFile(tmpPath);
   if (fromTmp) {
-    cache.__cityviewStore = finalizeStore(fromTmp);
-    cache.__cityviewStoreLoadedAt = now;
-    if (isNeonConfigured()) {
-      void writeStoreToNeon(cache.__cityviewStore);
-    }
-    return structuredClone(cache.__cityviewStore);
+    return cacheFinalized(fromTmp, now, {
+      seedNeonIfMissing: isNeonConfigured(),
+    });
   }
 
-  const fromSeed = finalizeStore(
-    (await readJsonFile(seedPath)) || (await readSeed()),
-  );
-  cache.__cityviewStore = fromSeed;
-  cache.__cityviewStoreLoadedAt = now;
-  if (isNeonConfigured()) {
-    void writeStoreToNeon(fromSeed);
-  }
-  return structuredClone(fromSeed);
+  const fromSeed = (await readJsonFile(seedPath)) || (await readSeed());
+  return cacheFinalized(fromSeed, now, {
+    seedNeonIfMissing: isNeonConfigured(),
+  });
 }
 
 export async function writeStore(store: Store): Promise<WriteResult> {

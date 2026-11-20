@@ -108,7 +108,7 @@ const TABS: { id: Tab; label: string; permission?: Permission | "applications" }
   { id: "applications", label: "Applications", permission: "applications" },
   { id: "admins", label: "Admins", permission: "view_admins" },
   { id: "leagues", label: "League Manager", permission: "manage_leagues" },
-  { id: "products", label: "Products", permission: "manage_products" },
+  { id: "products", label: "Ops", permission: "manage_products" },
   { id: "orders", label: "Orders", permission: "manage_orders" },
 ];
 

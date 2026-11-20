@@ -29,9 +29,17 @@ export type ProductCategory = {
 /** Pro Shop product — website source of truth (not Shopify). */
 export type Product = {
   id: string;
+  /** Supplier / internal SKU (unique within catalog when possible). */
+  sku: string;
+  /** Barcode / UPC when available. */
+  upc: string;
+  /** Brand label, e.g. SPI. */
+  brand: string;
+  /** Optional family for grouping (e.g. ball model without weight). */
+  family: string;
   name: string;
   description: string;
-  /** Price in USD cents (e.g. 2499 = $24.99). */
+  /** Price in USD cents (e.g. 2499 = $24.99). 0 = price not set yet. */
   priceCents: number;
   inventory: number;
   categoryId: string;
@@ -62,6 +70,7 @@ export type ShopOrderLineItem = {
   quantity: number;
   unitPriceCents: number;
   imageUrl?: string;
+  sku?: string;
 };
 
 /** Website order record; Shopify is checkout/payment only. */

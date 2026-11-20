@@ -7,6 +7,7 @@ export type DraftOrderLineInput = {
   title: string;
   quantity: number;
   priceCents: number;
+  sku?: string;
 };
 
 export type CreatedDraftOrder = {
@@ -42,7 +43,7 @@ export async function createShopifyDraftOrder(input: {
     quantity: line.quantity,
     taxable: true,
     requires_shipping: true,
-    sku: line.productId,
+    sku: (line.sku || line.productId).trim(),
     properties: [
       { name: "_website_product_id", value: line.productId },
       { name: "_website_order_id", value: input.websiteOrderId },

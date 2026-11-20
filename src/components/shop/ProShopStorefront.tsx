@@ -8,6 +8,10 @@ import type { Product, ProductCategory } from "@/lib/types";
 export type CatalogProduct = Pick<
   Product,
   | "id"
+  | "sku"
+  | "upc"
+  | "brand"
+  | "family"
   | "name"
   | "description"
   | "priceCents"
@@ -54,6 +58,8 @@ export default function ProShopStorefront({
   const [products, setProducts] = useState(initialProducts);
   const [categories] = useState(initialCategories);
   const [filter, setFilter] = useState<string>("all");
+  const [search, setSearch] = useState("");
+  const [visibleCount, setVisibleCount] = useState(48);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
@@ -93,10 +99,26 @@ export default function ProShopStorefront({
     );
   }, [ready, products, syncWithCatalog]);
 
-  const visibleProducts = useMemo(() => {
-    if (filter === "all") return products;
-    return products.filter((p) => p.categoryId === filter);
-  }, [products, filter]);
+  const filteredProducts = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return products.filter((p) => {
+      if (filter !== "all" && p.categoryId !== filter) return false;
+      if (!q) return true;
+      const hay = [p.name, p.sku, p.upc, p.brand, p.family, p.description]
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [products, filter, search]);
+
+  const visibleProducts = useMemo(
+    () => filteredProducts.slice(0, visibleCount),
+    [filteredProducts, visibleCount],
+  );
+
+  useEffect(() => {
+    setVisibleCount(48);
+  }, [filter, search]);
 
   const cartRows = useMemo(() => {
     return lines
@@ -130,6 +152,10 @@ export default function ProShopStorefront({
   }
 
   function onAdd(product: CatalogProduct) {
+    if (product.priceCents <= 0) {
+      flashError("This item needs a price set in Ops before checkout.");
+      return;
+    }
     const err = addItem(product.id, product.inventory, 1);
     if (err) {
       flashError(err);
@@ -208,6 +234,19 @@ export default function ProShopStorefront({
           </button>
         </div>
 
+        <div className="proshop-search-row">
+          <input
+            className="proshop-search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search balls, bags, shoes, SKU, UPC…"
+            aria-label="Search pro shop"
+          />
+          <p className="proshop-search-count">
+            {filteredProducts.length} item{filteredProducts.length === 1 ? "" : "s"}
+          </p>
+        </div>
+
         {categories.length > 0 ? (
           <div className="proshop-filters" role="tablist" aria-label="Product categories">
             <button
@@ -237,19 +276,21 @@ export default function ProShopStorefront({
         {notice ? <p className="proshop-banner is-ok">{notice}</p> : null}
         {error ? <p className="proshop-banner is-error">{error}</p> : null}
 
-        {visibleProducts.length === 0 ? (
+        {filteredProducts.length === 0 ? (
           <div className="proshop-empty">
-            <p className="proshop-empty-title">Catalog coming soon</p>
+            <p className="proshop-empty-title">No matches</p>
             <p className="proshop-empty-copy">
-              Products added in Admin → Products will appear here when marked active.
+              Try another search, or open Admin → Ops to set prices and stock.
             </p>
           </div>
         ) : (
+          <>
           <div className="proshop-grid">
             {visibleProducts.map((product, index) => {
               const stock = availabilityLabel(product.inventory);
               const inCart = getQuantity(product.id);
               const soldOut = product.inventory <= 0;
+              const unpriced = product.priceCents <= 0;
               return (
                 <article
                   key={product.id}
@@ -264,7 +305,9 @@ export default function ProShopStorefront({
                         alt={product.imageAlt || product.name}
                       />
                     ) : (
-                      <div className="proshop-card-placeholder">No photo</div>
+                      <div className="proshop-card-placeholder">
+                        {product.brand || "SPI"}
+                      </div>
                     )}
                     <span className={`proshop-stock is-${stock.tone}`}>{stock.text}</span>
                   </div>
@@ -272,6 +315,7 @@ export default function ProShopStorefront({
                     {product.categoryId ? (
                       <p className="proshop-card-category">
                         {categoryMap.get(product.categoryId) || "Gear"}
+                        {product.sku ? ` · ${product.sku}` : ""}
                       </p>
                     ) : null}
                     <h3 className="proshop-card-name">{product.name}</h3>
@@ -279,7 +323,9 @@ export default function ProShopStorefront({
                       <p className="proshop-card-desc">{product.description}</p>
                     ) : null}
                     <div className="proshop-card-row">
-                      <p className="proshop-card-price">{formatUsd(product.priceCents)}</p>
+                      <p className="proshop-card-price">
+                        {unpriced ? "Price TBD" : formatUsd(product.priceCents)}
+                      </p>
                       {inCart > 0 ? (
                         <p className="proshop-card-incart">{inCart} in cart</p>
                       ) : null}
@@ -287,16 +333,32 @@ export default function ProShopStorefront({
                     <button
                       type="button"
                       className="proshop-add-btn"
-                      disabled={soldOut}
+                      disabled={soldOut || unpriced}
                       onClick={() => onAdd(product)}
                     >
-                      {soldOut ? "Out of stock" : "Add to cart"}
+                      {soldOut
+                        ? "Out of stock"
+                        : unpriced
+                          ? "Price coming soon"
+                          : "Add to cart"}
                     </button>
                   </div>
                 </article>
               );
             })}
           </div>
+          {visibleCount < filteredProducts.length ? (
+            <div className="proshop-load-more">
+              <button
+                type="button"
+                className="proshop-add-btn"
+                onClick={() => setVisibleCount((n) => n + 48)}
+              >
+                Show more ({filteredProducts.length - visibleCount} left)
+              </button>
+            </div>
+          ) : null}
+          </>
         )}
       </div>
 

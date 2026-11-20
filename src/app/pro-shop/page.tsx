@@ -51,6 +51,10 @@ export default async function ProShopPage() {
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((p) => ({
       id: p.id,
+      sku: p.sku || "",
+      upc: p.upc || "",
+      brand: p.brand || "",
+      family: p.family || "",
       name: p.name,
       description: p.description,
       priceCents: p.priceCents,
